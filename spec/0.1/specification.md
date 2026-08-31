@@ -18,7 +18,7 @@ CSMI separates the meaning of semantic facts from their machine representation.
 | Serialization | A concrete encoding of the semantic model. JSON is the first normative serialization. |
 | Structural schema | The machine-readable JSON Schema that constrains a JSON document's shape. |
 | Semantic conformance | Requirements that structural validation alone cannot express. |
-| Pack | The distributable envelope for semantic models, provenance, and integrity metadata. |
+| Pack | The distributable envelope for semantic documents, assembly, licensing, and integrity metadata. |
 | Transport and registry | Out of scope for v0.1. |
 
 JSON Schema validates structure. It does not define semantic interpretation.
@@ -40,7 +40,12 @@ and only when, they appear in all capitals.
 * **CSMI document**: a serialization of one or more semantic models together
   with the metadata required by that serialization.
 * **CSMI pack**: a distributable artifact containing semantic documents plus an
-  applicability, provenance, and integrity envelope.
+  assembly, licensing, and integrity envelope.
+* **Semantic producer**: a versioned tool or maintained process that establishes
+  semantic facts or completeness claims.
+* **Pack assembler**: a versioned tool or maintained process that selects and
+  packages existing resources without thereby becoming their semantic producer.
+* **Pack digest**: the content address computed from the canonical pack manifest.
 * **JSON serialization**: the first normative mapping from the semantic model to
   JSON.
 * **JSON Schema**: the structural validator for that JSON serialization.
@@ -95,9 +100,11 @@ accepted serialized structure requires a new declared serialization version,
 even when semantic interpretation is unchanged. Purely editorial changes do not
 require a new declared version.
 
-For v0.1, every document MUST identify the semantic-model version. It MUST also
-carry enough serialization identity for a validator to select the corresponding
-schema. The exact field placement is decided with the pack manifest design.
+For v0.1, every semantic document MUST identify the semantic-model version and
+serialization version and MUST carry enough schema identity for a validator to
+select the corresponding schema. A pack resource descriptor repeats only the
+media type and byte-level integrity information needed before parsing; it does
+not replace the document's self-description.
 
 Supporting a serialization does not imply support for the semantic-model
 version it encodes, and supporting a semantic-model version does not imply
@@ -1583,12 +1590,327 @@ an identifier or schema URI.
 
 ### 3.7 Manifest, provenance, and canonicalization
 
-Defines the pack envelope, its applicability and provenance claims, integrity
-mechanism, and deterministic representation requirements.
+A CSMI pack is a content-addressed logical set consisting of one root manifest
+and every resource named by that manifest. The manifest commits to the exact
+resource bytes, assembly identity, and licensing envelope. It does not move
+semantic applicability, completeness, or required-vocabulary declarations away
+from the semantic documents they govern.
+
+This separation has three consequences:
+
+1. a semantic document remains interpretable without its original pack when its
+   referenced resources are otherwise available;
+2. changing packaging metadata does not rewrite fact provenance, although it
+   does create a different pack; and
+3. a digest or signature establishes byte identity, not semantic correctness,
+   applicability, completeness, producer trust, or analyzer soundness.
+
+#### 3.7.1 Semantic-document and manifest responsibilities
+
+Every semantic document MUST carry or reference within that document:
+
+- its semantic-model version, serialization version, and schema identity;
+- each semantic model's artifact selectors and compatibility constraints;
+- every vocabulary use required by section 3.6;
+- its semantic facts and scoped completeness statements; and
+- the semantic-producer provenance required by section 3.7.2.
+
+The root pack manifest MUST contain:
+
+- one exact pack-format version;
+- one pack-assembler identity and exact version;
+- one default pack license expressed as a valid SPDX license expression;
+- an unordered, non-empty set of resource descriptors; and
+- at least one resource whose role is `semantic-document`.
+
+The manifest MAY contain an optional deterministic creation timestamp, license
+overrides for individual resources, and exact predecessor-pack references. If
+present, the creation timestamp MUST be an RFC 3339 UTC instant. All manifest
+fields participate in the pack digest. Producers seeking reproducible output
+SHOULD omit wall-clock creation time or derive it from a deterministic build
+input such as `SOURCE_DATE_EPOCH`. A publication or upload time is transport
+metadata and MUST NOT be inserted into an existing manifest.
+
+Artifact selectors, compatibility constraints, vocabulary uses, completeness
+summaries, and semantic facts MUST NOT be duplicated in the manifest as
+authoritative claims. Such duplication would create conflicting sources of
+truth. A future manifest index may accelerate discovery only if its
+non-authoritative status and consistency validation are defined by a newer
+pack-format version.
+
+A standalone semantic document is a valid semantic input but is not, by itself,
+a v0.1 distributable pack. Packaging it supplies a byte-integrity and licensing
+envelope without changing its meaning.
+
+#### 3.7.2 Semantic-producer provenance
+
+Provenance identifies who or what established a fact and the evidence boundary
+under which it was established. It is not confidence, trust, authorship credit,
+or pack assembly metadata.
+
+Every semantic document MUST define at least one provenance record. A record
+MUST contain:
+
+1. a globally unambiguous semantic-producer identifier represented by an
+   absolute URI that need not be dereferenced;
+2. the producer's exact, non-empty version or process revision;
+3. one generation method from the core vocabulary below; and
+4. the material inputs required by that method, each with stable identity and
+   an exact digest when bytes or canonical content were available.
+
+The core generation methods are:
+
+| Method | Meaning |
+| --- | --- |
+| `source-analysis` | Facts were derived by analyzing source content. |
+| `binary-analysis` | Facts were derived by analyzing compiled or packaged program content. |
+| `metadata-conversion` | Facts were converted from a declaration, index, model, or metadata format. |
+| `manual-authoring` | Facts were established through a maintained human-authoring process. |
+| `composition` | Facts were selected, mapped, or combined from identified semantic inputs. |
+| `mixed` | More than one of the preceding methods materially established the facts. |
+| `other` | Another method applies and is explained by non-empty diagnostic metadata. |
+
+An input record MUST identify its role, such as target artifact, source
+artifact, binary artifact, metadata, or predecessor semantic pack. Artifact
+inputs SHOULD reuse section 3.1 identity and digest semantics. A predecessor
+pack MUST be identified by its pack digest. Source, binary, and metadata inputs
+that materially justify a `complete` claim MUST use exact content evidence; a
+coordinate, branch name, mutable URL, or creation timestamp alone is
+insufficient.
+
+Manual authoring need not invent a byte input, personal identity, or wall-clock
+time. It MUST identify a stable maintained process and exact revision, such as a
+reviewed model repository revision or policy version. Composition MUST retain
+the input semantic-document content digests or pack digests and MUST NOT replace
+their provenance with the composer's identity. A v0.1 semantic-document content
+digest is SHA-256 over that document's normalized JCS bytes; when the document
+is a pack resource, it is the same digest recorded by its resource descriptor.
+
+Every fact and completeness statement MUST resolve to at least one provenance
+record. A document MAY declare one default record only when that record applies
+to every otherwise unannotated fact and claim in the document. Mixed-origin
+documents MUST attach narrower provenance references wherever the default would
+be false or incomplete. Consumers combining sources MUST preserve all resolved
+records independently under sections 3.3.7, 3.5.7, and 3.6.7.
+
+A creation timestamp and invocation identifier MAY be recorded for auditability
+but MUST NOT be required for semantic interpretation. If present, a timestamp
+MUST be an RFC 3339 UTC instant. A consumer MUST NOT use recency, producer
+version, or generation method to select a winner between conflicting facts.
+
+#### 3.7.3 Pack assembly and licensing
+
+The pack assembler selects bytes and constructs the manifest. Its record MUST
+contain a globally unambiguous absolute-URI identifier and exact version or
+process revision. Assembly does not establish semantic facts. If an assembler
+rewrites, maps, deduplicates under semantic equality, or otherwise changes a
+semantic document's claims, that operation is semantic `composition` and MUST
+also appear in the document provenance.
+
+An optional predecessor-pack reference means that the assembler derived this
+pack from an exact prior pack. It MUST contain the predecessor pack digest and
+MUST NOT substitute for resource or fact provenance. Mutable tags, registry
+coordinates, filenames, and URLs are not predecessor identity.
+
+The default pack license and every resource override MUST be valid
+[SPDX license expressions](https://spdx.github.io/spdx-spec/v3.0.1/annexes/spdx-license-expressions/).
+Every custom `LicenseRef` used by one of those expressions MUST resolve to
+exactly one corresponding `license-text` resource under section 3.7.4. A
+resource without an override inherits the pack default. Pack licensing
+describes permission for the pack resources; it MUST NOT be interpreted as the
+license of the modeled target artifact.
+
+#### 3.7.4 Resource descriptors and multi-file packs
+
+Each resource descriptor MUST contain:
+
+- one normalized logical path;
+- one core resource role;
+- one exact media type;
+- the exact non-negative byte size; and
+- one SHA-256 digest over the exact resource bytes.
+
+A descriptor MAY additionally carry the resource's SPDX license override. A
+`vocabulary-schema` descriptor MUST also bind one absolute schema-identifier
+URI. A `license-text` descriptor MAY bind one exact custom SPDX `LicenseRef`.
+These bindings MUST NOT appear on another resource role. No other optional
+descriptor metadata is defined in v0.1.
+
+The v0.1 core roles are:
+
+| Role | Meaning |
+| --- | --- |
+| `semantic-document` | A self-describing CSMI semantic-model document. |
+| `vocabulary-schema` | A schema named by a standard profile or vendor extension. |
+| `license-text` | License text required by a `LicenseRef` or supplied for review. |
+| `notice` | Human-readable attribution or legal notice. |
+| `auxiliary` | Non-authoritative content that may be ignored unless a semantic document references it through defined vocabulary semantics. |
+
+Schema-identifier bindings MUST be unique within a pack. The bound schema's
+top-level `$id` MUST equal the descriptor binding by exact code-point equality;
+successful parsing or a filename match is insufficient. A semantic document
+that names that schema URI can therefore resolve to exact local bytes without
+network retrieval.
+
+Custom-license bindings MUST be unique within a pack. Each custom `LicenseRef`
+in the default license or a resource override MUST equal one such binding
+exactly. An unbound `license-text` resource is permitted as review material but
+does not satisfy a `LicenseRef`. The content of a bound license text is not
+interpreted as an SPDX expression and does not recursively license itself.
+
+A logical path uses `/` separators, is relative to the pack root, and is
+compared by exact code-point equality. It MUST be non-empty and normalized,
+MUST NOT contain an empty, `.` or `..` segment, and MUST NOT begin with `/`, a
+URI scheme, a drive prefix, or another platform-specific root. Backslashes,
+NUL, percent-encoded traversal, and Unicode characters that are not NFC are
+invalid. Descriptor paths MUST be unique. Producers SHOULD avoid paths that
+differ only by Unicode normalization or case because common materializations
+cannot preserve those distinctions safely.
+
+The manifest itself is the root of the content-addressed graph and MUST NOT list
+itself as a resource. Resource descriptors contain no retrieval URL. A transport
+maps logical paths or digests to bytes outside the semantic model.
+
+The `semantic-document` media type for the v0.1 JSON serialization is
+`application/vnd.csmi.semantic-model.v0.1+json`; the root-manifest media type is
+`application/vnd.csmi.pack-manifest.v0.1+json`. A vocabulary schema uses
+`application/schema+json`. Other roles MUST state an exact applicable media
+type rather than relying on a filename extension.
+
+Multiple semantic documents may refer to one another only through CSMI artifact,
+symbol, vocabulary, provenance, or other semantics defined by this
+specification. A filename, descriptor order, JSON array position, or transport
+location MUST NOT become semantic identity or source priority.
+
+#### 3.7.5 Canonical JSON and deterministic sets
+
+The root manifest and every JSON resource in a content-addressed v0.1 pack MUST
+be serialized in the JSON Canonicalization Scheme defined by
+[RFC 8785](https://www.rfc-editor.org/rfc/rfc8785). Accordingly, the input MUST
+be valid I-JSON: object member names are unique, strings contain valid Unicode,
+and numbers satisfy the JCS representation constraints. JSON Schema validation
+alone does not establish canonical form.
+
+JCS canonicalizes objects and primitive values but deliberately preserves array
+order. Before JCS serialization of a root manifest or semantic document, a CSMI
+producer MUST normalize CSMI-defined arrays according to their semantic kind:
+
+- ordered sequences, including callable parameters, tuple and type arguments,
+  projection steps, and other constructs whose semantics assign an index or
+  traversal order, retain their defined order;
+- set-valued collections, including resource descriptors, fact collections,
+  completeness-statement collections, vocabulary uses, provenance records, and
+  predecessor-pack references, are recursively normalized, have byte-identical
+  duplicate entries removed, and are sorted lexicographically by the unsigned
+  UTF-8 bytes of each entry's JCS representation; and
+- a profile or extension that introduces an array MUST define whether it is an
+  ordered sequence or set and any semantic normalization required before this
+  generic rule is applied.
+
+Another JSON resource, such as a vocabulary schema, MUST still use JCS bytes,
+but its defining format owns its array semantics. CSMI MUST NOT reorder an array
+in that resource unless that format declares the ordering irrelevant and a
+deterministic normalization rule applies.
+
+Issue #9 defines the concrete JSON mapping and labels every core array as
+ordered or set-valued. A serialization MUST prohibit alternate default-valued
+encodings or normalize them before hashing. Semantic subsumption does not make
+two facts byte duplicates and MUST NOT be used to remove one during
+canonicalization.
+
+Readability whitespace shown in specifications and examples is not part of
+canonical pack bytes. A consumer verifying a descriptor hashes the supplied raw
+bytes; it MUST NOT parse and reserialize non-canonical input to make a digest
+match. This permits integrity verification before semantic interpretation.
+
+#### 3.7.6 Content addressing and integrity verification
+
+The v0.1 resource digest algorithm is SHA-256. A digest value is the lowercase
+64-character hexadecimal encoding of the hash of the exact resource bytes.
+The declared byte size is the number of those bytes, not characters, code
+points, or decoded JSON units.
+
+The pack digest is SHA-256 over the RFC 8785 canonical UTF-8 bytes of the root
+manifest after applying section 3.7.5. The manifest MUST NOT contain its own
+digest, because doing so would create a self-reference. A pack reference is the
+tuple of algorithm `sha-256` and this digest value; display syntax such as
+`sha256:<hex>` is not an additional identity scheme.
+
+To consume a pack, an implementation MUST:
+
+1. validate the manifest structure and semantic invariants, including safe
+   paths and unique descriptors;
+2. compute its pack digest and compare it with any expected pack digest supplied
+   by the caller or transport;
+3. obtain each described resource without resolving outside the pack boundary;
+4. compare its exact byte size and SHA-256 digest before parsing it;
+5. validate canonical JSON, schema, and semantic conformance as applicable; and
+6. only then expose semantic facts for applicability and interpretation.
+
+A digest or size mismatch, missing described resource, unsafe resolution, or
+expected-pack-digest mismatch is an **integrity failure**. The pack MUST NOT be
+partially applied. It MUST NOT be relabeled as an empty model, unknown or partial
+coverage, inapplicability, unsupported semantics, or a producer limitation.
+
+If no expected pack digest is supplied, a consumer can still establish the
+computed pack identity and internal agreement between the manifest and resource
+bytes. That does not authenticate the manifest or its producer. Likewise, an
+exact digest says nothing about whether the semantic claims are correct.
+
+#### 3.7.7 Detached signatures and attestations
+
+Signatures and attestations are external to the logical v0.1 pack. They MUST NOT
+be embedded in the root manifest or listed as pack resources when they sign that
+same pack, because either form creates self-reference or makes adding a signer
+change the subject's identity.
+
+A future signature or attestation envelope can bind the pack without redesigning
+it by naming the pack digest as its subject and authenticating both that digest
+and an unambiguous payload type. Formats such as in-toto attestations with DSSE
+are compatible with this layering, but v0.1 does not mandate a signature format,
+key discovery mechanism, identity provider, transparency log, or trust policy.
+
+Verifying an external signature establishes only the claims defined by that
+attestation and its verifier policy. It MUST NOT silently promote artifact
+applicability, interpret unsupported vocabulary, change completeness, or resolve
+conflicting semantic facts.
+
+#### 3.7.8 Transport and registry boundary
+
+Transport, archive encoding, compression, discovery, dependency resolution,
+registry APIs, upload and download, authentication, access control, retention,
+mirroring, and mutable tags are out of scope for v0.1.
+
+A directory, archive, OCI artifact, HTTP service, package registry, or another
+mechanism may carry the same logical pack. The transport MUST preserve the exact
+manifest and resource bytes or produce a different pack digest. Additional
+transport files and detached attestations are outside the logical pack and MUST
+NOT be interpreted as resources unless a different manifest explicitly
+describes them.
+
+A transport MAY advertise a pack digest or map it to a location, but a mutable
+name or URL MUST NOT replace digest verification. Consumers MUST apply resource
+limits and safe extraction rules appropriate to the transport; the absence of a
+v0.1 archive format is not permission for path traversal, symlink escape,
+decompression bombs, or unbounded retrieval.
+
+#### 3.7.9 Combining packs and explicit non-goals
+
+Manifest order, pack order, assembler identity, creation time, license, and
+transport location confer no semantic precedence. Consumers combine applicable
+facts and claims using their family rules while preserving per-source provenance
+and pack/resource digests. A conflict remains invalid or uninterpretable under
+the relevant semantic section; selecting the newer or more trusted pack is an
+observable operator policy outside CSMI semantics.
+
+The v0.1 manifest does not define a semantic query index, authoritative
+completeness summary, dependency solver, registry coordinate, mutable release
+channel, SBOM, signature format, trust score, or license for the modeled target
+artifact.
 
 ## 4. Conformance
 
-Conformance has five independent dimensions:
+Conformance has six independent dimensions:
 
 | Dimension | Question |
 | --- | --- |
@@ -1597,6 +1919,7 @@ Conformance has five independent dimensions:
 | Applicability | Does it match the exact artifact and variant under analysis? |
 | Interpretability | Does the consumer support all semantics required to interpret it correctly? |
 | Coverage | Is the requested fact-family scope unavailable, unknown, partial, or complete? |
+| Content integrity | Do the manifest, any expected pack digest, and every described resource agree byte-for-byte? |
 
 A successful result in one dimension MUST NOT be reported as proof of another.
 In particular, structurally valid JSON is not necessarily semantically valid,
@@ -1628,16 +1951,7 @@ serialization, hidden side channels, or analyzer-specific name parsing.
 ### 4.4 Inconclusive and unsupported outcomes
 
 A consumer MUST NOT collapse malformed input, semantic invalidity,
-inapplicability, an unsupported version, unsupported required semantics, or
-incomplete coverage into a model with no facts. Each condition MUST remain
-distinguishable from a complete claim that modeled behavior is absent.
-
-## 5. Open design decisions
-
-These decisions MUST be resolved before v0.1 becomes candidate-complete. The
-initial draft positions are review proposals, not final normative choices.
-
-| Decision | Initial draft position | Linked issue |
-| --- | --- | --- |
-| Canonicalization | Prefer deterministic producer requirements and a defined content address; defer broad canonical JSON policy only if it is unnecessary for integrity. | #8 |
-| Distribution | Exclude transport and registry protocols from v0.1. | #8 |
+inapplicability, an unsupported version, unsupported required semantics,
+incomplete coverage, or an integrity failure into a model with no facts. Each
+condition MUST remain distinguishable from a complete claim that modeled
+behavior is absent.
