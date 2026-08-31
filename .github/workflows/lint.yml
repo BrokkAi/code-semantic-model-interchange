@@ -9,12 +9,45 @@ permissions:
   contents: read
 
 jobs:
-  json:
-    name: JSON
+  validation:
+    name: JSON and schema
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Check out repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - name: Validate JSON
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-validation.txt
+      - name: Validate strict JSON
         run: python3 scripts/lint-json.py
+      - name: Install schema validator
+        run: python3 -m pip install --disable-pip-version-check --requirement requirements-validation.txt
+      - name: Validate schema and fixtures
+        run: python3 scripts/validate-schema.py
+      - name: Prepare Pages artifact
+        run: |
+          mkdir -p _site/schema/0.1
+          cp spec/0.1/schema.json _site/schema/0.1/schema.json
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+  deploy:
+    name: Publish schema
+    needs: validation
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0

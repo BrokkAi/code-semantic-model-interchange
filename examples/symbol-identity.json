@@ -1,5 +1,5 @@
 {
-  "$comment": "Illustrative JSON only. Issue #9 will define the normative serialization, and the example identity-scheme names are proposed profiles rather than core schemes.",
+  "$comment": "Illustrative component cases. Complete normative documents live under fixtures/valid/; example identity-scheme names are proposed profiles rather than core schemes.",
   "symbolIdentityExamples": [
     {
       "description": "Java overloaded static method",

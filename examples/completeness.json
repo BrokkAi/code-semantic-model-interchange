@@ -1,5 +1,5 @@
 {
-  "$comment": "Illustrative JSON proposal only. Issue #9 will define normative serialization. Example-local symbol handles are conveniences rather than CSMI identity.",
+  "$comment": "Illustrative component cases. Example-local symbol handles are conveniences rather than CSMI identity. Complete normative documents live under fixtures/valid/.",
   "completenessExamples": [
     {
       "description": "A complete Java procedure-summary set with one transfer",

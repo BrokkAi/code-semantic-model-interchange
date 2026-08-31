@@ -1,7 +1,8 @@
 # Procedure-summary conformance cases
 
-These semantic cases are normative for CSMI 0.1 procedure summaries. Issue #9
-will translate them into fixtures for the normative JSON serialization.
+These semantic cases are normative for CSMI 0.1 procedure summaries.
+Structural serialization cases live under `fixtures/`; this table defines the
+additional summary checks that JSON Schema cannot prove.
 
 ## Valid boundary locations and transfers
 

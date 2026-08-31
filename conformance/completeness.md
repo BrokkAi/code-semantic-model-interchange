@@ -1,8 +1,8 @@
 # Completeness and uncertainty conformance cases
 
 These semantic cases are normative for CSMI 0.1 completeness statements.
-Issue #9 will translate them into fixtures for the normative JSON
-serialization.
+Structural serialization cases live under `fixtures/`; this table defines the
+additional coverage checks that JSON Schema cannot prove.
 
 ## Coverage and absence
 

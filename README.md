@@ -380,9 +380,9 @@ flowchart TD
 
 If two unrelated consumers assign the same relevant meaning to a model, the interchange boundary has been demonstrated independently of Bifrost.
 
-## Proposed repository structure
+## Repository structure
 
-As the specification takes shape, the repository is expected to grow toward a structure similar to:
+The normative schema, fixtures, and validation tooling live beside the prose:
 
 ```text
 spec/
@@ -391,24 +391,26 @@ spec/
     schema.json
 
 examples/
-  java/
-  python/
-  javascript/
-  rust/
+  *.json
 
 fixtures/
   valid/
   invalid/
+  semantic-invalid/
 
 conformance/
-  README.md
+  *.md
+
+scripts/
+  lint-json.py
+  validate-schema.py
 ```
 
 The normative specification should live in the repository. A documentation website may render the same material for easier navigation, but should not become a separate source of truth.
 
-The initial [CSMI 0.1 specification skeleton](spec/0.1/specification.md) defines
-the normative boundary, core terminology, conformance dimensions, and the
-section structure that the design issues will fill in.
+The [CSMI 0.1 specification](spec/0.1/specification.md) defines the normative
+semantic boundary, while [schema.json](spec/0.1/schema.json) defines the first
+machine-readable serialization.
 
 ## Roadmap
 
@@ -455,17 +457,32 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for the current policy.
 
 ## Repository validation
 
-Run the dependency-free JSON lint before committing changes to examples or
-schemas:
+Run the dependency-free strict JSON lint before committing changes to examples,
+fixtures, or schemas:
 
 ```sh
 python3 scripts/lint-json.py
 ```
 
 It rejects malformed JSON, duplicate object keys, invalid UTF-8, non-finite
-numbers, and invalid Unicode surrogate values. GitHub runs the same check after
-pushes to `main`; normative schema and fixture validation will extend this gate
-when the v0.1 JSON serialization lands.
+numbers, and invalid Unicode surrogate values.
+
+To meta-validate the Draft 2020-12 schema and check all structural fixture
+expectations without installing a CSMI SDK:
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements-validation.txt
+.venv/bin/python scripts/validate-schema.py
+```
+
+The canonical schema identity is
+`https://csmi.brokk.ai/schema/0.1/schema.json`; validation uses the repository
+copy and does not require network retrieval. GitHub runs both validation layers
+after pushes to `main`, then publishes that validated repository copy to the
+same path on the GitHub Pages site. The Pages custom-domain setting and DNS
+record map `csmi.brokk.ai` to that site; they are deployment configuration, not
+an alternate source of schema truth.
 
 ## License
 

@@ -1,9 +1,10 @@
 {
-  "$comment": "Illustrative JSON proposal only. Issue #9 will define the normative serialization and concrete field placement. Digest values and sizes demonstrate the semantic shape; this human-readable file is not itself a materialized pack.",
+  "$comment": "Illustrative component cases. Digest values and sizes demonstrate the semantic shape; this human-readable wrapper is not itself a materialized pack. A complete normative manifest lives under fixtures/valid/.",
   "semanticDocumentExample": {
+    "documentType": "semantic-document",
     "serializationVersion": "0.1-json",
     "semanticModelVersion": "0.1",
-    "schema": "https://example.org/csmi/schema/0.1/semantic-model.json",
+    "schema": "https://csmi.brokk.ai/schema/0.1/schema.json",
     "provenanceRecords": [
       {
         "id": "normalize-source-analysis",
@@ -33,10 +34,9 @@
             "purl": "pkg:maven/org.example/normalize@1.4.2"
           }
         ],
-        "facts": [
+        "procedureSummaries": [
           {
-            "family": "procedure-summaries",
-            "scope": { "callable": "normalize" },
+            "callable": "normalize",
             "transfers": [
               {
                 "source": {
@@ -61,6 +61,8 @@
     ]
   },
   "packManifestExample": {
+    "documentType": "pack-manifest",
+    "schema": "https://csmi.brokk.ai/schema/0.1/schema.json",
     "packFormatVersion": "0.1",
     "assembler": {
       "identifier": "https://example.org/tools/csmi-pack",

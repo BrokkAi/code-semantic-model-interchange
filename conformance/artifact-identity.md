@@ -1,8 +1,8 @@
 # Artifact identity conformance cases
 
 These semantic cases are normative for the artifact-matching behavior in CSMI
-0.1. Issue #9 will translate them into fixtures for the normative JSON
-serialization.
+0.1. Structural serialization cases live under `fixtures/`; this table defines
+the additional matching behavior that JSON Schema cannot prove.
 
 ## Matching cases
 

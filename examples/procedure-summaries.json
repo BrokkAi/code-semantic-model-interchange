@@ -1,5 +1,5 @@
 {
-  "$comment": "Illustrative JSON proposal only. Issue #9 will define normative serialization. Symbol handles and example projection schemes are local conveniences, not CSMI identity or profiles.",
+  "$comment": "Illustrative component cases. Symbol handles and example projection schemes are local conveniences, not CSMI identity or profiles. Complete normative documents live under fixtures/valid/.",
   "procedureSummaryExamples": [
     {
       "description": "Java static method whose parameter may influence its normal result",
@@ -115,7 +115,10 @@
                 "scheme": "example.python-mapping-regions",
                 "schemeVersion": "0.1",
                 "steps": [
-                  { "kind": "value-for-literal-key", "key": "locale" }
+                  {
+                    "kind": "value-for-literal-key",
+                    "args": { "key": "locale" }
+                  }
                 ]
               }
             },
@@ -186,7 +189,7 @@
                 "scheme": "example.java-member-regions",
                 "schemeVersion": "0.1",
                 "steps": [
-                  { "kind": "field", "symbol": "lastValue" }
+                  { "kind": "field", "args": { "symbol": "lastValue" } }
                 ]
               }
             }
@@ -198,7 +201,7 @@
                 "scheme": "example.java-member-regions",
                 "schemeVersion": "0.1",
                 "steps": [
-                  { "kind": "field", "symbol": "lastValue" }
+                  { "kind": "field", "args": { "symbol": "lastValue" } }
                 ]
               }
             },

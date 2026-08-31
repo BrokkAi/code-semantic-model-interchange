@@ -1,7 +1,8 @@
 # Effects, profiles, and extensions conformance cases
 
-These semantic cases are normative for CSMI 0.1 vocabulary uses. Issue #9
-will define their concrete JSON representation.
+These semantic cases are normative for CSMI 0.1 vocabulary uses. Structural
+serialization cases live under `fixtures/`; this table defines the additional
+vocabulary checks that JSON Schema cannot prove.
 
 ## Namespace and version cases
 

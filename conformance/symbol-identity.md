@@ -1,7 +1,8 @@
 # Symbol identity conformance cases
 
-These semantic cases are normative for CSMI 0.1 symbol identity. Issue #9 will
-translate them into fixtures for the normative JSON serialization.
+These semantic cases are normative for CSMI 0.1 symbol identity. Structural
+serialization cases live under `fixtures/`; this table defines the additional
+identity checks that JSON Schema cannot prove.
 
 ## Equal identities
 

@@ -1,7 +1,8 @@
 # Manifest, provenance, and canonicalization conformance cases
 
-These semantic cases are normative for CSMI 0.1 packs. Issue #9 will define
-their concrete JSON serialization and structural fixtures.
+These semantic cases are normative for CSMI 0.1 packs. Structural serialization
+cases live under `fixtures/`; this table defines the additional provenance,
+canonicalization, and integrity checks that JSON Schema cannot prove.
 
 ## Document and manifest boundaries
 
