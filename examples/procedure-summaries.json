@@ -1,0 +1,380 @@
+{
+  "$comment": "Illustrative JSON proposal only. Issue #9 will define normative serialization. Symbol handles and example projection schemes are local conveniences, not CSMI identity or profiles.",
+  "procedureSummaryExamples": [
+    {
+      "description": "Java static method whose parameter may influence its normal result",
+      "symbolTable": {
+        "artifact": "normalize-java-1.4.2",
+        "scheme": "java-source",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "strings": [
+            { "role": "namespace", "name": "org" },
+            { "role": "namespace", "name": "example" },
+            { "role": "type", "name": "Strings" }
+          ],
+          "normalize": [
+            { "role": "namespace", "name": "org" },
+            { "role": "namespace", "name": "example" },
+            { "role": "type", "name": "Strings" },
+            {
+              "role": "callable",
+              "name": "normalize",
+              "disambiguator": "(java.lang.String)->java.lang.String"
+            }
+          ]
+        }
+      },
+      "declarations": [
+        { "symbol": "strings", "category": "type" },
+        {
+          "symbol": "normalize",
+          "category": "callable",
+          "owner": "strings",
+          "callable": {
+            "kind": "method",
+            "parameters": [
+              { "position": 0, "binding": "positional-only", "required": true }
+            ],
+            "results": [
+              { "position": 0, "type": { "kind": "unknown" } }
+            ]
+          }
+        }
+      ],
+      "summary": {
+        "callable": "normalize",
+        "transfers": [
+          {
+            "source": {
+              "root": { "phase": "input", "role": "parameter", "position": 0 }
+            },
+            "destination": {
+              "root": { "phase": "output", "role": "result", "position": 0 }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "Python named-only slots keep declaration positions in calls normalize(strict=True, value=text) and normalize(value=text, strict=True)",
+      "symbolTable": {
+        "artifact": "normalize-python-2.0.0",
+        "scheme": "python-import",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "normalize": [
+            { "role": "namespace", "name": "example_normalize" },
+            { "role": "namespace", "name": "text" },
+            { "role": "callable", "name": "normalize" }
+          ]
+        }
+      },
+      "declarations": [
+        {
+          "symbol": "normalize",
+          "category": "callable",
+          "callable": {
+            "kind": "function",
+            "parameters": [
+              { "position": 0, "binding": "named-only", "label": "value", "required": true },
+              { "position": 1, "binding": "named-only", "label": "strict", "required": false },
+              { "position": 2, "binding": "variadic-named", "label": "options", "required": false }
+            ],
+            "results": [
+              { "position": 0, "type": { "kind": "unknown" } }
+            ]
+          }
+        }
+      ],
+      "summary": {
+        "callable": "normalize",
+        "transfers": [
+          {
+            "source": {
+              "root": { "phase": "input", "role": "parameter", "position": 0 }
+            },
+            "destination": {
+              "root": { "phase": "output", "role": "result", "position": 0 }
+            }
+          },
+          {
+            "source": {
+              "root": { "phase": "input", "role": "parameter", "position": 1 }
+            },
+            "destination": {
+              "root": { "phase": "output", "role": "result", "position": 0 }
+            }
+          },
+          {
+            "source": {
+              "root": { "phase": "input", "role": "parameter", "position": 2 },
+              "projection": {
+                "scheme": "example.python-mapping-regions",
+                "schemeVersion": "0.1",
+                "steps": [
+                  { "kind": "value-for-literal-key", "key": "locale" }
+                ]
+              }
+            },
+            "destination": {
+              "root": { "phase": "output", "role": "result", "position": 0 }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "Java instance method writes information into a resolver-proven nested receiver field",
+      "symbolTable": {
+        "artifact": "cache-java-3.1.0",
+        "scheme": "java-source",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "cache": [
+            { "role": "namespace", "name": "org" },
+            { "role": "namespace", "name": "example" },
+            { "role": "type", "name": "Cache" }
+          ],
+          "remember": [
+            { "role": "namespace", "name": "org" },
+            { "role": "namespace", "name": "example" },
+            { "role": "type", "name": "Cache" },
+            { "role": "callable", "name": "remember" }
+          ],
+          "lastValue": [
+            { "role": "namespace", "name": "org" },
+            { "role": "namespace", "name": "example" },
+            { "role": "type", "name": "Cache" },
+            { "role": "term", "name": "lastValue" }
+          ]
+        }
+      },
+      "declarations": [
+        { "symbol": "cache", "category": "type" },
+        { "symbol": "lastValue", "category": "value", "owner": "cache" },
+        {
+          "symbol": "remember",
+          "category": "callable",
+          "owner": "cache",
+          "callable": {
+            "kind": "method",
+            "receiver": {
+              "kind": "instance",
+              "type": { "kind": "reference", "symbol": "cache" }
+            },
+            "parameters": [
+              { "position": 0, "binding": "positional-only", "required": true }
+            ],
+            "results": []
+          }
+        }
+      ],
+      "summary": {
+        "callable": "remember",
+        "transfers": [
+          {
+            "source": {
+              "root": { "phase": "input", "role": "parameter", "position": 0 }
+            },
+            "destination": {
+              "root": { "phase": "output", "role": "receiver" },
+              "projection": {
+                "scheme": "example.java-member-regions",
+                "schemeVersion": "0.1",
+                "steps": [
+                  { "kind": "field", "symbol": "lastValue" }
+                ]
+              }
+            }
+          },
+          {
+            "source": {
+              "root": { "phase": "input", "role": "receiver" },
+              "projection": {
+                "scheme": "example.java-member-regions",
+                "schemeVersion": "0.1",
+                "steps": [
+                  { "kind": "field", "symbol": "lastValue" }
+                ]
+              }
+            },
+            "destination": {
+              "root": { "phase": "output", "role": "exception" }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "TypeScript async result distinguishes the returned Promise from its later fulfillment value",
+      "symbolTable": {
+        "artifact": "loader-npm-4.0.0",
+        "scheme": "typescript-export",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "load": [
+            { "role": "namespace", "name": "loader" },
+            { "role": "callable", "name": "load" }
+          ]
+        }
+      },
+      "declarations": [
+        {
+          "symbol": "load",
+          "category": "callable",
+          "callable": {
+            "kind": "function",
+            "parameters": [
+              { "position": 0, "binding": "positional-or-named", "label": "key", "required": true }
+            ],
+            "results": [
+              { "position": 0, "type": { "kind": "unknown" } }
+            ]
+          }
+        }
+      ],
+      "summary": {
+        "callable": "load",
+        "transfers": [
+          {
+            "source": {
+              "root": { "phase": "input", "role": "parameter", "position": 0 }
+            },
+            "destination": {
+              "root": { "phase": "output", "role": "result", "position": 0 },
+              "projection": {
+                "scheme": "example.ecmascript-promise-regions",
+                "schemeVersion": "0.1",
+                "steps": [
+                  { "kind": "fulfilled-value" }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "Rust Result is one normal result whose Ok and Err variants are projected locations, not exceptional roots",
+      "symbolTable": {
+        "artifact": "parser-crate-0.8.5",
+        "scheme": "rust-item",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "parse": [
+            { "role": "namespace", "name": "parser" },
+            { "role": "callable", "name": "parse" }
+          ]
+        }
+      },
+      "declarations": [
+        {
+          "symbol": "parse",
+          "category": "callable",
+          "callable": {
+            "kind": "function",
+            "parameters": [
+              { "position": 0, "binding": "positional-only", "required": true }
+            ],
+            "results": [
+              { "position": 0, "type": { "kind": "unknown" } }
+            ]
+          }
+        }
+      ],
+      "summary": {
+        "callable": "parse",
+        "transfers": [
+          {
+            "source": {
+              "root": { "phase": "input", "role": "parameter", "position": 0 }
+            },
+            "destination": {
+              "root": { "phase": "output", "role": "result", "position": 0 },
+              "projection": {
+                "scheme": "example.rust-result-regions",
+                "schemeVersion": "0.1",
+                "steps": [
+                  { "kind": "ok-value" }
+                ]
+              }
+            }
+          },
+          {
+            "source": {
+              "root": { "phase": "input", "role": "parameter", "position": 0 }
+            },
+            "destination": {
+              "root": { "phase": "output", "role": "result", "position": 0 },
+              "projection": {
+                "scheme": "example.rust-result-regions",
+                "schemeVersion": "0.1",
+                "steps": [
+                  { "kind": "err-value" }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "Go function with two logical normal results",
+      "symbolTable": {
+        "artifact": "lookup-go-v1.2.0",
+        "scheme": "go-package",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "lookup": [
+            { "role": "namespace", "name": "example.org/lookup" },
+            { "role": "callable", "name": "Lookup" }
+          ]
+        }
+      },
+      "declarations": [
+        {
+          "symbol": "lookup",
+          "category": "callable",
+          "callable": {
+            "kind": "function",
+            "parameters": [
+              { "position": 0, "binding": "positional-only", "required": true }
+            ],
+            "results": [
+              { "position": 0, "type": { "kind": "unknown" } },
+              { "position": 1, "type": { "kind": "unknown" } }
+            ]
+          }
+        }
+      ],
+      "summary": {
+        "callable": "lookup",
+        "transfers": [
+          {
+            "source": {
+              "root": { "phase": "input", "role": "parameter", "position": 0 }
+            },
+            "destination": {
+              "root": { "phase": "output", "role": "result", "position": 0 }
+            }
+          },
+          {
+            "source": {
+              "root": { "phase": "input", "role": "parameter", "position": 0 }
+            },
+            "destination": {
+              "root": { "phase": "output", "role": "result", "position": 1 }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

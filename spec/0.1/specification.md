@@ -809,8 +809,230 @@ and leaving language-specific type and dispatch graphs to profiles.
 
 ### 3.4 Procedure summaries
 
-Defines procedure ports, locations, directional transfers, and the minimum
-semantics that two analyzers can implement consistently.
+A procedure summary describes conservative information transfer across one
+invocation of a callable. It relates locations in the invocation's pre-state to
+locations in its post-state without exposing the producer's control-flow graph,
+data-flow lattice, points-to graph, or heap node identities.
+
+The v0.1 core defines one relation: directional may-information transfer. It
+does not define separate value, taint, alias, must-flow, or guarded relation
+kinds. Stronger or domain-specific meanings require a versioned profile.
+
+#### 3.4.1 Summary target and declaration dependency
+
+Every procedure summary MUST identify exactly one callable by a symbol key from
+section 3.2. The symbol MUST resolve to a `callable` declaration under section
+3.3. A summary requires the callable's complete `callable-shape` aspect, either
+embedded in the same applicable pack or named as a consumer-resolved dependency
+under section 3.3.6.
+
+The callable shape establishes whether a receiver exists and the valid
+parameter and logical-result positions. A summary MUST NOT add a receiver,
+parameter, or result slot that is absent from that shape. A summary applies to
+the exact callable symbol only; it does not automatically apply to overrides,
+implementations, aliases, or callables with the same display name.
+
+#### 3.4.2 Boundary roots
+
+A boundary root identifies an invocation-visible value or state before or after
+the call. Each root has an explicit `phase`, so the receiver before invocation
+is distinct from the receiver state after invocation.
+
+| Phase | Role | Selector and meaning |
+| --- | --- | --- |
+| `input` | `receiver` | The receiver supplied to a callable whose declaration has a receiver. |
+| `input` | `parameter` | The argument collection bound to one declared zero-based parameter position. |
+| `input` | `capture` | A captured value or storage location named by a `value` symbol. |
+| `output` | `receiver` | The receiver-visible state after invocation. |
+| `output` | `parameter` | Caller-visible post-state rooted at one declared parameter position. |
+| `output` | `capture` | Post-state of captured storage named by a `value` symbol. |
+| `output` | `result` | One normal logical result at its declared zero-based result position. |
+| `output` | `exception` | The value crossing the immediate exceptional invocation boundary. |
+
+A receiver root is valid only when the callable shape declares a receiver. A
+parameter or result root MUST use a position present in the callable shape. A
+capture root MUST name a stable symbol in the same artifact identity scope; the
+summary's use of that root asserts that the callable captures the named value or
+storage. An input `result` or `exception`, or an output role not listed above,
+is invalid because core defines result and exception values only at the
+post-invocation boundary.
+
+A parameter position is the canonical declaration position from section 3.3.3
+for every binding form, including `positional-or-named`, `named-only`, and both
+variadic forms. It is not the ordinal at which an argument happens to appear in
+call-site source text. A consumer resolves argument labels under the callable
+shape first and then binds each argument to its declared `parameter[n]` root.
+
+An output receiver, parameter, or capture denotes externally observable
+post-state, not reassignment of the callee's local variable. An unprojected
+output parameter is valid only when a required language or ABI profile defines
+caller-visible writeback, such as an `out` or by-reference parameter. A
+projected output may instead denote mutated state reachable from an ordinary
+argument under its projection scheme.
+
+#### 3.4.3 Abstract locations and projection schemes
+
+A boundary location consists of one boundary root followed by zero or more
+ordered projections. An empty projection path selects the boundary value or
+state as a whole and needs no projection scheme.
+
+A non-empty path MUST name a versioned projection scheme and encode every step
+as structured data under that scheme. The scheme MUST define:
+
+- the denotation and canonical representation of each projection kind;
+- which roots and preceding projections accept each kind;
+- how nested projections compose;
+- equality, overlap, and subsumption of projected locations;
+- whether a projection selects one concrete location or an abstract set; and
+- how a consumer maps the projection to its own memory abstraction.
+
+Projection scheme identifiers use the namespacing and versioning mechanism for
+profiles and extensions defined by section 3.6.
+
+Projection schemes may define concepts such as a resolver-proven field, object
+attribute, collection elements, map keys or values, tuple components, or future
+completion values. A scheme MUST NOT use producer database IDs, traversal
+order, source offsets, display names, or opaque analyzer heap-node IDs as
+portable projection identity unless it normatively defines their deterministic
+construction and equivalence.
+
+A consumer that does not support a required projection scheme or cannot map a
+step to the applicable artifact MUST report the affected summary as
+uninterpretable. It MUST NOT discard the path, compare its payload as an opaque
+string, or replace it with the unprojected root. This permits nested abstract
+heap locations without standardizing one analyzer's heap model in core.
+
+#### 3.4.4 Core transfer semantics
+
+A core transfer is an ordered pair of one input-phase source location and one
+output-phase destination location. Its implicit relation kind is
+`may-information`.
+
+The transfer requires a consumer to conservatively admit that information
+associated with the source before invocation may influence or be represented in
+the destination after invocation. This includes copying, selection,
+aggregation, encoding, calculation, or another derived transformation. A
+producer may include an edge as a conservative over-approximation; the edge
+does not assert that every invocation or any particular concrete execution
+exhibits the flow.
+
+A core transfer does **not** by itself assert:
+
+- object identity, reference equality, or aliasing;
+- exact value preservation or invertibility;
+- that the source or destination is mutated;
+- that the flow occurs on every execution path;
+- that no sanitization, validation, encoding, or loss of information occurs;
+- a call, callback, allocation, escape, or other effect; or
+- the absence of additional transfers.
+
+Core transfers have no guard or path condition. If a transfer is possible only
+under some input or control-flow condition, the unguarded may-transfer remains
+valid. Must-flow, value-preserving flow, taint propagation, conditional flow,
+probabilistic flow, and domain-specific transformations require profiles and
+MUST NOT be inferred from a core edge.
+
+The transfer collection is an unordered set. Exact duplicates have no
+additional meaning. Because every edge goes from the pre-state partition to the
+post-state partition, a procedure summary does not contain internal cycles or
+an implicit transitive closure. Interprocedural propagation arises when a
+consumer maps one invocation's post-state into later program state and applies
+other resolved summaries.
+
+#### 3.4.5 Applying summaries at call sites
+
+To apply a procedure summary, a consumer MUST:
+
+1. establish artifact applicability and exact callable symbol identity;
+2. obtain and validate the callable shape required by section 3.4.1;
+3. support every projection scheme and required profile used by the summary;
+4. bind the resolved call's receiver, arguments, captures, normal results, and
+   exceptional continuation to the corresponding boundary roots; and
+5. add the summary's may-information transfers to its analysis under the
+   reported model provenance and completeness state.
+
+Parameter binding follows the callable shape rather than source-text order or
+display names. This includes named arguments: `parameter[n]` remains the same
+declared slot regardless of the order in which a call spells its labels. A
+variadic parameter remains one declared parameter root; a projection scheme may
+select individual or aggregate collected elements. A consumer MUST NOT invent
+additional parameter positions for individual variadic arguments.
+
+When dispatch has multiple possible callable targets, a consumer may combine
+the applicable transfer sets conservatively, but it MUST preserve unsupported,
+inapplicable, and incomplete alternatives. An override or implementation
+relationship does not authorize copying a base summary to another callable
+unless a required profile defines and justifies that inheritance rule.
+
+A missing or uninterpretable summary does not create a core transfer default.
+A consumer MAY use an explicit, named local policy for unknown or external
+calls, but that supplementation MUST be observable and MUST NOT change the
+reported CSMI transfer set or completeness. In particular, consumers MUST NOT
+silently assume universal all-arguments-to-all-outputs flow.
+
+#### 3.4.6 Language and outcome boundaries
+
+Multiple logical results use the positions declared by the callable shape. A
+language-level tuple, record, `Result`, or other wrapper remains one logical
+result when the callable shape declares one; selecting its components requires
+a projection scheme. A consumer MUST NOT reinterpret a wrapper as multiple
+result positions from its source spelling alone.
+
+The `exception` root denotes an immediate thrown or raised value that exits the
+modeled invocation exceptionally. A normal error value such as Rust `Err`, a
+rejected JavaScript promise returned normally, or a language-specific status
+code is not an exceptional root unless a required profile defines different
+invocation semantics.
+
+For an asynchronous callable, the normal result is the returned promise,
+future, task, or comparable wrapper. Fulfillment values, rejections, and later
+callback arguments require projection or effect profiles that define their
+temporal and language semantics. Core transfer edges do not imply that a
+callback is invoked.
+
+Constructors have no input receiver under section 3.3.3. A constructor summary
+therefore starts from its explicit parameters and captures; the applicable
+language or ABI profile determines which logical result or post-state location
+represents the constructed value.
+
+#### 3.4.7 Absence, incompleteness, and unsupported semantics
+
+The presence of a procedure summary does not by itself claim that its transfer
+set is exhaustive. Only a completeness claim for the `procedure-summaries` fact
+family, applicable to the same callable symbol under section 3.5, may establish
+that the transfer set is complete. Until such a claim states otherwise, an
+omitted edge remains unknown rather than false. An empty or absent transfer set
+MUST NOT be interpreted as a pure, constant, neutral, or no-flow callable.
+
+A malformed boundary root, a slot inconsistent with the callable shape, an
+invalid projection under its scheme, or a transfer whose source is not input
+phase or destination is not output phase is semantically invalid. Missing
+required declaration evidence or an unsupported required projection or
+relation profile makes the affected summary uninterpretable rather than empty.
+
+#### 3.4.8 Prior art and explicit non-goals
+
+[CodeQL model packs](https://codeql.github.com/docs/codeql-language-guides/customizing-library-models-for-java-and-kotlin/)
+demonstrate the utility of input-to-output summary edges and rooted access
+paths. CSMI adopts those broad ideas but not CodeQL's textual access-path
+grammar, language-specific signature matching, generic erasure rules, or
+analysis-domain `value` and `taint` kinds.
+
+[IFDS](https://doi.org/10.1145/199448.199462) and implementations such as
+[Heros](https://github.com/soot-oss/heros) demonstrate compositional
+interprocedural flow functions. Their control-flow nodes, call-to-return edges,
+and analysis-specific data facts belong to an analyzer execution model, not the
+CSMI boundary contract.
+
+The v0.1 core intentionally does not define:
+
+- source-level or intermediate-representation control-flow graphs;
+- points-to sets, alias relations, object identities, or a universal heap;
+- must-flow, path conditions, value lattices, or analysis confidence;
+- call, callback, allocation, mutation, escape, I/O, or concurrency effects;
+- taint sources, sinks, sanitizers, barriers, or threat-model labels;
+- exception taxonomies, async state machines, or callback scheduling; or
+- a fallback policy for unresolved, external, or unmodeled calls.
 
 ### 3.5 Completeness and uncertainty
 
@@ -879,7 +1101,6 @@ initial draft positions are review proposals, not final normative choices.
 
 | Decision | Initial draft position | Linked issue |
 | --- | --- | --- |
-| Transfer meaning | Treat a transfer as directional may-flow unless a separately defined relation kind proves necessary. | #5 |
 | Completeness scope | Define completeness independently for each fact family rather than as a single pack-wide flag. | #6 |
 | Core effects | Keep only broadly portable effect concepts in core; express specialized domains as versioned profiles. | #7 |
 | Extension requirement | Make required extensions explicit so consumers can fail closed for affected facts instead of ignoring them. | #7 |
