@@ -80,8 +80,9 @@ and non-normative. For v0.1, the normative set consists of:
 3. valid and invalid structural fixtures;
 4. semantic conformance fixtures.
 
-Pack examples show complete documents rather than isolated fragments, but they
-do not override the normative prose, schema, or conformance fixtures.
+Complete representative documents live under `fixtures/valid/`. Files under
+`examples/` may group isolated component cases for explanation and do not
+override the normative prose, schema, or conformance fixtures.
 
 ## 2. Versioning
 
@@ -132,6 +133,79 @@ binding, completeness claim, or another supported fact, that use is `required`.
 There is no third "completeness-changing" category: completeness-changing uses
 are required semantics. Section 3.6 defines namespace, version, schema,
 attachment, and unsupported-vocabulary behavior.
+
+### 2.5 Normative JSON mapping
+
+The canonical schema identifier for the v0.1 JSON serialization is
+`https://csmi.brokk.ai/schema/0.1/schema.json`. The URI identifies the schema;
+validation MUST NOT depend on retrieving it over the network. The repository
+copy at `spec/0.1/schema.json` is normative.
+
+The schema accepts exactly two root document types, selected by the required
+`documentType` discriminator:
+
+- `semantic-document` carries `semanticModelVersion` `0.1`,
+  `serializationVersion` `0.1-json`, the canonical `schema` URI, producer
+  provenance, and one or more semantic models; and
+- `pack-manifest` carries `packFormatVersion` `0.1`, the same canonical `schema`
+  URI, assembler and licensing metadata, and resource descriptors under
+  section 3.7.
+
+Every semantic model carries its own alternative artifact selectors and any
+compatibility constraints. Its `symbols` array defines document-local ASCII
+handles for structured symbol keys. A symbol entry without its own
+`artifactSelectors` inherits the enclosing model's artifact identity scope. A
+symbol entry with `artifactSelectors` names an external artifact scope. The
+handle is only a compact reference within that semantic model: it is not CSMI
+symbol identity, MUST be unique within the model, and MUST NOT be compared
+across models or documents. The full identity remains the artifact scope,
+scheme, exact scheme version, stability, and ordered descriptor path from
+section 3.2.
+
+References from declarations, relationships, type expressions, summaries,
+completeness scopes, and extension envelopes resolve against that same model's
+symbol entries. Provenance handles resolve against the enclosing document's
+`provenanceRecords`. JSON Schema validates handle syntax but cannot prove that a
+handle exists, is unique, has the required category or scope, or denotes the
+same semantic identity as another handle. Those are semantic-conformance checks.
+
+The model-level `consumerResolvedDependencies` set declares every declaration
+aspect that facts in that semantic model require a consumer to supply under
+section 3.3.6. A dependency is shared rather than attached to one fact: each
+core fact's rules determine which aspects it requires, and semantic validation
+MUST verify that every required aspect is either embedded or present in this
+set.
+
+Core facts use family-specific arrays: `declarations`, `relationships`,
+`procedureSummaries`, and `completenessStatements`. Namespaced families use
+`extensionFacts`. A vocabulary-owned attachment may appear only in an explicit
+`extensions` array on a schema-defined core object. Each attachment or
+extension fact names the exact vocabulary and version and contains one
+vocabulary-owned `payload`; arbitrary new properties on the core object remain
+invalid.
+
+The core schema deliberately accepts the contents of vocabulary-owned
+`payload`, projection-step `args`, compatibility values, extension-family
+scopes, and affected-unit targets as JSON whose detailed shape belongs to the
+named vocabulary schema. A consumer that supports that exact vocabulary version
+MUST validate those values at their declared attachment points. Passing only the
+core schema does not establish profile-payload structural validity or semantic
+support, and an unsupported schema URI MUST NOT trigger an automatic network
+fetch.
+
+The serialization classifies arrays as follows:
+
+| Array kind | Core arrays |
+| --- | --- |
+| Ordered sequence | symbol `descriptors`; declaration `genericParameters`; callable `parameters` and `results`; type `arguments`; relationship `typeArguments`; dependency `typeArguments`; projection `steps` |
+| Unordered set | semantic models, selectors, digests, provenance records and inputs, compatibility constraints, vocabulary uses and affected units, consumer-resolved dependencies, symbols, declarations, relationships, procedure summaries and transfers, extension facts and attachments, completeness statements and limitations, provenance references, external identities, pack resources, and predecessor digests |
+
+Ordered sequences retain their defined order. Producers canonicalize every
+set-valued array under section 3.7.5. An optional set-valued field MUST be
+omitted when empty. The schema permits explicit empty arrays only where empty is
+semantically distinct or structurally required: callable parameters, callable
+results, and a procedure summary's transfer set. No core field accepts `null`
+as an alternate encoding for absence.
 
 ## 3. Semantic-core sections
 
@@ -1499,9 +1573,9 @@ are defined precisely.
 An extension MUST NOT add arbitrary properties directly to a core object,
 replace a core enum value with a namespaced string unless that slot explicitly
 delegates its vocabulary, reinterpret a core field, or override a core fact.
-The JSON serialization remains closed by default under section 4.1. Issue #9
-will define the concrete extension container and schema composition without
-changing these semantic restrictions.
+The JSON serialization remains closed by default under section 4.1. Section
+2.5 defines the concrete extension container without changing these semantic
+restrictions.
 
 #### 3.6.6 Unknown and unsupported vocabulary
 
@@ -1812,10 +1886,10 @@ but its defining format owns its array semantics. CSMI MUST NOT reorder an array
 in that resource unless that format declares the ordering irrelevant and a
 deterministic normalization rule applies.
 
-Issue #9 defines the concrete JSON mapping and labels every core array as
-ordered or set-valued. A serialization MUST prohibit alternate default-valued
-encodings or normalize them before hashing. Semantic subsumption does not make
-two facts byte duplicates and MUST NOT be used to remove one during
+Section 2.5 defines the concrete JSON mapping and labels every core array as
+ordered or set-valued. The serialization prohibits alternate default-valued
+encodings where the distinction matters. Semantic subsumption does not make two
+facts byte duplicates and MUST NOT be used to remove one during
 canonicalization.
 
 Readability whitespace shown in specifications and examples is not part of
@@ -1929,7 +2003,10 @@ applicable, or interpretable.
 
 A conforming JSON document MUST validate against the normative schema selected
 by its version. The schema MUST reject unknown core object fields using JSON
-Schema's closed-object facilities.
+Schema's closed-object facilities. Every document under `fixtures/valid/` MUST
+validate, every document under `fixtures/invalid/` MUST be rejected, and every
+document under `fixtures/semantic-invalid/` MUST validate structurally before
+its named semantic violation is considered.
 
 ### 4.2 Semantic conformance
 
@@ -1941,6 +2018,15 @@ specification. In particular:
 * unknown optional extensions MUST NOT silently change core semantics; and
 * producers MUST be distinguishable from the artifact whose semantics they
   describe.
+
+Semantic validation includes at least reference existence and scope, uniqueness
+of local handles and family scopes, artifact and profile comparison, declaration
+category and descriptor compatibility, contiguous callable positions, boundary
+locations valid for the referenced callable shape, provenance resolution,
+vocabulary-use resolution, completeness conflicts, SPDX expressions, PURL and
+VERS canonicality, Unicode NFC path normalization, and JCS bytes and set order.
+Passing JSON Schema MUST NOT be reported as proof that any of these checks
+succeeded.
 
 ### 4.3 Independence requirement
 

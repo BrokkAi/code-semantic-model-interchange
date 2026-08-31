@@ -1,5 +1,5 @@
 {
-  "$comment": "Illustrative JSON proposal only. Issue #9 will define normative serialization. Each example-local symbol handle expands to the artifact scope, scheme, scheme version, stability, and structured descriptor path in its symbol table; handles are not CSMI identity.",
+  "$comment": "Illustrative component cases. Each example-local symbol handle expands to the artifact scope, scheme, scheme version, stability, and structured descriptor path; handles are not CSMI identity. Complete normative documents live under fixtures/valid/.",
   "declarationModelExamples": [
     {
       "description": "Java generic type with an overloaded static method",

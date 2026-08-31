@@ -1,5 +1,5 @@
 {
-  "$comment": "Illustrative JSON only; issue #9 will define the normative serialization.",
+  "$comment": "Illustrative component cases. Complete normative documents validate against spec/0.1/schema.json and live under fixtures/valid/.",
   "artifactIdentityExamples": [
     {
       "description": "Exact Maven artifact with a digest over the selected JAR",

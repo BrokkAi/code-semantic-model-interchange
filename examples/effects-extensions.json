@@ -1,5 +1,5 @@
 {
-  "$comment": "Illustrative JSON proposal only. Issue #9 will define normative serialization and extension-container placement. These examples show the semantic declarations that the serialization must preserve.",
+  "$comment": "Illustrative component cases showing semantic declarations preserved by the normative extension envelopes in spec/0.1/schema.json. Complete documents live under fixtures/valid/.",
   "vocabularyExamples": [
     {
       "description": "An optional vendor family adds review hints without changing core declaration or transfer semantics",
@@ -57,6 +57,7 @@
           "requirement": "optional",
           "affects": [
             {
+              "kind": "fact-family",
               "family": "review-hints",
               "scope": { "symbol": "normalize" }
             }
@@ -120,6 +121,7 @@
           "requirement": "required",
           "affects": [
             {
+              "kind": "fact-family",
               "family": "mutation",
               "scope": { "callable": "clear" }
             }
@@ -200,6 +202,7 @@
           "requirement": "required",
           "affects": [
             {
+              "kind": "fact-family",
               "family": "generator-rules",
               "scope": { "callable": "generateWidget" }
             }

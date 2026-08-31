@@ -1,7 +1,8 @@
 # Declaration-model conformance cases
 
-These semantic cases are normative for CSMI 0.1 declarations. Issue #9 will
-translate them into fixtures for the normative JSON serialization.
+These semantic cases are normative for CSMI 0.1 declarations. Structural
+serialization cases live under `fixtures/`; this table defines the additional
+declaration checks that JSON Schema cannot prove.
 
 ## Valid declaration facts
 
