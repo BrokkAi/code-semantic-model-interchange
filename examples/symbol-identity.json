@@ -1,0 +1,89 @@
+{
+  "$comment": "Illustrative JSON only. Issue #9 will define the normative serialization, and the example identity-scheme names are proposed profiles rather than core schemes.",
+  "symbolIdentityExamples": [
+    {
+      "description": "Java overloaded static method",
+      "artifact": "normalize-java-1.4.2",
+      "scheme": "java-source",
+      "schemeVersion": "0.1",
+      "stability": "portable",
+      "origin": "named",
+      "descriptors": [
+        { "role": "namespace", "name": "org" },
+        { "role": "namespace", "name": "example" },
+        { "role": "type", "name": "Strings" },
+        {
+          "role": "callable",
+          "name": "normalize",
+          "disambiguator": "(java.lang.String)->java.lang.String"
+        }
+      ],
+      "displayName": "org.example.Strings.normalize(String)"
+    },
+    {
+      "description": "Python module-level function",
+      "artifact": "normalize-python-2.0.0",
+      "scheme": "python-import",
+      "schemeVersion": "0.1",
+      "stability": "portable",
+      "origin": "named",
+      "descriptors": [
+        { "role": "namespace", "name": "example_normalize" },
+        { "role": "namespace", "name": "text" },
+        { "role": "callable", "name": "normalize" }
+      ],
+      "displayName": "example_normalize.text.normalize"
+    },
+    {
+      "description": "TypeScript exported nested static method",
+      "artifact": "normalize-npm-3.x",
+      "scheme": "typescript-export",
+      "schemeVersion": "0.1",
+      "stability": "portable",
+      "origin": "named",
+      "descriptors": [
+        { "role": "namespace", "name": "text" },
+        { "role": "type", "name": "Strings" },
+        {
+          "role": "callable",
+          "name": "normalize",
+          "disambiguator": "(input:string)->string"
+        }
+      ],
+      "displayName": "text.Strings.normalize"
+    },
+    {
+      "description": "Rust associated function",
+      "artifact": "normalize-crate-0.8.5",
+      "scheme": "rust-item",
+      "schemeVersion": "0.1",
+      "stability": "portable",
+      "origin": "named",
+      "descriptors": [
+        { "role": "namespace", "name": "text" },
+        { "role": "type", "name": "Normalizer" },
+        { "role": "callable", "name": "normalize" }
+      ],
+      "displayName": "text::Normalizer::normalize"
+    },
+    {
+      "description": "Exact-artifact local generated callable",
+      "artifact": "generated-client-exact",
+      "scheme": "jvm-binary",
+      "schemeVersion": "0.1",
+      "stability": "artifact-local",
+      "origin": "generated",
+      "descriptors": [
+        { "role": "namespace", "name": "org" },
+        { "role": "namespace", "name": "example" },
+        { "role": "type", "name": "Client$1" },
+        {
+          "role": "callable",
+          "name": "accept",
+          "disambiguator": "(Ljava/lang/String;)V"
+        }
+      ],
+      "displayName": "generated callback in Client"
+    }
+  ]
+}
