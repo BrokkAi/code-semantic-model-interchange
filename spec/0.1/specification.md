@@ -376,7 +376,7 @@ The portable roles are:
 | `type` | A class, interface, trait, enum, type alias, or comparable type-level entity. |
 | `term` | A value, field, constant, property, or non-callable member. |
 | `callable` | A function, method, constructor, accessor, operator, or comparable invocation target. |
-| `type-parameter` | A type or const parameter owned by the preceding entity. |
+| `type-parameter` | A type, const, value, lifetime, or comparable generic parameter owned by the preceding entity. |
 | `value-parameter` | A receiver, positional, named, variadic, or comparable callable parameter. |
 | `meta` | A macro, annotation member, compiler metadata entity, or other scheme-defined meta-level entity. |
 
@@ -412,8 +412,8 @@ participates in disambiguation or declarations.
 
 #### 3.2.4 Generics and instantiated types
 
-A descriptor path identifies a declared generic entity, its declared type or
-const parameters, and callable value parameters. A use-site instantiation such
+A descriptor path identifies a declared generic entity, its declared generic
+parameters, and callable value parameters. A use-site instantiation such
 as `List<String>` or `Vec<u8>` is a type expression, not a new declaration, and
 MUST NOT be represented as a new symbol key unless the identity scheme defines
 an independently declared specialization as a distinct entity.
@@ -528,8 +528,284 @@ as a CSMI identity scheme.
 
 ### 3.3 Declarations
 
-Defines the optional declaration facts needed to resolve and interpret semantic
-summaries without requiring a universal type system or source AST.
+The declaration model supplies only the resolution-bearing facts needed to bind
+and interpret CSMI semantic facts. It is a flat graph keyed by the symbol keys
+defined in section 3.2. It is not a source AST, a replacement compiler model, or
+a universal type system.
+
+A declaration model contains declaration records and directional relationship
+records. A declaration record MUST identify exactly one symbol and one portable
+declaration category. It MAY add an owner, generic parameters, a callable
+shape, an alias target, and presentation metadata where those facts are
+applicable. A producer MUST NOT encode source declarations as nested syntax
+merely to preserve their original textual form.
+
+#### 3.3.1 Portable declaration categories
+
+The core declaration categories are:
+
+| Category | Core meaning |
+| --- | --- |
+| `namespace` | A package, module, namespace, crate, or comparable naming container. |
+| `type` | A named type-level declaration, including a class, interface, trait, protocol, struct, enum, or comparable entity. |
+| `type-alias` | A declared name whose target is another type expression under language-defined alias rules. |
+| `value` | A field, property, constant, variable, enum case, or comparable non-callable value. |
+| `callable` | A function, method, constructor, accessor, operator, destructor, or comparable invocation target. |
+| `type-parameter` | A generic type, const, value, or lifetime parameter owned by another declaration. |
+| `value-parameter` | An explicit callable parameter. |
+| `meta` | A macro, annotation member, compiler metadata entity, or other scheme-defined meta-level declaration. |
+
+The declaration category MUST agree with the terminal descriptor role under the
+symbol's identity scheme. `type` and `type-alias` both use a `type` descriptor;
+the remaining categories use their same-named descriptor role, except `value`,
+which uses `term`.
+
+Categories are deliberately coarser than language declaration kinds. A Java
+class, TypeScript interface, and Rust trait are all `type` declarations. Their
+language-native kind MAY be presentation metadata or a profile fact, but a
+consumer MUST NOT infer portable behavior from that metadata. Relationships
+and callable shapes carry the core distinctions that affect resolution.
+
+#### 3.3.2 Ownership and members
+
+An `owner` is a symbol reference naming the declaration that lexically or
+semantically contains another declaration under the identity scheme. Ownership
+is directional from the owned declaration to its owner. A producer MUST encode
+membership once through `owner`; it MUST NOT also create a second nested member
+identity.
+
+An owner MUST have the same artifact identity scope as the owned declaration.
+It MUST be compatible with the owned declaration's descriptor path and identity
+scheme. A namespace or top-level declaration MAY have no declared owner. A
+value parameter MUST be owned by its callable, and a type parameter MUST be
+owned by the generic declaration that introduces it.
+
+Omission of an owner is not evidence that a declaration is top-level. A
+consumer may make that inference only when the identity scheme itself proves it
+or when declaration completeness covers ownership for that symbol.
+
+#### 3.3.3 Callable shapes
+
+A callable declaration MAY contain one callable shape. When present, the shape
+is an atomic and complete account of invocation binding at the modeled semantic
+level; it contains:
+
+- a callable kind;
+- zero or one receiver;
+- every explicit value parameter in declaration order; and
+- every logical result in result order.
+
+This is structural completeness for that callable shape: it does not assert
+that the producer's declarations, types, relationships, or behavioral facts are
+otherwise complete. Individual receiver, parameter, and result types may be
+omitted or `unknown` without making the invocation-slot sequence partial.
+
+The core callable kinds are `function`, `method`, `constructor`, `accessor`,
+`operator`, `destructor`, and `other`. Callable kind does not determine
+identity, dispatch, allocation, effects, or result behavior unless another core
+rule or required profile says so.
+
+A receiver has one of these kinds:
+
+| Receiver kind | Meaning |
+| --- | --- |
+| `instance` | Invocation supplies an instance value as the receiver. |
+| `type` | Invocation supplies a type or class value as the receiver. |
+| `extension` | Invocation syntax treats a value as the receiver although the declaration owner is different. |
+
+Absence of a receiver means that invocation does not supply one. This includes
+module-level functions, static or associated callables, and constructors at
+entry. A consumer MUST NOT infer receiver presence from the owner or callable
+kind. An extension receiver MUST NOT be conflated with the declaration owner.
+The receiver MAY carry a minimal type expression.
+
+Each explicit parameter has a zero-based `position` and one binding form:
+
+| Binding form | Meaning |
+| --- | --- |
+| `positional-only` | Bound only by its invocation position. |
+| `positional-or-named` | Bound by position or a resolver-significant label. |
+| `named-only` | Bound only by a resolver-significant label. |
+| `variadic-positional` | Collects zero or more remaining positional arguments. |
+| `variadic-named` | Collects zero or more remaining named arguments. |
+
+Positions MUST be unique, contiguous, and ordered from zero. The receiver and
+generic parameters are not members of this sequence. A resolver-significant
+`label` is REQUIRED for `positional-or-named` and `named-only` parameters and
+OPTIONAL otherwise. A label on a positional-only or variadic collector is
+presentation metadata unless a required profile gives it resolver semantics.
+Every parameter MUST have a `required` flag recording whether invocation may
+omit it; a default value expression is outside the v0.1 core. A parameter MAY
+reference its `value-parameter` symbol and MAY carry a minimal type expression.
+
+Each logical result has a unique, contiguous, zero-based position and MAY carry
+a label and type expression. An empty result sequence represents no logical
+result under the applicable language or ABI profile. Constructors do not gain
+an input receiver merely because invocation may produce a constructed value;
+the applicable profile defines how that value appears among logical results.
+
+#### 3.3.4 Generic parameters and minimal type expressions
+
+A generic declaration MAY contain an ordered list of generic parameters. Each
+entry MUST reference a `type-parameter` symbol owned by that declaration, have a
+unique contiguous zero-based position, and classify the parameter as `type`,
+`value`, or `lifetime`. Bounds, variance, defaults, higher-kinded parameters,
+and language-specific constraint systems are outside the core unless required
+by a profile.
+
+When a generic-parameter list is present, it MUST enumerate every generic
+parameter introduced by that declaration in declaration order. Omitted or
+profile-owned bounds do not make that parameter sequence structurally partial.
+
+The v0.1 core type-expression vocabulary contains only:
+
+**reference**
+: A symbol reference to a declared type or type alias, optionally
+  followed by an ordered list of type arguments.
+
+**parameter**
+: A reference to a generic parameter symbol.
+
+**intrinsic**
+: A type atom defined by a required, namespaced, versioned profile, such as a
+  language primitive that has no declaration symbol in an artifact.
+
+**unknown**
+: A type position exists, but the producer cannot express a type for it in the
+  supported vocabulary.
+
+A reference MAY name a symbol in another artifact identity scope. In that case,
+the target artifact scope is part of the symbol reference. A consumer must have
+the artifact identity evidence and scheme support needed to compare that symbol
+reference, but need not establish that a separate semantic model for the target
+artifact is applicable merely to use the type identity. If semantic facts about
+the external artifact are applied, their own artifact applicability is still
+required. An intrinsic type MUST name its profile, profile version, and
+profile-defined identifier; a consumer that does not support a required
+intrinsic profile cannot interpret the affected type fact. Arrays, tuples,
+function types, unions, intersections, nullability, mutability, ownership,
+lifetimes, wildcards, variance, and structural types require profiles unless
+represented as declared symbols or profile-defined intrinsics.
+
+Two type references are equal in core only when their symbol identities compare
+`same` and their type arguments recursively compare equal in order. Intrinsics
+compare only under their named profile and version. `unknown` does not compare
+equal to another type merely because both are unknown. A consumer MUST NOT
+infer cross-language primitive equivalence, expand aliases, erase generic
+arguments, or apply a language subtype relation unless required semantics
+define that operation.
+
+A `type-alias` declaration MUST have one alias target expressed with this
+vocabulary or a required profile. The alias remains a distinct declaration;
+its presence does not make the alias symbol and target symbol identical.
+
+#### 3.3.5 Declaration relationships
+
+A relationship is directional from a subject symbol through a predicate to an
+object. For `inherits` and `conforms-to`, the object is a referenced type symbol
+and MAY carry ordered type arguments. For `overrides` and `implements`, the
+object is a member symbol. The core predicates are:
+
+| Predicate | Subject to object meaning |
+| --- | --- |
+| `inherits` | A type directly declares the object type as a base from which implementation or members may be inherited. |
+| `conforms-to` | A type directly declares conformance to the object interface, trait, protocol, or comparable contract. |
+| `overrides` | A callable or value is declared by the source language or ABI to directly override the object member. |
+| `implements` | A callable or value directly realizes the resolved object contract member. |
+
+Core relationships record resolver-proven declarations, not name similarity or
+inferred transitive closure. They do not by themselves define structural
+subtyping, method resolution order, dispatch targets, variance, layout, or
+binary compatibility. A producer MUST use a required profile when those
+language-specific consequences are necessary to interpret a semantic fact.
+
+Relationship objects and type expressions MAY refer across artifact scopes.
+Ownership MUST NOT. A consumer lacking comparable identity evidence for an
+external endpoint cannot use the affected relationship to establish resolution.
+
+#### 3.3.6 Optional and consumer-resolved declarations
+
+Declarations are an optional fact family. A producer MAY omit declaration facts
+that no other emitted semantic fact needs. Absence remains unknown unless an
+applicable completeness claim proves the declaration fact is absent.
+
+Every semantic fact that needs declaration information MUST either:
+
+1. include the required declaration aspect in the same applicable pack; or
+2. explicitly declare a consumer-resolved dependency naming the symbol,
+   declaration aspect, and any predicate or endpoint required to identify the
+   fact.
+
+The core declaration aspects are `category`, `owner`, `generic-parameters`,
+`callable-shape`, `alias-target`, and `relationships`. A dependency on a
+single-valued aspect requests its complete value. A relationship dependency
+MUST identify the required predicate, object, and type arguments, if any. A
+requirement for a complete relationship set additionally needs an applicable
+completeness claim under section 3.5; absence of an unlisted relationship is not
+enough. A reference to a declaration-defined aspect with neither embedded facts
+nor an explicit consumer-resolved dependency is semantically invalid.
+
+A consumer MAY satisfy a consumer-resolved dependency from its own declaration
+index only after establishing artifact applicability and symbol-scheme support.
+It MUST map the local evidence through a supported identity scheme and every
+required profile into the requested CSMI declaration aspect, then compare that
+aspect using this section's structural and semantic rules. Display-name
+equality, analyzer FQN parsing, source-text similarity, or producer-specific IDs
+MUST NOT establish equivalence. The consumer MUST preserve the local fact's
+provenance and report that interpretation was supplemented. Local facts MUST
+NOT repair an unsupported symbol scheme or silently turn a self-contained pack
+claim from incomplete into complete.
+
+If a required consumer-resolved fact is unavailable, the local evidence's
+artifact applicability is indeterminate, or its semantics are unsupported, the
+affected model is uninterpretable. A default consumer MUST fail closed. This
+option permits a consumer that already has equivalent compiler or analyzer
+declarations to avoid redundant pack data without making that dependency
+invisible.
+
+#### 3.3.7 Duplicate and conflicting facts
+
+Within one semantic model, a symbol MUST have at most one declaration record.
+Repeated facts from multiple applicable models or sources are equivalent only
+when their artifact scopes and symbol identities compare `same` and every
+asserted core value agrees. Exact duplicate relationships, including equivalent
+type arguments, are harmless. Different relationship objects for a multi-valued
+predicate are not inherently conflicting.
+
+Omission is not a conflict. A source that lacks an owner, type, relationship, or
+other fact does not contradict a source that asserts it unless an applicable
+completeness or explicit negative claim covers that fact.
+
+An omitted or `unknown` type does not conflict with a known type supplied by
+another source; the known type may refine it. Two known type expressions
+conflict when they do not compare equal under section 3.3.4 and both sources
+assert the same single-valued type position.
+
+Two embedded assertions that assign different values to the same single-valued
+aspect are semantically invalid. A conflict between an otherwise valid pack
+assertion and consumer-resolved local evidence makes the affected model
+uninterpretable. A consumer MUST report the conflict and MUST NOT select a
+winner by source priority, input order, producer name, or apparent precision.
+Presentation metadata such as display names does not create a semantic conflict.
+
+#### 3.3.8 Relationship to existing declaration models
+
+[SCIP](https://github.com/scip-code/scip/blob/main/scip.proto) separates symbol
+identity from fine-grained symbol kind, but its relationships are primarily
+navigation metadata and its rendered signature is not a machine-interpretable
+callable contract. CSMI therefore uses a smaller portable category vocabulary
+and an explicit callable shape.
+
+[SemanticDB](https://scalameta.org/docs/semanticdb/specification.html)
+demonstrates useful class, method, type, and value signatures, but its type
+model intentionally forms a superset centered on Scala semantics. CSMI adopts
+ordered parameters and owner-relative generic declarations without adopting
+that complete type algebra.
+
+[Kythe](https://kythe.io/docs/schema/) demonstrates the value of a fact-oriented
+graph with typed relationship edges. CSMI uses the same broad graph principle
+while defining only the edge semantics required for semantic-model resolution
+and leaving language-specific type and dispatch graphs to profiles.
 
 ### 3.4 Procedure summaries
 
@@ -603,7 +879,6 @@ initial draft positions are review proposals, not final normative choices.
 
 | Decision | Initial draft position | Linked issue |
 | --- | --- | --- |
-| Declaration scope | Include only resolution-bearing facts required by summaries; keep complete language type systems out of core. | #4 |
 | Transfer meaning | Treat a transfer as directional may-flow unless a separately defined relation kind proves necessary. | #5 |
 | Completeness scope | Define completeness independently for each fact family rather than as a single pack-wide flag. | #6 |
 | Core effects | Keep only broadly portable effect concepts in core; express specialized domains as versioned profiles. | #7 |
