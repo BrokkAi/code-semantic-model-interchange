@@ -380,6 +380,10 @@ conformance/
 
 The normative specification should live in the repository. A documentation website may render the same material for easier navigation, but should not become a separate source of truth.
 
+The initial [CSMI 0.1 specification skeleton](spec/0.1/specification.md) defines
+the normative boundary, core terminology, conformance dimensions, and the
+section structure that the design issues will fill in.
+
 ## Roadmap
 
 ### 0.1 — Core model
