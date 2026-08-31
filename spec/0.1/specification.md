@@ -302,8 +302,229 @@ artifact applicability result.
 
 ### 3.2 Symbol identity
 
-Defines an analyzer-neutral reference contract for declarations, callables,
-fields, parameters, and related program entities.
+CSMI symbol identity names a program entity within one modeled artifact without
+requiring a consumer to parse a producer's fully qualified name. A symbol key is
+the tuple of:
+
+1. the enclosing model's artifact identity scope;
+2. a versioned identity scheme;
+3. an ordered descriptor path constructed under that scheme; and
+4. an identity stability class.
+
+The artifact identity scope contains the alternative selectors defined in
+section 3.1 and supplies package and version identity. A symbol key MUST NOT
+repeat a package manager, package name, package version, or artifact digest. Two
+otherwise identical symbol keys in different artifact identity scopes are
+different symbols unless a separately declared relationship establishes
+equivalence.
+
+One symbol key MAY apply across every alternative selector in its artifact
+scope only when the identity scheme constructs the same descriptor path for the
+entity in every alternative. If identity differs between alternatives, the
+producer MUST narrow the artifact scope or declare separate symbols.
+
+#### 3.2.1 Identity schemes
+
+Every symbol key MUST name an identity scheme and its version. An identity
+scheme defines:
+
+- which source language or binary interface it identifies;
+- how descriptor paths are constructed from language entities;
+- normalization and comparison rules for descriptor names;
+- how overloads and otherwise colliding declarations are disambiguated;
+- how constructors, operators, extension members, generated declarations,
+  generic entities, and unnamed entities are represented; and
+- whether artifact-local identities are supported and stable.
+
+Scheme identifiers MUST be globally unambiguous. Standard profiles use names
+assigned by CSMI; non-standard schemes use the namespaced extension mechanism
+defined for CSMI profiles and extensions. A scheme version identifies its
+identity and comparison rules, not the version of the producer that emitted the
+key.
+
+An identity scheme MUST be deterministic: two conforming producers observing
+the same entity in the same artifact MUST construct equivalent symbol keys.
+Producer-assigned database IDs, traversal order, source offsets, hashes of
+display strings, and analyzer-internal fully qualified names MUST NOT be used by
+a portable identity scheme unless the scheme normatively defines their stable
+construction and equivalence.
+
+A consumer that does not support a symbol's required identity scheme MUST
+report the affected model as uninterpretable. It MUST NOT compare unsupported
+scheme payloads as opaque strings and infer identity from equality alone.
+
+CSMI 0.1 does not define a single universal language identity scheme. Language
+or ABI identity schemes are versioned profiles. This preserves an
+analyzer-neutral envelope while allowing Java, Python, JavaScript/TypeScript,
+Rust, and other ecosystems to use their actual binding and overload semantics.
+
+#### 3.2.2 Descriptor paths
+
+A descriptor path is an ordered, non-empty sequence from the artifact-visible
+root to the identified entity. Each descriptor contains:
+
+- a `role` from the portable role vocabulary;
+- a scheme-normalized `name`, when the entity is named; and
+- a scheme-defined `disambiguator`, when the role and name do not uniquely
+  identify the entity among siblings.
+
+The portable roles are:
+
+| Role | Meaning |
+| --- | --- |
+| `namespace` | A namespace, module, package, crate, or comparable naming container. |
+| `type` | A class, interface, trait, enum, type alias, or comparable type-level entity. |
+| `term` | A value, field, constant, property, or non-callable member. |
+| `callable` | A function, method, constructor, accessor, operator, or comparable invocation target. |
+| `type-parameter` | A type or const parameter owned by the preceding entity. |
+| `value-parameter` | A receiver, positional, named, variadic, or comparable callable parameter. |
+| `meta` | A macro, annotation member, compiler metadata entity, or other scheme-defined meta-level entity. |
+
+Roles describe path structure, not the complete declaration kind. For example,
+a Java class and Rust struct both use `type`; their precise kinds belong to the
+portable declaration model. Consumers MUST NOT infer language-specific kind or
+behavior solely from a descriptor role.
+
+Names are individual path components, not a delimited FQN. A producer MUST NOT
+place `java.util.List`, `crate::module::Type`, or another compound path into one
+descriptor merely to avoid constructing the enclosing descriptors.
+
+#### 3.2.3 Overloads and callable identity
+
+A callable descriptor MUST include a disambiguator whenever two callable
+entities with the same normalized name and owner can coexist. The identity
+scheme MUST define the disambiguator from resolver-visible declaration
+semantics, such as a canonical callable signature, ABI symbol, or other stable
+language identity.
+
+An overload ordinal such as `+1`, source declaration order, or a hash with no
+normative preimage and algorithm MUST NOT be the sole portable disambiguator.
+Return types, generic arity, receiver kind, parameter labels, parameter types,
+calling convention, and other signature elements participate only where the
+identity scheme says they distinguish declarations in that language.
+
+Constructors, destructors, getters, setters, operators, and extension members
+use the `callable` role. The scheme MUST define their normalized names and the
+semantic owner used in the descriptor path. For an extension member, the
+declaration container and extended receiver type MUST NOT be conflated; the
+scheme must identify which one establishes symbol ownership and how the other
+participates in disambiguation or declarations.
+
+#### 3.2.4 Generics and instantiated types
+
+A descriptor path identifies a declared generic entity, its declared type or
+const parameters, and callable value parameters. A use-site instantiation such
+as `List<String>` or `Vec<u8>` is a type expression, not a new declaration, and
+MUST NOT be represented as a new symbol key unless the identity scheme defines
+an independently declared specialization as a distinct entity.
+
+Type and value parameter identity is owner-relative. A scheme SHOULD use a
+declared name when that name participates in language identity; otherwise it
+MUST define a stable owner-relative position or role. Display names alone MUST
+NOT determine parameter identity.
+
+#### 3.2.5 Stability classes
+
+Every symbol key declares one of these stability classes:
+
+**portable**
+: The identity scheme guarantees deterministic construction for independently
+  implemented producers without requiring exact-content digest scope. The
+  entity's source-language visibility does not affect this classification.
+
+**artifact-local**
+: The entity has no stable externally visible identity, but the identity scheme
+  guarantees deterministic construction within one exact artifact.
+
+An artifact-local symbol MUST be scoped so that every alternative artifact
+selector has required exact-content digest evidence. Its scheme MUST define the
+artifact-internal root, local ownership chain, and deterministic local
+disambiguator. Source line or byte offsets MAY appear as diagnostic provenance
+but MUST NOT be the sole identity because formatting or generated-source
+presentation may change without changing the compiled entity.
+
+If no supported scheme can construct a deterministic artifact-local identity,
+the entity cannot be a CSMI semantic target. A producer MUST report the omission
+under the applicable completeness claim rather than mint an unstable ID.
+
+#### 3.2.6 Display and external identities
+
+A symbol declaration MAY carry a human-readable display name, qualified display
+name, language-native signature, documentation name, ABI name, or identities
+from external schemes such as SCIP. These values are aliases or presentation
+metadata and are not part of the CSMI symbol key unless the declared identity
+scheme explicitly adopts them.
+
+A declaration MAY also classify its origin as `named`, `generated`, `synthetic`,
+or `local`. Origin records how the entity arose; it does not by itself determine
+identity or stability. A generated entity can have a portable identity, and a
+named local entity may require artifact-local identity. Consumers MUST use the
+identity scheme and stability class rather than origin metadata when comparing
+symbols.
+
+Each external identity MUST name its scheme and version. A consumer MUST NOT
+infer equivalence between a CSMI symbol and an external identity merely because
+their display text is equal. An asserted external identity is a producer claim;
+a consumer MAY verify it using the external scheme before using it for lookup.
+
+#### 3.2.7 Comparison and resolution
+
+Symbol comparison produces one of these outcomes:
+
+**same**
+: Artifact scope, identity scheme and version, stability class, and every
+  descriptor compare equal under the scheme.
+
+**different**
+: The consumer supports the scheme and at least one comparable identity
+  component differs.
+
+**indeterminate**
+: No component is contradicted, but the consumer lacks the scheme support or
+  artifact evidence needed to establish equality.
+
+Unsupported identity schemes make the affected model uninterpretable for
+semantic application even if a consumer can preserve or display their encoded
+form. A consumer MUST NOT fall back to display names, source text, simple-name
+matching, or analyzer-specific FQN parsing to turn an indeterminate result into
+`same` or `different`.
+
+#### 3.2.8 Relationship to SCIP
+
+[SCIP](https://github.com/scip-code/scip) is important prior art. CSMI reuses
+its central insight that identity is an ordered descriptor path with explicit
+descriptor roles and overload disambiguation. CSMI does not embed the SCIP
+symbol string as its core identity because SCIP combines its own package tuple
+with descriptors, permits document-local IDs, and leaves construction details
+to language indexers.
+
+A SCIP mapping profile MAY map a supported SCIP scheme and descriptor path into
+a CSMI identity scheme. The mapping MUST bind SCIP package information to the
+CSMI artifact selector, define overload-disambiguator equivalence, and reject
+SCIP local symbols unless it can satisfy the artifact-local requirements in
+section 3.2.5.
+
+#### 3.2.9 Relationship to SemanticDB, Kythe, and LSIF
+
+[SemanticDB](https://scalameta.org/docs/semanticdb/specification.html) likewise
+uses owner-relative symbol descriptors and compiler-resolved occurrences. Its
+global and local symbol distinction supports CSMI's separation between portable
+and artifact-local identity, but its language/compiler-specific symbol grammar
+is not adopted as a universal CSMI key.
+
+[Kythe](https://kythe.io/docs/schema/) uses structured VNames containing corpus,
+root, path, language, and signature. This demonstrates the value of separating
+identity dimensions and discouraging source locations for semantic nodes.
+However, Kythe permits indexers to choose signatures whose stability need not
+extend across input versions, so a raw VName is an external identity rather
+than sufficient proof of CSMI portability.
+
+[LSIF](https://microsoft.github.io/language-server-protocol/specifications/lsif/0.4.0/specification/)
+monikers associate scheme-specific identifiers with package information for
+cross-project navigation. A mapping profile may preserve such monikers as
+external identities, but CSMI artifact scope remains authoritative and the
+moniker scheme must define deterministic symbol equivalence before it can serve
+as a CSMI identity scheme.
 
 ### 3.3 Declarations
 
@@ -382,8 +603,6 @@ initial draft positions are review proposals, not final normative choices.
 
 | Decision | Initial draft position | Linked issue |
 | --- | --- | --- |
-| Symbol representation | Define a structured analyzer-neutral contract rather than requiring consumers to parse language-specific fully qualified names. | #3 |
-| Existing symbol schemes | Reuse established concepts where practical, but do not adopt another grammar wholesale without resolving ownership and extensibility. | #3 |
 | Declaration scope | Include only resolution-bearing facts required by summaries; keep complete language type systems out of core. | #4 |
 | Transfer meaning | Treat a transfer as directional may-flow unless a separately defined relation kind proves necessary. | #5 |
 | Completeness scope | Define completeness independently for each fact family rather than as a single pack-wide flag. | #6 |
