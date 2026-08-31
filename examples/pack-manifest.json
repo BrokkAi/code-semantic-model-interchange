@@ -1,0 +1,120 @@
+{
+  "$comment": "Illustrative JSON proposal only. Issue #9 will define the normative serialization and concrete field placement. Digest values and sizes demonstrate the semantic shape; this human-readable file is not itself a materialized pack.",
+  "semanticDocumentExample": {
+    "serializationVersion": "0.1-json",
+    "semanticModelVersion": "0.1",
+    "schema": "https://example.org/csmi/schema/0.1/semantic-model.json",
+    "provenanceRecords": [
+      {
+        "id": "normalize-source-analysis",
+        "producer": {
+          "identifier": "https://example.org/tools/semantic-exporter",
+          "version": "2.4.1"
+        },
+        "generationMethod": "source-analysis",
+        "inputs": [
+          {
+            "role": "target-artifact",
+            "purl": "pkg:maven/org.example/normalize@1.4.2",
+            "digest": {
+              "algorithm": "sha-256",
+              "coverage": "source-archive",
+              "value": "1111111111111111111111111111111111111111111111111111111111111111"
+            }
+          }
+        ]
+      }
+    ],
+    "defaultProvenance": "normalize-source-analysis",
+    "semanticModels": [
+      {
+        "artifactSelectors": [
+          {
+            "purl": "pkg:maven/org.example/normalize@1.4.2"
+          }
+        ],
+        "facts": [
+          {
+            "family": "procedure-summaries",
+            "scope": { "callable": "normalize" },
+            "transfers": [
+              {
+                "source": {
+                  "root": { "phase": "input", "role": "parameter", "position": 0 }
+                },
+                "destination": {
+                  "root": { "phase": "output", "role": "result", "position": 0 }
+                }
+              }
+            ]
+          }
+        ],
+        "completenessStatements": [
+          {
+            "family": "procedure-summaries",
+            "scope": { "callable": "normalize" },
+            "status": "complete",
+            "provenance": ["normalize-source-analysis"]
+          }
+        ]
+      }
+    ]
+  },
+  "packManifestExample": {
+    "packFormatVersion": "0.1",
+    "assembler": {
+      "identifier": "https://example.org/tools/csmi-pack",
+      "version": "1.2.0"
+    },
+    "license": "Apache-2.0",
+    "resources": [
+      {
+        "path": "models/normalize.csmi.json",
+        "role": "semantic-document",
+        "mediaType": "application/vnd.csmi.semantic-model.v0.1+json",
+        "size": 1680,
+        "digest": {
+          "algorithm": "sha-256",
+          "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      {
+        "path": "schemas/review-hints.schema.json",
+        "role": "vocabulary-schema",
+        "mediaType": "application/schema+json",
+        "schemaIdentifier": "https://example.org/csmi/review-hints/1.0.0/schema.json",
+        "size": 742,
+        "digest": {
+          "algorithm": "sha-256",
+          "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "license": "LicenseRef-Review-Hints"
+      },
+      {
+        "path": "licenses/LicenseRef-Review-Hints.txt",
+        "role": "license-text",
+        "mediaType": "text/plain; charset=utf-8",
+        "licenseReference": "LicenseRef-Review-Hints",
+        "size": 534,
+        "digest": {
+          "algorithm": "sha-256",
+          "value": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        },
+        "license": "CC0-1.0"
+      }
+    ],
+    "derivedFrom": [
+      {
+        "algorithm": "sha-256",
+        "value": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    ]
+  },
+  "detachedAttestationSubjectExample": {
+    "name": "csmi-pack",
+    "digest": {
+      "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "expectedInterpretation": "The subject digest names the canonical manifest without placing a signature inside the pack or changing its content identity."
+  }
+}

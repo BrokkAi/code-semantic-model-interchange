@@ -198,6 +198,12 @@ Relevant metadata may include:
 - confidence or certainty; and
 - model completeness.
 
+CSMI distinguishes the semantic producer that established a fact from the pack
+assembler that selected and packaged existing resources. Facts and completeness
+claims retain producer provenance; the pack manifest records assembly,
+licensing, and byte integrity without becoming a second source of semantic
+truth.
+
 ## Non-goals
 
 CSMI is **not** intended to standardize an analyzer's internal intermediate representation.
@@ -331,19 +337,26 @@ Equivalent semantic models should have a deterministic or canonical representati
 
 ## Packs and transport
 
-A **CSMI pack** is a distributable collection of semantic models plus metadata describing the software artifacts to which those models apply.
+A **CSMI pack** is a content-addressed collection of semantic documents and
+supporting resources. Semantic documents remain self-describing and own
+artifact applicability, vocabulary uses, facts, completeness, and producer
+provenance. The root manifest owns resource descriptors, assembly identity,
+licensing, and integrity.
 
-A pack may eventually contain:
+A pack logically contains its root manifest, one or more semantic-document
+resources, and any described supporting resources such as vocabulary schemas,
+license texts, notices, or auxiliary data. CSMI does not prescribe how those
+logical resources are laid out by a transport.
 
-```text
-manifest
-declarations
-procedure summaries
-extensions
-provenance
-```
+Each resource is described by a safe logical path, media type, byte size, and
+SHA-256 digest. The pack digest is the SHA-256 of its RFC 8785-canonical root
+manifest, which commits transitively to every described resource. Detached
+signatures or attestations can name that digest later without changing the
+pack's identity.
 
-The semantic data model should be separable from its transport and registry mechanism. JSON may be the first serialization without implying that all future implementations must use a specific registry or packaging service.
+The semantic data model is separate from its transport and registry mechanism.
+A directory, archive, OCI artifact, or future registry may carry the same
+logical pack; transport and registry protocols are outside CSMI 0.1.
 
 ## Bifrost and CSMI
 
@@ -439,6 +452,20 @@ Design feedback and interoperability use cases are welcome, but **external pull 
 During the initial specification phase, changes to the repository will be authored or incorporated by BrokkAi maintainers. This keeps authorship, licensing, and specification stewardship simple while the model is still changing rapidly.
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for the current policy.
+
+## Repository validation
+
+Run the dependency-free JSON lint before committing changes to examples or
+schemas:
+
+```sh
+python3 scripts/lint-json.py
+```
+
+It rejects malformed JSON, duplicate object keys, invalid UTF-8, non-finite
+numbers, and invalid Unicode surrogate values. GitHub runs the same check after
+pushes to `main`; normative schema and fixture validation will extend this gate
+when the v0.1 JSON serialization lands.
 
 ## License
 
