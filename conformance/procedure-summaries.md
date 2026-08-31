@@ -7,6 +7,8 @@ will translate them into fixtures for the normative JSON serialization.
 
 | Case | Expected interpretation | Reason |
 | --- | --- | --- |
+| Input receiver to output `result[0]` | Information from the receiver may influence the first normal result | The receiver is a first-class input root. |
+| A projected input receiver field to output exception | Information from receiver-reachable state may influence an immediate exceptional result | Receiver projections use the same versioned location mechanism as other roots. |
 | Input `parameter[0]` to output `result[0]` | Information from the declared first parameter may influence the first normal result | The core relation is directional may-information transfer. |
 | Python `def f(*, value, strict)` called as either `f(strict=True, value=x)` or `f(value=x, strict=True)` | `value` binds to `parameter[0]` and `strict` binds to `parameter[1]` in both calls | Parameter positions come from the declaration, not call-site label order. |
 | A positional-or-named argument supplied by label | It binds to the same declared `parameter[n]` as a positional use | Labels select declaration slots; they do not create named-only ports. |
@@ -35,6 +37,7 @@ will translate them into fixtures for the normative JSON serialization.
 | Three arguments are collected by one variadic-positional declaration and represented as three new parameter positions | Semantically invalid | The declaration has one variadic root; elements require projections. |
 | Parameter or result position is negative, absent, or outside the callable shape | Semantically invalid | Summary slots cannot extend the declaration shape. |
 | Receiver root appears for a receiver-free static or associated function | Semantically invalid | Ownership does not establish a receiver. |
+| Receiver is encoded as `receiver[0]` or as `parameter[0]` | Semantically invalid | Receiver roots have no index and are separate from the declared parameter sequence. |
 | Unprojected output parameter has no required by-reference or writeback profile | Uninterpretable | Ordinary local parameter reassignment is not caller-visible post-state. |
 | Non-empty projection names an unsupported scheme or version | Uninterpretable, not an edge at the root | Dropping the path would change the location's meaning. |
 | Projection contains an opaque producer heap-node ID or database row ID | Semantically invalid portable location | Analyzer-internal identity has no cross-tool equivalence. |

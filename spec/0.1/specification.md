@@ -840,18 +840,21 @@ is distinct from the receiver state after invocation.
 
 | Phase | Role | Selector and meaning |
 | --- | --- | --- |
-| `input` | `receiver` | The receiver supplied to a callable whose declaration has a receiver. |
+| `input` | `receiver` | The unindexed receiver supplied to a callable whose declaration has a receiver. |
 | `input` | `parameter` | The argument collection bound to one declared zero-based parameter position. |
 | `input` | `capture` | A captured value or storage location named by a `value` symbol. |
-| `output` | `receiver` | The receiver-visible state after invocation. |
+| `output` | `receiver` | The unindexed receiver-visible state after invocation. |
 | `output` | `parameter` | Caller-visible post-state rooted at one declared parameter position. |
 | `output` | `capture` | Post-state of captured storage named by a `value` symbol. |
 | `output` | `result` | One normal logical result at its declared zero-based result position. |
 | `output` | `exception` | The value crossing the immediate exceptional invocation boundary. |
 
 A receiver root is valid only when the callable shape declares a receiver. A
-parameter or result root MUST use a position present in the callable shape. A
-capture root MUST name a stable symbol in the same artifact identity scope; the
+receiver root has no position selector and is separate from the explicit
+parameter sequence; a consumer MUST NOT encode it as `receiver[0]` or
+`parameter[0]`. A parameter or result root MUST use a position present in the
+callable shape. A capture root MUST name a stable symbol in the same artifact
+identity scope; the
 summary's use of that root asserts that the callable captures the named value or
 storage. An input `result` or `exception`, or an output role not listed above,
 is invalid because core defines result and exception values only at the
