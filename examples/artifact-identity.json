@@ -1,0 +1,85 @@
+{
+  "$comment": "Illustrative JSON only; issue #9 will define the normative serialization.",
+  "artifactIdentityExamples": [
+    {
+      "description": "Exact Maven artifact with a digest over the selected JAR",
+      "selectors": [
+        {
+          "purl": "pkg:maven/org.example/normalize@1.4.2?type=jar",
+          "digests": [
+            {
+              "algorithm": "sha-256",
+              "coverage": "archive",
+              "value": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "npm package version range using VERS",
+      "selectors": [
+        {
+          "purl": "pkg:npm/%40example/normalize",
+          "versionRange": "vers:npm/>=2.1.0|<3.0.0"
+        }
+      ]
+    },
+    {
+      "description": "Exact PyPI source distribution",
+      "selectors": [
+        {
+          "purl": "pkg:pypi/example-normalize@1.3.0",
+          "digests": [
+            {
+              "algorithm": "sha-256",
+              "coverage": "source-distribution",
+              "value": "123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "Exact Cargo crate archive",
+      "selectors": [
+        {
+          "purl": "pkg:cargo/example-normalize@0.8.5",
+          "digests": [
+            {
+              "algorithm": "sha-256",
+              "coverage": "archive",
+              "value": "23456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef01"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "Alternative platform-specific RPM artifacts",
+      "selectors": [
+        {
+          "purl": "pkg:rpm/fedora/example-libs@4.2.0-1?arch=x86_64&distro=fedora-43"
+        },
+        {
+          "purl": "pkg:rpm/fedora/example-libs@4.2.0-1?arch=aarch64&distro=fedora-43"
+        }
+      ]
+    },
+    {
+      "description": "Exact OCI image manifest",
+      "selectors": [
+        {
+          "purl": "pkg:oci/normalize@sha256:abcdef?repository_url=registry.example.com/normalize",
+          "digests": [
+            {
+              "algorithm": "sha-256",
+              "coverage": "image-manifest",
+              "value": "abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcd"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

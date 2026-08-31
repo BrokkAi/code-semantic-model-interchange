@@ -126,9 +126,179 @@ corresponding design issues are resolved.
 
 ### 3.1 Artifact and package identity
 
-Defines how a model names and selects the artifact it describes, how package
-coordinates relate to immutable artifact identity, and how consumers make an
-applicability decision.
+An artifact selector identifies a package or distribution and constrains the
+artifacts to which a semantic model applies. Artifact identity is independent
+of producer identity: changing the producer does not change the modeled
+artifact, and changing the modeled artifact does not change the producer.
+
+#### 3.1.1 Package coordinates
+
+An artifact selector MUST contain one canonical
+[Package URL (PURL)](https://ecma-international.org/publications-and-standards/standards/ecma-427/)
+conforming to ECMA-427 and to the registered definition of its PURL type. A
+producer MUST preserve the type-specific meaning, case rules, normalization,
+and qualifiers defined by PURL; it MUST NOT apply CSMI-specific reinterpretation
+to individual PURL components.
+
+Package identity comparison MUST compare canonical PURL components rather than
+raw input strings. A qualifier present in the selector is a constraint and MUST
+have an equivalent value in the candidate artifact. If comparable candidate
+evidence has a different value, the selector is not matched; if the candidate
+does not expose that qualifier, applicability is indeterminate. Additional
+candidate qualifiers do not contradict a selector that intentionally applies
+more broadly.
+
+The PURL identifies a package or distribution. It does not by itself prove that
+the consumer has the same bytes the producer modeled. Consumers MUST NOT treat
+different PURL type, namespace, or name components as aliases without external,
+trusted equivalence evidence.
+
+The PURL `subpath` component MUST NOT appear in a v0.1 artifact selector. CSMI
+symbol and declaration identity identifies entities within the selected
+artifact; using `subpath` for this purpose would create a second, ambiguous
+program-entity identity mechanism.
+
+#### 3.1.2 Exact versions and version ranges
+
+A selector MUST use exactly one of these version forms:
+
+- an exact version in the PURL `version` component; or
+- a [VERS](https://www.packageurl.org/docs/vers/introduction) constraint whose
+  scheme is applicable to the selector's PURL type.
+
+A selector MUST NOT contain both an exact PURL version and a VERS constraint.
+Free-form version ranges and non-canonical VERS strings are invalid. The VERS
+type MUST equal the selector's PURL type. A producer MUST NOT compare versions
+using lexical ordering, Semantic Versioning, or any other substitute for the
+comparison procedure selected by VERS.
+
+The VERS type MUST have a registered comparison procedure or a procedure fully
+defined by a required CSMI profile. A range with no specified comparison
+procedure is semantically invalid; merely accepting its URI syntax is not
+sufficient.
+
+A consumer that does not implement the applicable VERS scheme MUST return an
+indeterminate applicability result. It MUST NOT guess whether the version is in
+range.
+
+PURL and VERS apply percent-encoding independently. When deriving a VERS
+constraint from a PURL version, a producer MUST decode the PURL component once
+and then encode the resulting version under VERS rules. It MUST NOT splice an
+encoded PURL component directly into a VERS string.
+
+#### 3.1.3 Artifact digests
+
+A selector MAY contain one or more cryptographic digests of the modeled
+artifact. A digest identifies exact content and is separate from the package
+coordinate and version constraint.
+
+A digest is REQUIRED when the modeled semantics depend on exact content that
+the canonical PURL and version constraint do not identify unambiguously. This
+includes at least:
+
+- a locally built, patched, repackaged, or otherwise non-registry artifact;
+- an ecosystem coordinate that can select multiple relevant binaries or source
+  distributions without identity-bearing qualifiers sufficient to distinguish
+  them; and
+- semantics derived from build features, generated code, platform variants, or
+  classifiers that the PURL type cannot represent completely.
+
+A producer SHOULD include a digest whenever it has the exact artifact bytes,
+even when the digest is not required. A producer MUST state what byte sequence
+each digest covers, such as an archive, binary, source distribution, or image
+manifest. Any coverage kind that requires canonicalization, including a source
+tree, MUST identify the canonicalization procedure. A consumer MUST compare
+only digests with the same algorithm, coverage kind, and canonicalization
+procedure.
+
+The v0.1 core supports the `sha-256`, `sha-384`, and `sha-512` names from the
+[IANA Hash Function Textual Names registry](https://www.iana.org/assignments/hash-function-text-names).
+Digest values MUST use lowercase hexadecimal with the full output length of the
+selected algorithm. SHA-1 MUST NOT be produced. Additional algorithms require a
+profile or extension until the core set is expanded.
+
+Digest coverage kinds within a selector are conjunctive. Multiple algorithms
+for the same coverage kind are alternative ways to establish that content: at
+least one comparable digest MUST match and every comparable digest MUST agree.
+Any comparable mismatch makes that selector not matched. If the consumer cannot
+compute any listed algorithm for a required coverage kind, or lacks the covered
+bytes, applicability is indeterminate.
+
+#### 3.1.4 Alternatives and constraint composition
+
+A semantic model MAY declare multiple artifact selectors. Selectors are
+alternatives: the model is applicable if any selector matches. Within one
+selector, the package coordinate, version constraint, PURL qualifiers, and all
+required digest evidence are conjunctive and MUST all be satisfied.
+
+Producers SHOULD use multiple selectors only when the same semantic claims and
+completeness claims apply to every alternative. If behavior or completeness
+differs by artifact version or variant, the producer MUST use separate semantic
+models or separately scoped claims rather than a broader selector.
+
+#### 3.1.5 Applicability outcomes
+
+Matching one selector produces exactly one of these outcomes:
+
+**matched**
+: Every required constraint has comparable evidence and is satisfied.
+
+**not matched**
+: At least one required constraint has comparable evidence and is contradicted.
+
+**indeterminate**
+: No required constraint is contradicted, but evidence or comparison support
+  needed to establish a match is unavailable.
+
+For multiple alternative selectors, a single `matched` result makes the model
+applicable. Otherwise, the combined result is `indeterminate` if any selector is
+indeterminate, and `not matched` only if every selector is not matched.
+
+An indeterminate result MUST NOT be treated as matched or not matched. A default
+consumer MUST fail closed and decline to apply the model. A consumer MAY expose
+an explicit trust policy that permits an operator to override this behavior,
+but the reported applicability result remains indeterminate and the override
+MUST be observable.
+
+#### 3.1.6 Matching procedure
+
+For each selector, a consumer MUST:
+
+1. parse and validate the PURL under ECMA-427 and its registered type;
+2. reject a selector containing `subpath`, both version forms, or neither an
+   exact version nor a VERS constraint;
+3. compare canonical package identity and selector qualifiers using the PURL
+   type's equivalence rules;
+4. compare the exact version or evaluate VERS using the applicable ecosystem
+   procedure;
+5. compare every required artifact digest for which comparable bytes and an
+   algorithm implementation are available; and
+6. combine the evidence using the outcomes in section 3.1.5.
+
+A malformed selector is semantically invalid, not indeterminate. A valid
+selector with insufficient evidence is indeterminate.
+
+#### 3.1.7 Compatibility constraints
+
+Runtime, toolchain, ABI, language edition, operating system, and hardware
+constraints that select a distinct package artifact SHOULD use identity-bearing
+qualifiers defined by the applicable PURL type. Compatibility constraints that
+describe where already-selected artifact semantics hold, rather than which
+artifact is selected, are a separate CSMI concept and MUST NOT be encoded as
+invented PURL qualifiers.
+
+Compatibility constraints MUST be declared separately from artifact selectors
+and evaluated only after artifact applicability. A profile defining a
+compatibility constraint MUST define its namespace, version, value syntax,
+comparison procedure, and composition rules. CSMI 0.1 does not define a
+universal toolchain or runtime version scheme.
+
+Compatibility evaluation produces `compatible`, `incompatible`, or
+`indeterminate`. A consumer that cannot interpret a required compatibility
+profile MUST report the model as uninterpretable. A consumer that understands
+the profile but lacks comparison evidence MUST report compatibility as
+indeterminate. Both outcomes fail closed by default and neither changes the
+artifact applicability result.
 
 ### 3.2 Symbol identity
 
@@ -212,8 +382,6 @@ initial draft positions are review proposals, not final normative choices.
 
 | Decision | Initial draft position | Linked issue |
 | --- | --- | --- |
-| Package coordinate standard | Use Package URL as the primary coordinate and define deterministic applicability rules around it. | #2 |
-| Immutable identity | Permit digests; require them only where a package coordinate cannot safely identify the modeled binary or variant. | #2 |
 | Symbol representation | Define a structured analyzer-neutral contract rather than requiring consumers to parse language-specific fully qualified names. | #3 |
 | Existing symbol schemes | Reuse established concepts where practical, but do not adopt another grammar wholesale without resolving ownership and extensibility. | #3 |
 | Declaration scope | Include only resolution-bearing facts required by summaries; keep complete language type systems out of core. | #4 |
