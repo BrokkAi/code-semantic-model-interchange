@@ -62,14 +62,15 @@ serialization.
 | Two partial sources are promoted to complete because no obvious gap remains | Non-conforming aggregation | Only a valid covering complete claim licenses completeness. |
 | Conflicting complete sources are reduced to partial and processing continues | Non-conforming aggregation | A contradiction is observable and uninterpretable, not weaker coverage. |
 | A trust score or confidence extension changes `partial` to `complete` | Non-conforming application | Confidence and trust are orthogonal to coverage. |
-| Free-form version or runtime condition is embedded in the statement | Semantically invalid core claim | Variants belong in artifact applicability or required profile semantics. |
+| Free-form version or runtime condition is embedded in the statement | Semantically invalid core claim | Variants belong in artifact applicability or semantics from a vocabulary use declared `required`. |
 | A generic negated fact is emitted without family-defined profile semantics | Semantically invalid | Core absence is expressed through a complete scoped set. |
 | A profile-defined negative fact is emitted under `unknown` or `partial` coverage | Semantically invalid | Explicit negative facts require an applicable complete claim for their family and scope. |
 
 ## Interoperability obligations
 
 A producer and consumer must agree on the fact family, scope identity, status,
-required profiles, fact equality, conflict, and coverage/subsumption rules
+vocabulary uses declared `required`, fact equality, conflict, and
+coverage/subsumption rules
 before using a completeness statement. Unsupported semantics remain
 uninterpretable rather than empty.
 

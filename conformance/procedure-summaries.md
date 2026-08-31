@@ -42,10 +42,10 @@ will translate them into fixtures for the normative JSON serialization.
 | Non-empty projection names an unsupported scheme or version | Uninterpretable, not an edge at the root | Dropping the path would change the location's meaning. |
 | Projection contains an opaque producer heap-node ID or database row ID | Semantically invalid portable location | Analyzer-internal identity has no cross-tool equivalence. |
 | Projection uses a field display name without a scheme that establishes stable identity | Semantically invalid or uninterpretable | Textual resemblance is not resolver-proven location identity. |
-| Rust `Err` is represented as output `exception` without a required language profile | Incorrect model | It is normally one variant of a normal result wrapper. |
+| Rust `Err` is represented as output `exception` without a language-profile use declared `required` | Incorrect model | It is normally one variant of a normal result wrapper. |
 | A normally returned rejected Promise is represented as an immediate output `exception` | Incorrect model | Promise rejection occurs through later async semantics. |
 | A callback invocation is encoded as a transfer to its argument | Incorrect core model | Invocation is an effect; any related transfer needs an applicable effect/profile contract. |
-| A summary for one callable is applied to an override or same-named callable | Inapplicable unless a required profile proves an inheritance rule | Exact symbol identity is the core application boundary. |
+| A summary for one callable is applied to an override or same-named callable | Inapplicable unless a vocabulary use declared `required` proves an inheritance rule | Exact symbol identity is the core application boundary. |
 | Missing or uninterpretable summary is silently replaced with all-arguments-to-all-outputs edges | Non-conforming application | Unknown-call supplementation must be a named, observable local policy outside the CSMI transfer set. |
 | Empty transfer set without an applicable complete `procedure-summaries` statement is treated as proof of no flow | Incorrect interpretation | Structural emptiness defaults to unknown coverage. |
 | Complete empty `procedure-summaries` set is treated as proof that the callable has no effects | Incorrect interpretation | The statement closes core transfers only; effects remain unknown. |
@@ -59,7 +59,8 @@ non-empty projection path they must also agree on the projection scheme and
 version, including equality, overlap, subsumption, composition, and mapping to
 the consumer's memory abstraction.
 
-Unsupported declaration evidence, projection semantics, or required profiles
+Unsupported declaration evidence, projection semantics, or vocabulary uses
+declared `required`
 must remain observable as uninterpretable or incomplete. Consumers may layer a
 separately named unknown-call policy over their own analysis, but must preserve
 the imported summary, applicability, provenance, and completeness independently.

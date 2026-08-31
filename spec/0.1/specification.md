@@ -56,10 +56,13 @@ and only when, they appear in all capitals.
   report the model as uninterpretable rather than silently ignore them.
 * **Optional semantics**: additional semantics that a consumer MAY ignore
   without changing the meaning or completeness of the remaining model.
-* **Profile**: a standard, versioned semantic vocabulary built from CSMI
-  extension mechanics.
-* **Extension**: a namespaced, versioned vocabulary that is not required for
-  basic CSMI interpretation.
+* **Standard profile**: a CSMI-governed, versioned semantic vocabulary built
+  from the extension mechanics in section 3.6.
+* **Vendor extension**: a publisher-governed, namespaced, versioned semantic
+  vocabulary built from the same mechanics.
+* **Vocabulary use**: one use of an exact standard-profile or vendor-extension
+  version, including whether that use is required or optional and which
+  semantic units it affects.
 
 ### 1.4 Repository documents
 
@@ -111,13 +114,17 @@ expressed structurally.
 
 ### 2.4 Profiles and extensions
 
-Profiles and extensions are independently versioned. They MUST NOT redefine or
-reinterpret a core field. They MAY add a vocabulary item when the extension
-mechanics permit it. A consumer MUST be able to distinguish:
+Standard profiles and vendor extensions are independently versioned semantic
+vocabularies. They use the same mechanics and differ in namespace authority and
+governance, not in whether a consumer must implement them. Neither may redefine
+or reinterpret a core field.
 
-* an optional extension that may be ignored;
-* an extension whose absence changes completeness; and
-* a required extension without which the affected facts cannot be interpreted.
+Every vocabulary use is either `optional` or `required` for explicitly affected
+semantic units. If ignoring a vocabulary would change a core fact, applicability,
+binding, completeness claim, or another supported fact, that use is `required`.
+There is no third "completeness-changing" category: completeness-changing uses
+are required semantics. Section 3.6 defines namespace, version, schema,
+attachment, and unsupported-vocabulary behavior.
 
 ## 3. Semantic-core sections
 
@@ -173,9 +180,9 @@ using lexical ordering, Semantic Versioning, or any other substitute for the
 comparison procedure selected by VERS.
 
 The VERS type MUST have a registered comparison procedure or a procedure fully
-defined by a required CSMI profile. A range with no specified comparison
-procedure is semantically invalid; merely accepting its URI syntax is not
-sufficient.
+defined by a CSMI vocabulary use declared `required`. A range with no specified
+comparison procedure is semantically invalid; merely accepting its URI syntax
+is not sufficient.
 
 A consumer that does not implement the applicable VERS scheme MUST return an
 indeterminate applicability result. It MUST NOT guess whether the version is in
@@ -605,7 +612,7 @@ omitted or `unknown` without making the invocation-slot sequence partial.
 The core callable kinds are `function`, `method`, `constructor`, `accessor`,
 `operator`, `destructor`, and `other`. Callable kind does not determine
 identity, dispatch, allocation, effects, or result behavior unless another core
-rule or required profile says so.
+rule or semantics from a vocabulary use declared `required` says so.
 
 A receiver has one of these kinds:
 
@@ -635,7 +642,8 @@ Positions MUST be unique, contiguous, and ordered from zero. The receiver and
 generic parameters are not members of this sequence. A resolver-significant
 `label` is REQUIRED for `positional-or-named` and `named-only` parameters and
 OPTIONAL otherwise. A label on a positional-only or variadic collector is
-presentation metadata unless a required profile gives it resolver semantics.
+presentation metadata unless a vocabulary use declared `required` gives it
+resolver semantics.
 Every parameter MUST have a `required` flag recording whether invocation may
 omit it; a default value expression is outside the v0.1 core. A parameter MAY
 reference its `value-parameter` symbol and MAY carry a minimal type expression.
@@ -669,7 +677,8 @@ The v0.1 core type-expression vocabulary contains only:
 : A reference to a generic parameter symbol.
 
 **intrinsic**
-: A type atom defined by a required, namespaced, versioned profile, such as a
+: A type atom defined by a namespaced, versioned profile use declared
+  `required`, such as a
   language primitive that has no declaration symbol in an artifact.
 
 **unknown**
@@ -683,8 +692,8 @@ reference, but need not establish that a separate semantic model for the target
 artifact is applicable merely to use the type identity. If semantic facts about
 the external artifact are applied, their own artifact applicability is still
 required. An intrinsic type MUST name its profile, profile version, and
-profile-defined identifier; a consumer that does not support a required
-intrinsic profile cannot interpret the affected type fact. Arrays, tuples,
+profile-defined identifier; a consumer that does not support the profile use
+declared `required` cannot interpret the affected type fact. Arrays, tuples,
 function types, unions, intersections, nullability, mutability, ownership,
 lifetimes, wildcards, variance, and structural types require profiles unless
 represented as declared symbols or profile-defined intrinsics.
@@ -698,8 +707,9 @@ arguments, or apply a language subtype relation unless required semantics
 define that operation.
 
 A `type-alias` declaration MUST have one alias target expressed with this
-vocabulary or a required profile. The alias remains a distinct declaration;
-its presence does not make the alias symbol and target symbol identical.
+vocabulary or a vocabulary use declared `required`. The alias remains a
+distinct declaration; its presence does not make the alias symbol and target
+symbol identical.
 
 #### 3.3.5 Declaration relationships
 
@@ -718,8 +728,9 @@ object is a member symbol. The core predicates are:
 Core relationships record resolver-proven declarations, not name similarity or
 inferred transitive closure. They do not by themselves define structural
 subtyping, method resolution order, dispatch targets, variance, layout, or
-binary compatibility. A producer MUST use a required profile when those
-language-specific consequences are necessary to interpret a semantic fact.
+binary compatibility. A producer MUST declare a corresponding vocabulary use
+`required` when those language-specific consequences are necessary to
+interpret a semantic fact.
 
 Relationship objects and type expressions MAY refer across artifact scopes.
 Ownership MUST NOT. A consumer lacking comparable identity evidence for an
@@ -752,8 +763,9 @@ is semantically invalid.
 A consumer MAY satisfy a consumer-resolved dependency from its own declaration
 index only after establishing artifact applicability and symbol-scheme support.
 It MUST map the local evidence through a supported identity scheme and every
-required profile into the requested CSMI declaration aspect, then compare that
-aspect using this section's structural and semantic rules. Display-name
+applicable vocabulary use declared `required` into the requested CSMI
+declaration aspect, then compare that aspect using this section's structural
+and semantic rules. Display-name
 equality, analyzer FQN parsing, source-text similarity, or producer-specific IDs
 MUST NOT establish equivalence. The consumer MUST preserve the local fact's
 provenance and report that interpretation was supplemented. Local facts MUST
@@ -871,8 +883,9 @@ shape first and then binds each argument to its declared `parameter[n]` root.
 
 An output receiver, parameter, or capture denotes externally observable
 post-state, not reassignment of the callee's local variable. An unprojected
-output parameter is valid only when a required language or ABI profile defines
-caller-visible writeback, such as an `out` or by-reference parameter. A
+output parameter is valid only when a language or ABI vocabulary use declared
+`required` defines caller-visible writeback, such as an `out` or by-reference
+parameter. A
 projected output may instead denote mutated state reachable from an ordinary
 argument under its projection scheme.
 
@@ -951,7 +964,8 @@ To apply a procedure summary, a consumer MUST:
 
 1. establish artifact applicability and exact callable symbol identity;
 2. obtain and validate the callable shape required by section 3.4.1;
-3. support every projection scheme and required profile used by the summary;
+3. support every projection scheme and vocabulary use declared `required` by
+   the summary;
 4. bind the resolved call's receiver, arguments, captures, normal results, and
    exceptional continuation to the corresponding boundary roots; and
 5. add the summary's may-information transfers to its analysis under the
@@ -968,7 +982,8 @@ When dispatch has multiple possible callable targets, a consumer may combine
 the applicable transfer sets conservatively, but it MUST preserve unsupported,
 inapplicable, and incomplete alternatives. An override or implementation
 relationship does not authorize copying a base summary to another callable
-unless a required profile defines and justifies that inheritance rule.
+unless a vocabulary use declared `required` defines and justifies that
+inheritance rule.
 
 A missing or uninterpretable summary does not create a core transfer default.
 A consumer MAY use an explicit, named local policy for unknown or external
@@ -987,8 +1002,8 @@ result positions from its source spelling alone.
 The `exception` root denotes an immediate thrown or raised value that exits the
 modeled invocation exceptionally. A normal error value such as Rust `Err`, a
 rejected JavaScript promise returned normally, or a language-specific status
-code is not an exceptional root unless a required profile defines different
-invocation semantics.
+code is not an exceptional root unless a vocabulary use declared `required`
+defines different invocation semantics.
 
 For an asynchronous callable, the normal result is the returned promise,
 future, task, or comparable wrapper. Fulfillment values, rejections, and later
@@ -1085,6 +1100,10 @@ The v0.1 core fact families and scopes defined so far are:
 | `declaration-relationships` | One exact subject symbol and one predicate from section 3.3.5 | Every direct relationship fact for that subject and predicate. |
 | `procedure-summaries` | One exact callable symbol | Every core may-information transfer for that callable. |
 
+There is no core `effects` fact family in v0.1. Effect profiles define separate
+namespaced families under section 3.6, so a completeness claim never closes
+effects merely because it closes `procedure-summaries`.
+
 Future core sections and profiles may define additional families only by
 defining the same scope and coverage operations. Non-core family identifiers
 use the namespaced extension mechanism in section 3.6. A consumer MUST NOT apply
@@ -1095,7 +1114,8 @@ A coverage scope MUST use artifact and symbol identity from sections 3.1 and
 3.2. Display names, source text, wildcard strings, producer database IDs, and
 analyzer-local query expressions MUST NOT define a core scope. A claim inherits
 the enclosing semantic model's artifact selectors, compatibility constraints,
-semantic-model version, and required profiles. It cannot widen any of them.
+semantic-model version, and required vocabulary uses affecting the claim and
+its scope. It cannot widen any of them.
 
 #### 3.5.2 Coverage statuses
 
@@ -1131,8 +1151,8 @@ family and scope MUST report effective coverage as **unavailable**.
 
 An unavailable scope MUST remain distinguishable from an applicable scope whose
 status is `unknown`, `partial`, or `complete`. Likewise, malformed input,
-inapplicability, indeterminate applicability, an unsupported required profile,
-and a conflict are not coverage statuses and MUST NOT be relabeled as
+inapplicability, indeterminate applicability, an unsupported required
+vocabulary use, and a conflict are not coverage statuses and MUST NOT be relabeled as
 `unknown` or `partial`.
 
 #### 3.5.4 Typed limitations
@@ -1280,8 +1300,286 @@ does not rewrite the producer's reported coverage status.
 
 ### 3.6 Effects, profiles, and extensions
 
-Defines the optional effect vocabulary and the namespacing, versioning, and
-unknown-vocabulary rules.
+CSMI uses profiles and extensions to add semantic domains without forcing every
+consumer to implement them. A standard profile is defined and versioned under
+CSMI governance. A vendor extension is defined and versioned by the authority
+that owns its namespace. Both are optional capabilities for a core CSMI
+implementation; an individual use may nevertheless be required to interpret
+the semantic units it affects.
+
+The v0.1 core defines no generic effect fact. In particular, `allocation`,
+`mutation`, `escape`, `invocation`, I/O, network, ownership, concurrency,
+typestate, and taint are not core vocabulary values. A producer MUST NOT encode
+one of them as an opaque core `effect` string. This keeps core transfer
+completeness independent from analysis domains whose targets and closed-world
+meaning differ.
+
+This decision does not make those concepts unimportant. It requires each
+effect vocabulary to define enough meaning for two independent analyzers to
+agree on what its facts assert and omit.
+
+#### 3.6.1 Effect-profile requirements
+
+An effect profile or extension MUST define a namespaced fact family rather than
+adding a generic tag to a procedure summary. Its definition MUST specify:
+
+- the exact callable or other core identity to which each fact applies;
+- whether a fact means `may`, `must`, or another precisely defined modality;
+- every operand and target, using core symbols, boundary locations, or a
+  profile-defined identity with deterministic comparison rules;
+- the invocation, lifetime, reachability, or temporal boundary at which the
+  effect is observed;
+- fact equality, conflict, conservative over-approximation, and merge rules;
+- interaction, if any, with core may-information transfers;
+- a fact-family coverage scope and the exact closed-world inference licensed by
+  `complete` under section 3.5; and
+- realistic positive cases and near misses in its conformance material.
+
+No effect fact implies a core transfer, and no core transfer implies an effect,
+unless a vocabulary use declared `required` explicitly defines that
+relationship. Likewise, a complete effect-family set does not assert purity
+outside that exact family.
+
+The four effects considered for v0.1 remain profile candidates for these
+reasons:
+
+| Candidate | Required profile boundary |
+| --- | --- |
+| Allocation | What is created, whether freshness is asserted, which result or reachable region exposes it, and what lifetime is relevant. |
+| Mutation | Which pre-existing abstract location may change and what caller-visible observation counts as mutation. This is the strongest candidate for a first standard effect profile because it can reuse section 3.4 boundary locations. |
+| Escape | The reachability or ownership boundary crossed, the escaping source, and whether retention, publication, or transfer of control is asserted. |
+| Invocation | Whether the target is an exact callable or callback-valued location, and the dispatch, cardinality, timing, argument, result, exception, and asynchronous semantics that are and are not asserted. |
+
+An immediate exceptional exit is also not inferred merely because section 3.4
+defines an `exception` output root. A transfer to that root says that input
+information may influence an exception value; a constant thrown value can have
+an exceptional effect without such a transfer. A future effect profile may
+model that distinction.
+
+Security taint is a separate analysis domain rather than an effect synonym. A
+taint profile must define sources, sinks, sanitizers, barriers, propagation,
+threat-model scope, and completeness while reusing core boundary locations
+where applicable.
+
+#### 3.6.2 Vocabulary classes and namespaces
+
+Standard profiles and vendor extensions use one identifier space of lowercase
+ASCII dotted names. Each label MUST begin and end with an ASCII letter or digit,
+MAY contain interior hyphens, and MUST NOT be empty. Identifiers are compared by
+exact code-point equality; consumers MUST NOT case-fold, normalize, or compare
+only a suffix.
+
+The `csmi.` prefix is reserved for standard profiles assigned by this
+specification or a future CSMI registry. A producer MUST NOT mint a `csmi.` name.
+The `example.` and `org.example.` prefixes are reserved for non-distributable
+examples and conformance fixtures. They MUST NOT appear in a distributable
+pack.
+
+A vendor extension MUST begin with a reverse-DNS namespace derived from a DNS
+name controlled by its publisher. For example, the publisher controlling
+`brokk.ai` may define `ai.brokk.bifrost.generator-rules`. A publisher MUST NOT
+use a domain it does not control or a bare, collision-prone prefix such as
+`brokk.bifrost`.
+
+Namespace ownership distinguishes a standard profile from a vendor extension;
+it does not make a use optional or required. Standard-profile support is not
+implied by core conformance, and a vendor extension is not inherently less
+trustworthy or less portable. Consumers SHOULD report support as exact
+identifier-and-version pairs.
+
+An identifier MUST NOT be repurposed for incompatible semantics. Standardizing
+a vendor extension requires either a new `csmi.` identifier with a normative
+mapping or an explicit transfer of namespace governance; consumers MUST NOT
+assume equivalence from similar names.
+
+#### 3.6.3 Versions and schemas
+
+Every vocabulary definition and use MUST identify one exact, non-empty version.
+Versions are opaque identifiers for comparison by default. Publishers SHOULD
+use [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html) when its
+compatibility model fits, but a consumer MUST NOT infer semantic compatibility,
+version ranges, or upgrade safety merely from SemVer precedence. Supporting
+`1.2.0` does not support `1.2.1` unless the vocabulary definition supplies a
+normative compatibility rule that the consumer implements.
+
+Every vocabulary with serialized payload MUST identify a JSON Schema Draft
+2020-12 schema by an absolute URI conforming to
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986). The URI identifies the
+schema; it does not require network retrieval. A pack may carry the schema or
+bind it by integrity metadata under section 3.7. Consumers MUST NOT fetch or
+execute arbitrary schema content merely because an unknown vocabulary names a
+URI.
+
+Schema validation proves only payload structure. It does not prove that a
+consumer implements the vocabulary's semantics. A consumer MUST NOT treat
+successful schema validation, a matching schema URI, or preservation of opaque
+payload as semantic support.
+
+A vocabulary definition MUST publish, for each version:
+
+1. its exact identifier, version, governance class, and schema identifier;
+2. its semantic vocabulary and every permitted attachment point;
+3. all profile dependencies and their exact versions;
+4. affected fact families, scope grammars, equality, conflict, merge, and
+   completeness rules;
+5. requiredness and unsupported-vocabulary behavior for each kind of use; and
+6. semantic conformance cases sufficient for an independent implementation.
+
+A change to payload shape requires a new schema identity and vocabulary
+version. A change to semantic meaning, completeness, comparison, or conformance
+obligations requires a new vocabulary version even when payload shape is
+unchanged. An editorial change that changes neither need not create a version.
+
+#### 3.6.4 Vocabulary uses and requiredness
+
+Every vocabulary use MUST identify the exact vocabulary and version, declare
+`optional` or `required`, and identify the semantic units it affects. The
+affected unit is one of:
+
+- a namespaced fact family and one family-defined scope;
+- a core fact that contains a value at an explicitly delegated profile slot;
+  or
+- a namespaced attachment associated with an exact core identity or fact under
+  a schema-defined attachment point.
+
+Requiredness belongs to the use, not permanently to the vocabulary. Throughout
+the preceding sections, the shorthand "required profile" means a profile use
+that MUST be declared `required` for the affected semantic unit under this
+section; it never makes the vocabulary inherently required. One model
+may use a profile only for ignorable annotations while another relies on the
+same profile version to interpret a projection, compatibility condition, or
+fact family. A declaration that fails to identify the affected semantic units
+is semantically invalid because a consumer cannot fail closed at the correct
+boundary.
+
+A use is `required` when ignoring it could change interpretation,
+applicability, symbol or location binding, fact equality, conflict,
+completeness, or negative inference for an affected unit. A producer MUST NOT
+label such a use `optional`. All dependencies needed to interpret a required
+use are also required for that affected unit.
+
+Every dependency named by a vocabulary definition MUST appear as its own
+declared vocabulary use with an exact version and affected units. A consumer
+MUST NOT infer a transitive dependency declaration from documentation or fetch
+one from a schema URI. A dependency of a required use is required for the same
+affected units; if an optional use or any of its dependencies is unsupported,
+the complete optional use is skipped.
+
+A use is `optional` only when removing the complete use and all of its payload
+leaves every core fact, supported non-core fact, applicability result,
+completeness statement, and negative inference unchanged. Optional does not
+mean that an unsupported consumer understands the extension-owned facts; it
+means those facts may be omitted from that consumer's interpretation without
+corrupting the remaining model.
+
+#### 3.6.5 Permitted extension surfaces
+
+A profile or extension MAY add semantics in exactly these ways:
+
+1. define a new namespaced fact family that references core artifact, symbol,
+   declaration, boundary-location, or other defined identities;
+2. supply a value at a core slot that explicitly delegates its vocabulary,
+   such as an identity scheme, intrinsic type, projection scheme,
+   compatibility condition, or relation kind; or
+3. place namespaced data in an explicit extension attachment point defined by
+   the normative serialization schema.
+
+The first form is preferred for independently queryable analysis facts because
+it gives the family its own scope, merge, and completeness contract. An
+attachment is appropriate only when its target identity and removal behavior
+are defined precisely.
+
+An extension MUST NOT add arbitrary properties directly to a core object,
+replace a core enum value with a namespaced string unless that slot explicitly
+delegates its vocabulary, reinterpret a core field, or override a core fact.
+The JSON serialization remains closed by default under section 4.1. Issue #9
+will define the concrete extension container and schema composition without
+changing these semantic restrictions.
+
+#### 3.6.6 Unknown and unsupported vocabulary
+
+Vocabulary payload without a corresponding declared use is semantically
+invalid. A declared use with an unrecognized identifier or unsupported exact
+version is unsupported vocabulary. A consumer MUST report the identifier,
+version, requiredness, and affected units; it MUST NOT guess semantics from the
+name, schema, payload keys, or a nearby supported version.
+
+For unsupported `optional` vocabulary, the consumer MAY ignore the affected
+extension-owned facts or attachments while continuing to interpret unaffected
+core and supported facts. If it reserializes or proxies the model, it SHOULD
+preserve the declaration and opaque payload unchanged. A request for the
+unsupported extension-owned family remains unsupported or uninterpretable; it
+MUST NOT be reported as an empty or unavailable supported family.
+
+For unsupported `required` vocabulary, every affected unit and every fact or
+claim that depends on it is uninterpretable. Unaffected semantic units remain
+usable when the declared affected boundary proves that they are independent. A
+required use that affects artifact applicability, an identity scheme, or a
+shared projection may therefore make many dependent facts uninterpretable. A
+consumer MUST NOT downgrade the use to optional, drop the payload, or relabel
+the outcome as inapplicable, `unknown`, `partial`, or complete-empty.
+
+Malformed payload under a supported vocabulary is structural or semantic
+invalidity as appropriate, not unsupported vocabulary. A structurally valid
+payload whose required semantic invariants fail is semantically invalid.
+
+#### 3.6.7 Completeness and source combination
+
+Every namespaced fact family MUST satisfy the family-definition requirements in
+section 3.5.1. Its identity is the tuple of defining vocabulary identifier,
+exact vocabulary version, and a stable family key assigned within that
+vocabulary version. A vocabulary that defines more than one family MUST assign
+distinct keys and define each family independently. Claims with different tuple
+components do not combine unless an implemented normative mapping establishes
+equal family and scope semantics.
+
+Core completeness never closes a profile family, and profile completeness never
+closes a core or different profile family. In particular, a complete
+`procedure-summaries` scope says nothing about mutation, escape, invocation,
+taint, or another effect family. A complete profile-owned scope permits only
+the negative inference defined by that profile.
+
+Ignoring an optional use MUST NOT strengthen any remaining completeness status
+or remove a limitation. An unsupported required family or coverage rule makes
+the affected claim uninterpretable under sections 3.5.1 and 3.5.3; it does not
+turn the claim into `unknown` or `partial`.
+
+When combining applicable sources, consumers MUST preserve each vocabulary
+declaration and exact version with its facts and provenance. Facts from
+incomparable versions remain separate. A conflict under an implemented profile
+uses that profile's conflict rule and the fail-closed aggregation rules in
+section 3.5.7; source priority and apparent version recency do not select a
+winner.
+
+#### 3.6.8 Guidance for Bifrost generator rules
+
+Bifrost-specific generator rules SHOULD begin as a vendor extension under a
+name such as `ai.brokk.bifrost.generator-rules`, not in core and not under the
+reserved `csmi.` namespace. The extension should define a namespaced fact
+family, exact version, schema, affected scope, equality, conflict, merge, and
+completeness semantics.
+
+Generator facts MUST identify declarations, callables, operands, and boundary
+locations through resolver-proven CSMI identities. Display names, regular
+expressions over source text, producer database IDs, and analyzer-local query
+expressions are not portable identity. A use is required whenever a model's
+interpretation or completeness depends on the generator semantics; a
+standalone advisory family may be optional when removing it leaves all other
+semantics unchanged.
+
+Promotion to a standard profile should require an analyzer-neutral contract,
+an independent producer or consumer, stable conformance fixtures, and
+demonstrated equality and completeness behavior. Promotion MUST use a new
+`csmi.` identifier or a normative mapping; it MUST NOT silently repurpose the
+vendor identifier.
+
+#### 3.6.9 Explicit non-goals
+
+The v0.1 extension mechanism does not define a registry, transport protocol,
+automatic schema download, executable plug-in format, trust score, arbitrary
+JSON property escape hatch, universal effect lattice, or compatibility rule
+for different vocabulary versions. Those facilities must not be inferred from
+an identifier or schema URI.
 
 ### 3.7 Manifest, provenance, and canonicalization
 
@@ -1341,7 +1639,5 @@ initial draft positions are review proposals, not final normative choices.
 
 | Decision | Initial draft position | Linked issue |
 | --- | --- | --- |
-| Core effects | Keep only broadly portable effect concepts in core; express specialized domains as versioned profiles. | #7 |
-| Extension requirement | Make required extensions explicit so consumers can fail closed for affected facts instead of ignoring them. | #7 |
 | Canonicalization | Prefer deterministic producer requirements and a defined content address; defer broad canonical JSON policy only if it is unnecessary for integrity. | #8 |
 | Distribution | Exclude transport and registry protocols from v0.1. | #8 |

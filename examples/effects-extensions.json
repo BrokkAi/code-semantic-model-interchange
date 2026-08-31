@@ -1,0 +1,253 @@
+{
+  "$comment": "Illustrative JSON proposal only. Issue #9 will define normative serialization and extension-container placement. These examples show the semantic declarations that the serialization must preserve.",
+  "vocabularyExamples": [
+    {
+      "description": "An optional vendor family adds review hints without changing core declaration or transfer semantics",
+      "symbolTable": {
+        "artifact": "normalize-java-1.4.2",
+        "scheme": "java-source",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "normalize": [
+            { "role": "namespace", "name": "org" },
+            { "role": "namespace", "name": "example" },
+            { "role": "type", "name": "Strings" },
+            {
+              "role": "callable",
+              "name": "normalize",
+              "disambiguator": "(java.lang.String)->java.lang.String"
+            }
+          ]
+        }
+      },
+      "declarations": [
+        {
+          "symbol": "normalize",
+          "category": "callable",
+          "callable": {
+            "kind": "method",
+            "parameters": [
+              { "position": 0, "binding": "positional-only", "required": true }
+            ],
+            "results": [
+              { "position": 0, "type": { "kind": "unknown" } }
+            ]
+          }
+        }
+      ],
+      "procedureSummary": {
+        "callable": "normalize",
+        "transfers": [
+          {
+            "source": {
+              "root": { "phase": "input", "role": "parameter", "position": 0 }
+            },
+            "destination": {
+              "root": { "phase": "output", "role": "result", "position": 0 }
+            }
+          }
+        ]
+      },
+      "vocabularyUses": [
+        {
+          "identifier": "org.example.analysis.review-hints",
+          "version": "1.0.0",
+          "schema": "https://example.org/csmi/review-hints/1.0.0/schema.json",
+          "requirement": "optional",
+          "affects": [
+            {
+              "family": "review-hints",
+              "scope": { "symbol": "normalize" }
+            }
+          ]
+        }
+      ],
+      "extensionFacts": [
+        {
+          "vocabulary": "org.example.analysis.review-hints",
+          "version": "1.0.0",
+          "family": "review-hints",
+          "scope": { "symbol": "normalize" },
+          "payload": { "reviewCategory": "normalization-boundary" }
+        }
+      ],
+      "expectedUnsupportedInterpretation": "Report and preserve the unsupported optional use. The review-hints family is unsupported, but the core declaration and transfer remain interpretable and unchanged."
+    },
+    {
+      "description": "A required vendor mutation family targets the pre-invocation receiver as a whole",
+      "symbolTable": {
+        "artifact": "cache-java-3.1.0",
+        "scheme": "java-source",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "cache": [
+            { "role": "namespace", "name": "org" },
+            { "role": "namespace", "name": "example" },
+            { "role": "type", "name": "Cache" }
+          ],
+          "clear": [
+            { "role": "namespace", "name": "org" },
+            { "role": "namespace", "name": "example" },
+            { "role": "type", "name": "Cache" },
+            { "role": "callable", "name": "clear", "disambiguator": "()->void" }
+          ]
+        }
+      },
+      "declarations": [
+        { "symbol": "cache", "category": "type" },
+        {
+          "symbol": "clear",
+          "category": "callable",
+          "owner": "cache",
+          "callable": {
+            "kind": "method",
+            "receiver": {
+              "kind": "instance",
+              "type": { "kind": "reference", "symbol": "cache" }
+            },
+            "parameters": [],
+            "results": []
+          }
+        }
+      ],
+      "vocabularyUses": [
+        {
+          "identifier": "org.example.effects.mutation",
+          "version": "1.0.0",
+          "schema": "https://example.org/csmi/effects/mutation/1.0.0/schema.json",
+          "requirement": "required",
+          "affects": [
+            {
+              "family": "mutation",
+              "scope": { "callable": "clear" }
+            }
+          ]
+        }
+      ],
+      "extensionFacts": [
+        {
+          "vocabulary": "org.example.effects.mutation",
+          "version": "1.0.0",
+          "family": "mutation",
+          "scope": { "callable": "clear" },
+          "payload": {
+            "modality": "may",
+            "target": {
+              "root": { "phase": "input", "role": "receiver" }
+            }
+          }
+        }
+      ],
+      "completenessStatements": [
+        {
+          "vocabulary": "org.example.effects.mutation",
+          "version": "1.0.0",
+          "family": "mutation",
+          "scope": { "callable": "clear" },
+          "status": "complete"
+        }
+      ],
+      "expectedUnsupportedInterpretation": "The mutation fact and its complete claim are uninterpretable. The core callable declaration remains usable because the required-use boundary names only the mutation family and callable scope."
+    },
+    {
+      "description": "Bifrost generator semantics begin in a vendor-owned family with resolver-proven symbols",
+      "symbolTable": {
+        "artifact": "widget-generator-java-2.0.0",
+        "scheme": "java-source",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "generateWidget": [
+            { "role": "namespace", "name": "org" },
+            { "role": "namespace", "name": "example" },
+            { "role": "type", "name": "WidgetGenerator" },
+            {
+              "role": "callable",
+              "name": "generate",
+              "disambiguator": "(WidgetSchema)->Widget"
+            }
+          ],
+          "widget": [
+            { "role": "namespace", "name": "org" },
+            { "role": "namespace", "name": "example" },
+            { "role": "type", "name": "Widget" }
+          ]
+        }
+      },
+      "declarations": [
+        {
+          "symbol": "generateWidget",
+          "category": "callable",
+          "callable": {
+            "kind": "method",
+            "parameters": [
+              { "position": 0, "binding": "positional-only", "required": true }
+            ],
+            "results": [
+              { "position": 0, "type": { "kind": "reference", "symbol": "widget" } }
+            ]
+          }
+        },
+        { "symbol": "widget", "category": "type" }
+      ],
+      "vocabularyUses": [
+        {
+          "identifier": "ai.brokk.bifrost.generator-rules",
+          "version": "0.1.0",
+          "schema": "https://brokk.ai/csmi/extensions/bifrost/generator-rules/0.1.0/schema.json",
+          "requirement": "required",
+          "affects": [
+            {
+              "family": "generator-rules",
+              "scope": { "callable": "generateWidget" }
+            }
+          ]
+        }
+      ],
+      "extensionFacts": [
+        {
+          "vocabulary": "ai.brokk.bifrost.generator-rules",
+          "version": "0.1.0",
+          "family": "generator-rules",
+          "scope": { "callable": "generateWidget" },
+          "payload": {
+            "rule": "produces-declaration",
+            "generatedDeclaration": "widget",
+            "input": {
+              "root": { "phase": "input", "role": "parameter", "position": 0 }
+            }
+          }
+        }
+      ],
+      "completenessStatements": [
+        {
+          "vocabulary": "ai.brokk.bifrost.generator-rules",
+          "version": "0.1.0",
+          "family": "generator-rules",
+          "scope": { "callable": "generateWidget" },
+          "status": "partial",
+          "limitations": [
+            { "kind": "coverage-limited" }
+          ]
+        }
+      ],
+      "expectedInterpretation": "The family uses exact callable, declaration, and parameter identities rather than name or source-text matching. Its partial coverage does not change core procedure-summary completeness."
+    }
+  ],
+  "unsupportedConsumerOutcomes": [
+    {
+      "case": "Unknown optional org.example.analysis.review-hints 1.0.0",
+      "outcome": "Report and preserve the use; skip only its family and keep unaffected core semantics."
+    },
+    {
+      "case": "Unknown required org.example.effects.mutation 1.0.0",
+      "outcome": "Report the mutation family scope as uninterpretable; do not convert its complete claim to an empty, unknown, or partial set."
+    },
+    {
+      "case": "Consumer supports ai.brokk.bifrost.generator-rules 0.2.0 but the model requires 0.1.0",
+      "outcome": "Treat the exact 0.1.0 use as unsupported unless an implemented normative compatibility rule covers it."
+    }
+  ]
+}
