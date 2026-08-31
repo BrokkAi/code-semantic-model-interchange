@@ -1,0 +1,295 @@
+{
+  "$comment": "Illustrative JSON proposal only. Issue #9 will define normative serialization. Each example-local symbol handle expands to the artifact scope, scheme, scheme version, stability, and structured descriptor path in its symbol table; handles are not CSMI identity.",
+  "declarationModelExamples": [
+    {
+      "description": "Java generic type with an overloaded static method",
+      "symbolTable": {
+        "artifact": "normalize-java-1.4.2",
+        "scheme": "java-source",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "strings": [
+            { "role": "namespace", "name": "org" },
+            { "role": "namespace", "name": "example" },
+            { "role": "type", "name": "Strings" }
+          ],
+          "typeT": [
+            { "role": "namespace", "name": "org" },
+            { "role": "namespace", "name": "example" },
+            { "role": "type", "name": "Strings" },
+            { "role": "type-parameter", "name": "T" }
+          ],
+          "normalizeString": [
+            { "role": "namespace", "name": "org" },
+            { "role": "namespace", "name": "example" },
+            { "role": "type", "name": "Strings" },
+            {
+              "role": "callable",
+              "name": "normalize",
+              "disambiguator": "(java.lang.String)->java.lang.String"
+            }
+          ]
+        }
+      },
+      "externalSymbolTables": [
+        {
+          "artifact": "java-runtime-25",
+          "scheme": "java-source",
+          "schemeVersion": "0.1",
+          "stability": "portable",
+          "paths": {
+            "javaString": [
+              { "role": "namespace", "name": "java" },
+              { "role": "namespace", "name": "lang" },
+              { "role": "type", "name": "String" }
+            ]
+          }
+        }
+      ],
+      "declarations": [
+        {
+          "symbol": "strings",
+          "category": "type",
+          "genericParameters": [
+            { "position": 0, "kind": "type", "symbol": "typeT" }
+          ]
+        },
+        {
+          "symbol": "typeT",
+          "category": "type-parameter",
+          "owner": "strings"
+        },
+        {
+          "symbol": "normalizeString",
+          "category": "callable",
+          "owner": "strings",
+          "callable": {
+            "kind": "method",
+            "parameters": [
+              {
+                "position": 0,
+                "binding": "positional-only",
+                "required": true,
+                "type": { "kind": "reference", "symbol": "javaString" }
+              }
+            ],
+            "results": [
+              {
+                "position": 0,
+                "type": { "kind": "reference", "symbol": "javaString" }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Python function with positional-only, named-only, and variadic named parameters",
+      "symbolTable": {
+        "artifact": "normalize-python-2.0.0",
+        "scheme": "python-import",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "normalize": [
+            { "role": "namespace", "name": "example_normalize" },
+            { "role": "namespace", "name": "text" },
+            { "role": "callable", "name": "normalize" }
+          ]
+        }
+      },
+      "declarations": [
+        {
+          "symbol": "normalize",
+          "category": "callable",
+          "callable": {
+            "kind": "function",
+            "parameters": [
+              { "position": 0, "binding": "positional-only", "required": true },
+              { "position": 1, "binding": "named-only", "label": "strict", "required": false },
+              { "position": 2, "binding": "variadic-named", "label": "options", "required": false }
+            ],
+            "results": [
+              { "position": 0, "type": { "kind": "unknown" } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "TypeScript class conforming to a generic interface",
+      "symbolTable": {
+        "artifact": "normalize-npm-3.x",
+        "scheme": "typescript-export",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "textNormalizer": [
+            { "role": "namespace", "name": "text" },
+            { "role": "type", "name": "TextNormalizer" }
+          ],
+          "normalizer": [
+            { "role": "namespace", "name": "text" },
+            { "role": "type", "name": "Normalizer" }
+          ],
+          "normalizeImpl": [
+            { "role": "namespace", "name": "text" },
+            { "role": "type", "name": "TextNormalizer" },
+            {
+              "role": "callable",
+              "name": "normalize",
+              "disambiguator": "(input:string)->string"
+            }
+          ],
+          "normalizeContract": [
+            { "role": "namespace", "name": "text" },
+            { "role": "type", "name": "Normalizer" },
+            {
+              "role": "callable",
+              "name": "normalize",
+              "disambiguator": "(input:T)->T"
+            }
+          ]
+        }
+      },
+      "declarations": [
+        { "symbol": "textNormalizer", "category": "type" },
+        { "symbol": "normalizer", "category": "type" },
+        {
+          "symbol": "normalizeContract",
+          "category": "callable",
+          "owner": "normalizer"
+        },
+        {
+          "symbol": "normalizeImpl",
+          "category": "callable",
+          "owner": "textNormalizer",
+          "callable": {
+            "kind": "method",
+            "receiver": {
+              "kind": "instance",
+              "type": { "kind": "reference", "symbol": "textNormalizer" }
+            },
+            "parameters": [
+              {
+                "position": 0,
+                "binding": "positional-only",
+                "required": true,
+                "type": {
+                  "kind": "intrinsic",
+                  "profile": "example.typescript-intrinsics",
+                  "profileVersion": "0.1",
+                  "identifier": "string"
+                }
+              }
+            ],
+            "results": [
+              {
+                "position": 0,
+                "type": {
+                  "kind": "intrinsic",
+                  "profile": "example.typescript-intrinsics",
+                  "profileVersion": "0.1",
+                  "identifier": "string"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "relationships": [
+        {
+          "subject": "textNormalizer",
+          "predicate": "conforms-to",
+          "object": "normalizer",
+          "objectTypeArguments": [
+            {
+              "kind": "intrinsic",
+              "profile": "example.typescript-intrinsics",
+              "profileVersion": "0.1",
+              "identifier": "string"
+            }
+          ]
+        },
+        {
+          "subject": "normalizeImpl",
+          "predicate": "implements",
+          "object": "normalizeContract"
+        }
+      ]
+    },
+    {
+      "description": "Rust trait implementation supplied partly by a compatible consumer index",
+      "symbolTable": {
+        "artifact": "normalize-crate-0.8.5",
+        "scheme": "rust-item",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "textNormalizer": [
+            { "role": "namespace", "name": "text" },
+            { "role": "type", "name": "TextNormalizer" }
+          ],
+          "normalizerTrait": [
+            { "role": "namespace", "name": "text" },
+            { "role": "type", "name": "Normalizer" }
+          ],
+          "normalizeImpl": [
+            { "role": "namespace", "name": "text" },
+            { "role": "type", "name": "TextNormalizer" },
+            { "role": "callable", "name": "normalize" }
+          ],
+          "normalizeTrait": [
+            { "role": "namespace", "name": "text" },
+            { "role": "type", "name": "Normalizer" },
+            { "role": "callable", "name": "normalize" }
+          ]
+        }
+      },
+      "declarations": [
+        { "symbol": "textNormalizer", "category": "type" },
+        { "symbol": "normalizerTrait", "category": "type" },
+        {
+          "symbol": "normalizeTrait",
+          "category": "callable",
+          "owner": "normalizerTrait"
+        },
+        {
+          "symbol": "normalizeImpl",
+          "category": "callable",
+          "owner": "textNormalizer",
+          "callable": {
+            "kind": "method",
+            "receiver": {
+              "kind": "instance",
+              "type": { "kind": "reference", "symbol": "textNormalizer" }
+            },
+            "parameters": [],
+            "results": [
+              { "position": 0, "type": { "kind": "unknown" } }
+            ]
+          }
+        }
+      ],
+      "relationships": [
+        {
+          "subject": "textNormalizer",
+          "predicate": "conforms-to",
+          "object": "normalizerTrait"
+        },
+        {
+          "subject": "normalizeImpl",
+          "predicate": "implements",
+          "object": "normalizeTrait"
+        }
+      ],
+      "consumerResolvedDependencies": [
+        {
+          "symbol": "normalizerTrait",
+          "aspect": "generic-parameters"
+        }
+      ]
+    }
+  ]
+}
