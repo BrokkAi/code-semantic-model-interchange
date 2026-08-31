@@ -1,0 +1,229 @@
+{
+  "$comment": "Illustrative JSON proposal only. Issue #9 will define normative serialization. Example-local symbol handles are conveniences rather than CSMI identity.",
+  "completenessExamples": [
+    {
+      "description": "A complete Java procedure-summary set with one transfer",
+      "symbolTable": {
+        "artifact": "normalize-java-1.4.2",
+        "scheme": "java-source",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "normalize": [
+            { "role": "namespace", "name": "org" },
+            { "role": "namespace", "name": "example" },
+            { "role": "type", "name": "Strings" },
+            {
+              "role": "callable",
+              "name": "normalize",
+              "disambiguator": "(java.lang.String)->java.lang.String"
+            }
+          ]
+        }
+      },
+      "declarations": [
+        {
+          "symbol": "normalize",
+          "category": "callable",
+          "callable": {
+            "kind": "method",
+            "parameters": [
+              { "position": 0, "binding": "positional-only", "required": true }
+            ],
+            "results": [
+              { "position": 0, "type": { "kind": "unknown" } }
+            ]
+          }
+        }
+      ],
+      "summary": {
+        "callable": "normalize",
+        "transfers": [
+          {
+            "source": {
+              "root": { "phase": "input", "role": "parameter", "position": 0 }
+            },
+            "destination": {
+              "root": { "phase": "output", "role": "result", "position": 0 }
+            }
+          }
+        ]
+      },
+      "completenessStatements": [
+        {
+          "family": "procedure-summaries",
+          "scope": { "callable": "normalize" },
+          "status": "complete"
+        }
+      ],
+      "expectedInterpretation": "The listed edge exhausts the callable's core may-information transfers. Other fact families remain open."
+    },
+    {
+      "description": "A partial Python summary preserves an established edge after its exploration budget ends",
+      "symbolTable": {
+        "artifact": "decoder-python-2.0.0",
+        "scheme": "python-import",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "decode": [
+            { "role": "namespace", "name": "example_decoder" },
+            { "role": "callable", "name": "decode" }
+          ]
+        }
+      },
+      "declarations": [
+        {
+          "symbol": "decode",
+          "category": "callable",
+          "callable": {
+            "kind": "function",
+            "parameters": [
+              { "position": 0, "binding": "positional-or-named", "label": "value", "required": true }
+            ],
+            "results": [
+              { "position": 0, "type": { "kind": "unknown" } }
+            ]
+          }
+        }
+      ],
+      "summary": {
+        "callable": "decode",
+        "transfers": [
+          {
+            "source": {
+              "root": { "phase": "input", "role": "parameter", "position": 0 }
+            },
+            "destination": {
+              "root": { "phase": "output", "role": "result", "position": 0 }
+            }
+          }
+        ]
+      },
+      "completenessStatements": [
+        {
+          "family": "procedure-summaries",
+          "scope": { "callable": "decode" },
+          "status": "partial",
+          "limitations": [
+            { "kind": "budget-exhausted" }
+          ]
+        }
+      ],
+      "expectedInterpretation": "The edge is usable, but no omitted transfer may be treated as absent."
+    },
+    {
+      "description": "An applicable Rust model explicitly has unknown override coverage",
+      "symbolTable": {
+        "artifact": "normalizer-crate-0.8.5",
+        "scheme": "rust-item",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "normalize": [
+            { "role": "namespace", "name": "normalizer" },
+            { "role": "type", "name": "TextNormalizer" },
+            { "role": "callable", "name": "normalize" }
+          ]
+        }
+      },
+      "declarations": [
+        {
+          "symbol": "normalize",
+          "category": "callable"
+        }
+      ],
+      "relationships": [],
+      "completenessStatements": [
+        {
+          "family": "declaration-relationships",
+          "scope": {
+            "subject": "normalize",
+            "predicate": "overrides"
+          },
+          "status": "unknown",
+          "limitations": [
+            { "kind": "input-unavailable" }
+          ]
+        }
+      ],
+      "expectedInterpretation": "The modeled scope is distinguishable from no applicable model, but the empty relationship set proves no absence."
+    },
+    {
+      "description": "A complete empty JavaScript summary closes only the transfer family",
+      "symbolTable": {
+        "artifact": "constants-npm-1.0.0",
+        "scheme": "javascript-export",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "constant": [
+            { "role": "namespace", "name": "constants" },
+            { "role": "callable", "name": "constant" }
+          ]
+        }
+      },
+      "declarations": [
+        {
+          "symbol": "constant",
+          "category": "callable",
+          "callable": {
+            "kind": "function",
+            "parameters": [],
+            "results": [
+              { "position": 0, "type": { "kind": "unknown" } }
+            ]
+          }
+        }
+      ],
+      "summary": {
+        "callable": "constant",
+        "transfers": []
+      },
+      "completenessStatements": [
+        {
+          "family": "procedure-summaries",
+          "scope": { "callable": "constant" },
+          "status": "complete"
+        }
+      ],
+      "expectedInterpretation": "There are no core may-information transfers. Allocation, mutation, calls, exceptions, and other effects remain unknown."
+    },
+    {
+      "description": "A complete absent owner aspect establishes that a scheme-defined top-level function has no declaration owner",
+      "symbolTable": {
+        "artifact": "utility-native-1.2.0",
+        "scheme": "example.ownerless-top-level",
+        "schemeVersion": "0.1",
+        "stability": "portable",
+        "paths": {
+          "utility": [
+            { "role": "callable", "name": "Utility" }
+          ]
+        }
+      },
+      "declarations": [
+        {
+          "symbol": "utility",
+          "category": "callable",
+          "callable": {
+            "kind": "function",
+            "parameters": [],
+            "results": []
+          }
+        }
+      ],
+      "completenessStatements": [
+        {
+          "family": "declaration-aspects",
+          "scope": {
+            "symbol": "utility",
+            "aspect": "owner"
+          },
+          "status": "complete"
+        }
+      ],
+      "expectedInterpretation": "Because the owner aspect is complete and absent, the function has no declaration owner. Other declaration aspects are unaffected."
+    }
+  ]
+}

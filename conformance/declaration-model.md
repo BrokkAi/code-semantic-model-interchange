@@ -41,8 +41,10 @@ translate them into fixtures for the normative JSON serialization.
 | Declaration category and callable shape | Exact duplicates for the same symbol | Equivalent facts; one semantic assertion. |
 | Complete declaration record | Additional display name only | No semantic conflict. |
 | Declaration with no owner fact | Same symbol with an owner fact | Merge the asserted owner; omission alone is not conflict. |
+| Complete absent `owner` aspect | Same symbol with an asserted owner | Conflict; the affected aggregate is uninterpretable. |
 | `implements` relationship | Exact duplicate including type arguments | One relationship fact. |
 | Two different `conforms-to` objects | Both resolver-proven | Two relationship facts, not a conflict. |
+| Complete empty `overrides` relationship set | Same subject with an asserted direct `overrides` relationship | Conflict; the affected aggregate is uninterpretable. |
 | One type-alias target | Different type-alias target for the same symbol | Conflict. |
 | One atomic callable shape | Different parameter count, order, binding, receiver, or result shape | Conflict. |
 

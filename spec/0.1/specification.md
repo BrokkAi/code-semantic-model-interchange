@@ -445,7 +445,9 @@ presentation may change without changing the compiled entity.
 
 If no supported scheme can construct a deterministic artifact-local identity,
 the entity cannot be a CSMI semantic target. A producer MUST report the omission
-under the applicable completeness claim rather than mint an unstable ID.
+with a `partial` `declaration-records` statement and an
+`unsupported-semantics` limitation, or leave coverage `unknown`; it MUST NOT
+mint an unstable ID or claim complete declaration-record coverage.
 
 #### 3.2.6 Display and external identities
 
@@ -727,7 +729,8 @@ external endpoint cannot use the affected relationship to establish resolution.
 
 Declarations are an optional fact family. A producer MAY omit declaration facts
 that no other emitted semantic fact needs. Absence remains unknown unless an
-applicable completeness claim proves the declaration fact is absent.
+applicable `declaration-aspects` completeness claim proves the declaration fact
+is absent.
 
 Every semantic fact that needs declaration information MUST either:
 
@@ -741,9 +744,10 @@ The core declaration aspects are `category`, `owner`, `generic-parameters`,
 single-valued aspect requests its complete value. A relationship dependency
 MUST identify the required predicate, object, and type arguments, if any. A
 requirement for a complete relationship set additionally needs an applicable
-completeness claim under section 3.5; absence of an unlisted relationship is not
-enough. A reference to a declaration-defined aspect with neither embedded facts
-nor an explicit consumer-resolved dependency is semantically invalid.
+`declaration-relationships` completeness claim under section 3.5; absence of an
+unlisted relationship is not enough. A reference to a declaration-defined
+aspect with neither embedded facts nor an explicit consumer-resolved dependency
+is semantically invalid.
 
 A consumer MAY satisfy a consumer-resolved dependency from its own declaration
 index only after establishing artifact applicability and symbol-scheme support.
@@ -774,7 +778,7 @@ predicate are not inherently conflicting.
 
 Omission is not a conflict. A source that lacks an owner, type, relationship, or
 other fact does not contradict a source that asserts it unless an applicable
-completeness or explicit negative claim covers that fact.
+complete claim covers that fact under section 3.5.
 
 An omitted or `unknown` type does not conflict with a known type supplied by
 another source; the known type may refine it. Two known type expressions
@@ -854,11 +858,10 @@ receiver root has no position selector and is separate from the explicit
 parameter sequence; a consumer MUST NOT encode it as `receiver[0]` or
 `parameter[0]`. A parameter or result root MUST use a position present in the
 callable shape. A capture root MUST name a stable symbol in the same artifact
-identity scope; the
-summary's use of that root asserts that the callable captures the named value or
-storage. An input `result` or `exception`, or an output role not listed above,
-is invalid because core defines result and exception values only at the
-post-invocation boundary.
+identity scope; the summary's use of that root asserts that the callable
+captures the named value or storage. An input `result` or `exception`, or an
+output role not listed above, is invalid because core defines result and
+exception values only at the post-invocation boundary.
 
 A parameter position is the canonical declaration position from section 3.3.3
 for every binding form, including `positional-or-named`, `named-only`, and both
@@ -1001,11 +1004,11 @@ represents the constructed value.
 #### 3.4.7 Absence, incompleteness, and unsupported semantics
 
 The presence of a procedure summary does not by itself claim that its transfer
-set is exhaustive. Only a completeness claim for the `procedure-summaries` fact
-family, applicable to the same callable symbol under section 3.5, may establish
-that the transfer set is complete. Until such a claim states otherwise, an
-omitted edge remains unknown rather than false. An empty or absent transfer set
-MUST NOT be interpreted as a pure, constant, neutral, or no-flow callable.
+set is exhaustive. Only a `complete` claim for the `procedure-summaries` fact
+family, applicable to the same callable symbol under section 3.5, closes that
+transfer set. Until such a claim applies, an omitted edge remains unknown rather
+than false. A complete empty transfer set asserts that the callable has no core
+may-information transfers; it does not assert purity or the absence of effects.
 
 A malformed boundary root, a slot inconsistent with the callable shape, an
 invalid projection under its scheme, or a transfer whose source is not input
@@ -1039,8 +1042,241 @@ The v0.1 core intentionally does not define:
 
 ### 3.5 Completeness and uncertainty
 
-Defines fact-family completeness and the difference between absence of evidence
-and evidence of absence.
+Completeness describes the coverage of one fact family within one exact semantic
+scope. It determines whether omission is merely absence of evidence or may be
+interpreted as evidence of absence. It is independent of structural validity,
+semantic validity, artifact applicability, interpretability, provenance,
+precision, and producer trust.
+
+A completeness statement is a producer assertion. It does not certify that the
+producer is correct or that a consuming analysis is sound. Conforming producers
+and consumers nevertheless MUST preserve and apply its meaning exactly. This
+specification uses *completeness statement* and *completeness claim*
+synonymously.
+
+#### 3.5.1 Fact families and coverage scopes
+
+Every completeness statement MUST identify:
+
+1. one fact family;
+2. one family-defined coverage scope within the enclosing artifact identity;
+3. one coverage status from section 3.5.2; and
+4. any limitations required by section 3.5.4 for that status.
+
+Within one semantic model, there MUST be at most one completeness statement for
+the same fact family and equivalent coverage scope. Repeating an equivalent
+statement or assigning multiple statuses to one scope is semantically invalid.
+
+A fact family defines the semantic universe to which completeness applies. Its
+specification MUST define:
+
+- which facts are members of the family;
+- the structure and comparison of valid coverage scopes;
+- fact equality, conflict, and any semantic subsumption used for coverage;
+- whether and how a broader scope covers a narrower scope; and
+- the exact closed-world inference licensed by `complete`.
+
+The v0.1 core fact families and scopes defined so far are:
+
+| Family | Coverage scope | Closed set |
+| --- | --- | --- |
+| `declaration-records` | The target artifact plus one supported identity scheme and version | Every declaration in the artifact governed by that scheme; an entity the scheme cannot identify prevents complete coverage. |
+| `declaration-aspects` | One exact symbol and one non-relationship aspect from section 3.3.6 | The complete value, sequence, or absence of that aspect for the symbol. |
+| `declaration-relationships` | One exact subject symbol and one predicate from section 3.3.5 | Every direct relationship fact for that subject and predicate. |
+| `procedure-summaries` | One exact callable symbol | Every core may-information transfer for that callable. |
+
+Future core sections and profiles may define additional families only by
+defining the same scope and coverage operations. Non-core family identifiers
+use the namespaced extension mechanism in section 3.6. A consumer MUST NOT apply
+a completeness statement whose family or required coverage semantics it does
+not support and MUST report the affected claim as uninterpretable.
+
+A coverage scope MUST use artifact and symbol identity from sections 3.1 and
+3.2. Display names, source text, wildcard strings, producer database IDs, and
+analyzer-local query expressions MUST NOT define a core scope. A claim inherits
+the enclosing semantic model's artifact selectors, compatibility constraints,
+semantic-model version, and required profiles. It cannot widen any of them.
+
+#### 3.5.2 Coverage statuses
+
+The coverage statuses are:
+
+| Status | Normative meaning |
+| --- | --- |
+| `unknown` | The producer makes no assertion about whether the scoped fact set is exhaustive. Emitted facts remain positive facts; omission has no negative meaning. |
+| `partial` | The producer asserts that coverage of the scope is not exhaustive. Emitted facts remain positive facts and additional facts may exist; omission has no negative meaning. |
+| `complete` | The producer asserts that every fact required by the family semantics within the exact scope is emitted or semantically covered under the family's defined subsumption relation. Family-defined closed-world inference is permitted for facts not covered by that set. |
+
+Absence of a completeness statement defaults to `unknown` for facts emitted by
+an applicable model. A producer MAY state `unknown` explicitly so that a modeled
+scope with no coverage determination remains distinguishable in provenance and
+diagnostics. `partial` may accompany an empty fact set; it does not assert that
+any particular omitted fact exists. `complete` may also accompany an empty fact
+set, in which case it is an explicit closed-set assertion for that family and
+scope.
+
+Completeness is about missing facts, not extra conservative facts. When a fact
+family permits over-approximation, a complete set may still be imprecise, but it
+MUST cover every fact required by that family's semantics. A producer that knows
+relevant behavior exists but cannot express, identify, or analyze it under the
+required core or profile semantics MUST NOT claim `complete`.
+
+#### 3.5.3 Availability is not completeness
+
+After preserving model-discovery, validity, applicability, and interpretability
+outcomes independently, a consumer that has no applicable and interpretable
+model supplying either a fact or a completeness statement for a requested
+family and scope MUST report effective coverage as **unavailable**.
+`unavailable` is a consumer outcome, not a fourth serialized coverage status.
+
+An unavailable scope MUST remain distinguishable from an applicable scope whose
+status is `unknown`, `partial`, or `complete`. Likewise, malformed input,
+inapplicability, indeterminate applicability, an unsupported required profile,
+and a conflict are not coverage statuses and MUST NOT be relabeled as
+`unknown` or `partial`.
+
+#### 3.5.4 Typed limitations
+
+A `partial` statement MUST contain at least one limitation. An explicit
+`unknown` statement MAY contain limitations. A `complete` statement MUST NOT
+contain a limitation.
+
+The core limitation kinds are:
+
+| Kind | Meaning |
+| --- | --- |
+| `coverage-limited` | The producer intentionally or inherently covered only part of the declared scope. |
+| `input-unavailable` | Required source, binary, metadata, dependency, or other producer input was unavailable. |
+| `unsupported-semantics` | Relevant semantics could not be represented or analyzed under the producer's supported vocabulary. |
+| `budget-exhausted` | A deterministic resource or exploration budget ended analysis before coverage was complete. |
+| `cancelled` | Generation was cancelled after the emitted facts had been established safely. |
+| `producer-error` | A producer failure prevented complete coverage while leaving the emitted facts valid. |
+| `other` | Another limitation applies and is explained by diagnostic metadata. |
+
+Limitations are diagnostic evidence, not scope modifiers. They MUST be preserved
+with the claim and its provenance. A consumer MUST NOT use a favorable or
+unrecognized limitation to promote coverage, infer an omitted fact, or treat a
+failed operation as a complete empty set. A consumer MUST report an unrecognized
+limitation kind while preserving the statement's `partial` or `unknown` status.
+An `other` limitation MUST include non-empty diagnostic metadata explaining the
+limitation. A producer affected by cancellation or error MUST emit only facts
+whose semantic validity it can still attest; if it cannot do so, it MUST NOT
+emit a semantic model from that operation.
+
+#### 3.5.5 Producer obligations for complete claims
+
+Before asserting `complete`, a producer MUST establish coverage for the exact
+artifact, family, scope, semantic-model version, identity schemes, and required
+profiles named by the applicable model. It MUST account for every relevant input
+and every family-defined fact that the selected semantics require.
+
+Budget exhaustion, cancellation, stale inputs, unavailable dependencies,
+unsupported relevant constructs, unresolved required identity, and unexamined
+portions of the declared scope prohibit a `complete` claim. Narrowing the scope
+is permitted only when the fact family's scope grammar represents that narrower
+scope exactly; a producer MUST NOT hide an omission in diagnostic text or a
+free-form condition.
+
+Consumer-resolved evidence under section 3.3.6 may satisfy an explicit semantic
+dependency, but it MUST NOT silently upgrade a producer's `unknown` or `partial`
+statement to `complete`. A producer that makes a complete claim remains
+responsible for explicitly describing every dependency required to interpret
+that claim.
+
+#### 3.5.6 Omission and negative inference
+
+Under `unknown` or `partial`, omission never implies absence. Under `complete`,
+an omitted fact may be treated as absent only when:
+
+1. the candidate fact belongs to the same family and is contained by the exact
+   claim scope;
+2. artifact applicability is matched rather than indeterminate;
+3. the claim and candidate use supported, comparable identity and profile
+   semantics; and
+4. no emitted fact covers the candidate under the family's equality or
+   subsumption rules.
+
+The v0.1 core defines no universal negated-fact record. A complete scoped set,
+including a complete empty set, is the core mechanism for asserting absence.
+A profile that defines explicit negative facts MUST also define their family,
+scope, contradiction, and merge semantics; a consumer that lacks those required
+semantics must fail closed. Such a negative fact is semantically valid only when
+an applicable `complete` statement covers it; otherwise the affected model is
+semantically invalid.
+
+Closed-world inference never crosses fact-family boundaries. A complete empty
+`procedure-summaries` set means there are no core may-information transfers for
+that callable; it does not mean the callable cannot allocate, mutate, throw,
+call, escape values, perform I/O, or have another effect. A complete empty
+`declaration-relationships` set for `overrides` means that no direct `overrides`
+relationship applies in that scope; it says nothing about inherited or
+transitive relationships.
+
+#### 3.5.7 Combining applicable sources
+
+A consumer combining sources MUST first establish that the target artifacts,
+fact-family semantics, and claim scopes are comparable. Claims that apply to
+different artifact variants or use incompatible family or profile versions do
+not combine merely because their display text is similar.
+
+For comparable applicable sources, a consumer MUST:
+
+1. preserve each fact, statement, limitation, and provenance separately;
+2. combine positive facts using the family's equality, subsumption, and conflict
+   rules;
+3. report the aggregate scope as `complete` when at least one applicable source
+   has a valid covering `complete` statement and all other facts and complete
+   statements are compatible with it;
+4. otherwise report `partial` when at least one source states `partial`; and
+5. otherwise report `unknown`.
+
+Two or more `partial` sets MUST NOT be promoted to `complete` merely because
+their union appears large or their omissions appear complementary. An
+`unknown` or `partial` source does not by omission contradict a compatible
+complete source. Additional conservative facts may reduce precision without
+reducing coverage when the family permits them.
+
+Family-defined negative inference is evaluated against the aggregate compatible
+fact set. Once sources are combined, a consumer MUST NOT infer absence from one
+source while ignoring a positive fact retained from another.
+
+Within one semantic model, incompatible complete statements or facts that
+contradict a complete claim under the family's closed-set rules are semantic
+invalidity. Across otherwise valid sources, such a contradiction makes the
+affected aggregate scope uninterpretable. A consumer MUST NOT choose a winner
+by producer priority, trust score, input order, or the apparently stronger
+coverage status. It also MUST NOT construct a broader complete claim from
+narrower scopes unless the fact family defines composition and those scopes
+provably cover the broader scope without gaps.
+
+#### 3.5.8 Versions, variants, and conditions
+
+Completeness statements do not contain free-form version ranges, feature
+expressions, runtime predicates, or call-path conditions. Version and artifact
+variation belongs in the selectors and compatibility constraints of section
+3.1. If the same package coordinate has different facts or completeness under
+different versions, build features, platforms, or runtime environments, the
+producer MUST use semantic models whose applicability separates those cases.
+
+A profile may define a conditional coverage scope only as required semantics,
+including a deterministic evaluation and comparison procedure. If the consumer
+cannot interpret the condition or establish its outcome, the claim is
+uninterpretable or its applicability is indeterminate; the consumer MUST NOT
+assume the favorable branch.
+
+#### 3.5.9 Confidence, provenance, and soundness
+
+Coverage status is categorical and MUST NOT be interpreted as a probability,
+confidence score, fact ranking, or proof certificate. `unknown` and `partial`
+do not mean that emitted facts are less likely to be correct, and `complete`
+does not mean that the producer or consuming analysis has been independently
+verified as sound.
+
+The v0.1 core does not define quantitative confidence. A profile MAY add
+confidence metadata only if ignoring it cannot change the core facts,
+completeness, or negative inference. Provenance and integrity under section 3.7
+may inform an operator's trust policy, but accepting or rejecting a producer
+does not rewrite the producer's reported coverage status.
 
 ### 3.6 Effects, profiles, and extensions
 
@@ -1054,7 +1290,7 @@ mechanism, and deterministic representation requirements.
 
 ## 4. Conformance
 
-Conformance has four independent dimensions:
+Conformance has five independent dimensions:
 
 | Dimension | Question |
 | --- | --- |
@@ -1062,6 +1298,7 @@ Conformance has four independent dimensions:
 | Semantic validity | Do its references and semantic claims satisfy the specification's invariants? |
 | Applicability | Does it match the exact artifact and variant under analysis? |
 | Interpretability | Does the consumer support all semantics required to interpret it correctly? |
+| Coverage | Is the requested fact-family scope unavailable, unknown, partial, or complete? |
 
 A successful result in one dimension MUST NOT be reported as proof of another.
 In particular, structurally valid JSON is not necessarily semantically valid,
@@ -1104,7 +1341,6 @@ initial draft positions are review proposals, not final normative choices.
 
 | Decision | Initial draft position | Linked issue |
 | --- | --- | --- |
-| Completeness scope | Define completeness independently for each fact family rather than as a single pack-wide flag. | #6 |
 | Core effects | Keep only broadly portable effect concepts in core; express specialized domains as versioned profiles. | #7 |
 | Extension requirement | Make required extensions explicit so consumers can fail closed for affected facts instead of ignoring them. | #7 |
 | Canonicalization | Prefer deterministic producer requirements and a defined content address; defer broad canonical JSON policy only if it is unnecessary for integrity. | #8 |
