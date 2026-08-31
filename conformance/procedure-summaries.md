@@ -47,7 +47,8 @@ will translate them into fixtures for the normative JSON serialization.
 | A callback invocation is encoded as a transfer to its argument | Incorrect core model | Invocation is an effect; any related transfer needs an applicable effect/profile contract. |
 | A summary for one callable is applied to an override or same-named callable | Inapplicable unless a required profile proves an inheritance rule | Exact symbol identity is the core application boundary. |
 | Missing or uninterpretable summary is silently replaced with all-arguments-to-all-outputs edges | Non-conforming application | Unknown-call supplementation must be a named, observable local policy outside the CSMI transfer set. |
-| Empty transfer set is treated as proof that the callable is pure or has no flow | Incorrect interpretation | Absence is unknown until a matching completeness claim says otherwise. |
+| Empty transfer set without an applicable complete `procedure-summaries` statement is treated as proof of no flow | Incorrect interpretation | Structural emptiness defaults to unknown coverage. |
+| Complete empty `procedure-summaries` set is treated as proof that the callable has no effects | Incorrect interpretation | The statement closes core transfers only; effects remain unknown. |
 | Conditional may-transfer is omitted because the producer cannot encode its path condition | Potentially incomplete summary | A possible conditional transfer can be represented conservatively as an unguarded core edge. |
 
 ## Interoperability obligations
