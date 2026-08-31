@@ -160,7 +160,15 @@ escape
 call
 ```
 
-More specialized domains should generally be expressed as versioned profiles or extensions rather than forcing every CSMI consumer to implement every possible analysis vocabulary.
+CSMI 0.1 deliberately does not make those words generic core facts. Allocation,
+mutation, escape, and invocation each need a versioned profile that defines its
+targets, modality, observation boundary, merging, and completeness. Mutation is
+the strongest candidate for a first standard effect profile because it can
+reuse core boundary locations without standardizing an analyzer heap model.
+
+More specialized domains should likewise be expressed as versioned profiles or
+extensions rather than forcing every CSMI consumer to implement every possible
+analysis vocabulary.
 
 ### Completeness
 
@@ -290,21 +298,26 @@ Analysis domains evolve faster than a core interchange specification should.
 CSMI should support standardized profiles and namespaced extensions such as:
 
 ```text
-security.taint
-effects.io
-effects.network
-ownership
-concurrency
-typestate
+csmi.security.taint
+csmi.effects.io
+csmi.effects.network
+csmi.ownership
+csmi.concurrency
+csmi.typestate
 ```
+
+These are illustrative future names, not assigned profiles.
 
 and implementation-specific extensions such as:
 
 ```text
-brokk.bifrost.*
+ai.brokk.bifrost.*
 ```
 
-A consumer must be able to determine whether an unknown extension is optional or required for correct interpretation of a pack.
+Standard profiles reserve the `csmi.` namespace. Vendor extensions use a
+publisher-controlled reverse-DNS namespace. Every exact-versioned use must say
+whether it is optional or required and identify the semantic units it affects,
+so an unsupported consumer can fail closed without discarding unrelated facts.
 
 ### Existing standards first
 
@@ -395,7 +408,7 @@ Define the smallest useful portable model for:
 - declarations;
 - procedure inputs and outputs;
 - transfer semantics;
-- basic effects;
+- effect-profile mechanics;
 - completeness;
 - provenance;
 - extension mechanics; and
