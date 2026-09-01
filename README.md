@@ -384,6 +384,12 @@ flowchart TD
 
 If two unrelated consumers assign the same relevant meaning to a model, the interchange boundary has been demonstrated independently of Bifrost.
 
+The public [CSMI demo repository](https://github.com/BrokkAi/csmi-demo) is where
+we will demonstrate this boundary with controlled producer/consumer cases. It
+will show independent analyzers consuming the same CSMI pack and compare results
+with and without imported semantics. Demo code and results are interoperability
+evidence, not normative specification material.
+
 ## Repository structure
 
 The normative schema, fixtures, and validation tooling live beside the prose:
