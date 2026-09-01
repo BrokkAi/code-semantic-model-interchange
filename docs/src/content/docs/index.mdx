@@ -1,0 +1,114 @@
+---
+title: Code Semantic Model Interchange
+description: An experimental, analyzer-neutral specification for portable semantic models of code.
+template: splash
+hero:
+  title: Code Semantic Model Interchange
+  tagline: Portable semantic knowledge for independent code-analysis tools.
+  actions:
+    - text: Read the v0.1 specification
+      link: specification/v0-1/
+      icon: right-arrow
+      variant: primary
+    - text: View the JSON Schema
+      link: implement/schema/
+      variant: secondary
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+<div class="csmi-status" role="status">
+  <span class="csmi-status__signal" aria-hidden="true"></span>
+  <strong>Experimental draft · v0.1</strong>
+  <span>Interoperability has not yet been demonstrated by independent implementations.</span>
+</div>
+
+<section class="csmi-intro">
+  <p class="csmi-intro__lead">
+    CSMI lets one tool describe selected declarations and behavior of a software
+    artifact so that another tool can interpret the same knowledge without
+    sharing its compiler, intermediate representation, or analysis engine.
+  </p>
+  <p>
+    The repository is the source of truth. This site is a navigable rendering
+    of version-controlled specification material and links every normative
+    artifact back to its schema and source revision.
+  </p>
+</section>
+
+<div class="csmi-boundary" aria-label="CSMI boundary">
+  <div><span>Producer</span><strong>semantic knowledge</strong></div>
+  <i aria-hidden="true">→</i>
+  <div class="csmi-boundary__core"><span>Interchange</span><strong>CSMI pack</strong></div>
+  <i aria-hidden="true">→</i>
+  <div><span>Consumer</span><strong>independent analyzer</strong></div>
+</div>
+
+## Core model
+
+<p class="section-deck">
+  A deliberately small semantic core, with explicit identity, uncertainty, and
+  extension boundaries.
+</p>
+
+<CardGrid>
+  <LinkCard
+    title="Artifact and symbol identity"
+    href="specification/v0-1/#31-artifact-and-package-identity"
+    description="Bind semantic facts to exact software artifacts and structured, versioned symbol identities."
+  />
+  <LinkCard
+    title="Declarations"
+    href="specification/v0-1/#33-declarations"
+    description="Carry only the portable declaration shape required to interpret semantic facts."
+  />
+  <LinkCard
+    title="Procedure summaries"
+    href="specification/v0-1/#34-procedure-summaries"
+    description="Describe directional information transfer across invocation boundaries without exposing an analyzer IR."
+  />
+  <LinkCard
+    title="Completeness and uncertainty"
+    href="specification/v0-1/#35-completeness-and-uncertainty"
+    description="Keep complete, partial, unavailable, unsupported, and inconclusive outcomes meaningfully distinct."
+  />
+  <LinkCard
+    title="Extensions and profiles"
+    href="specification/v0-1/#36-effects-profiles-and-extensions"
+    description="Add versioned semantic vocabularies without redefining core fields or silently changing interpretation."
+  />
+  <LinkCard
+    title="Packs and provenance"
+    href="specification/v0-1/#37-manifest-provenance-and-canonicalization"
+    description="Distribute semantic documents with deterministic manifests, integrity, licensing, and producer provenance."
+  />
+</CardGrid>
+
+<div class="csmi-artifacts">
+  <div>
+    <span class="csmi-label csmi-label--normative">Normative</span>
+    <h2>Specification and schema</h2>
+    <p>
+      The v0.1 prose specification defines semantic meaning and conformance.
+      The Draft 2020-12 JSON Schema defines the normative JSON structure.
+    </p>
+    <div class="csmi-links">
+      <a href="specification/v0-1/">Read specification</a>
+      <a href="/schema/0.1/schema.json">Open schema.json</a>
+      <a href="https://github.com/BrokkAi/code-semantic-model-interchange/tree/main/spec/0.1">View canonical source</a>
+    </div>
+  </div>
+  <div>
+    <span class="csmi-label">Explanatory</span>
+    <h2>Examples and guidance</h2>
+    <p>
+      Examples explain field placement and representative cases. Conformance
+      fixtures separate structural validation from semantic obligations.
+    </p>
+    <div class="csmi-links">
+      <a href="implement/examples/">Browse examples</a>
+      <a href="specification/v0-1/#4-conformance">Understand conformance</a>
+      <a href="https://github.com/BrokkAi/code-semantic-model-interchange/issues">Discuss on GitHub</a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,105 @@
+---
+import DefaultFooter from '@astrojs/starlight/components/Footer.astro';
+import { Icon } from '@astrojs/starlight/components';
+---
+
+<DefaultFooter />
+
+<button
+  class="csmi-back-to-top"
+  type="button"
+  aria-label="Back to top"
+  aria-hidden="true"
+  tabindex="-1"
+  title="Back to top"
+>
+  <Icon name="up-arrow" />
+</button>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('.csmi-back-to-top');
+
+  if (button) {
+    const updateVisibility = () => {
+      const isLongPage = document.documentElement.scrollHeight > window.innerHeight * 1.5;
+      const isVisible = isLongPage && window.scrollY > Math.min(window.innerHeight * 0.75, 640);
+
+      button.toggleAttribute('data-visible', isVisible);
+      button.tabIndex = isVisible ? 0 : -1;
+      button.setAttribute('aria-hidden', isVisible ? 'false' : 'true');
+    };
+
+    button.addEventListener('click', () => {
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+
+      const heading = document.querySelector<HTMLElement>('main h1');
+      if (heading) {
+        heading.tabIndex = -1;
+        heading.focus({ preventScroll: true });
+        heading.addEventListener('blur', () => heading.removeAttribute('tabindex'), {
+          once: true,
+        });
+      }
+    });
+
+    window.addEventListener('scroll', updateVisibility, { passive: true });
+    window.addEventListener('resize', updateVisibility);
+    updateVisibility();
+  }
+</script>
+
+<style>
+  .csmi-back-to-top {
+    position: fixed;
+    z-index: calc(var(--sl-z-index-navbar) - 1);
+    inset-inline-end: max(1.25rem, env(safe-area-inset-right));
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    border: 1px solid var(--csmi-line-strong);
+    border-radius: 50%;
+    color: var(--csmi-ink);
+    background: var(--csmi-surface);
+    box-shadow: 0 0.4rem 1.4rem color-mix(in srgb, var(--csmi-paper) 35%, transparent);
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(0.5rem);
+    transition:
+      opacity 140ms ease,
+      transform 140ms ease,
+      visibility 140ms;
+  }
+
+  .csmi-back-to-top[data-visible] {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .csmi-back-to-top:hover {
+    border-color: var(--csmi-red);
+    color: var(--sl-color-text-accent);
+    background: color-mix(in srgb, var(--csmi-surface) 94%, var(--csmi-red) 6%);
+  }
+
+  .csmi-back-to-top:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 3px;
+  }
+
+  .csmi-back-to-top :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .csmi-back-to-top {
+      transition: none;
+    }
+  }
+</style>

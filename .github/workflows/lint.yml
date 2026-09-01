@@ -8,6 +8,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   validation:
     name: JSON and schema
@@ -28,17 +32,28 @@ jobs:
         run: python3 -m pip install --disable-pip-version-check --requirement requirements-validation.txt
       - name: Validate schema and fixtures
         run: python3 scripts/validate-schema.py
-      - name: Prepare Pages artifact
-        run: |
-          mkdir -p _site/schema/0.1
-          cp spec/0.1/schema.json _site/schema/0.1/schema.json
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: docs/package-lock.json
+      - name: Install documentation dependencies
+        run: npm ci
+        working-directory: docs
+      - name: Check documentation
+        run: npm run check
+        working-directory: docs
+      - name: Build documentation for Pages
+        run: npm run build
+        working-directory: docs
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
-          path: _site
+          path: docs/dist
 
   deploy:
-    name: Publish schema
+    name: Publish documentation
     needs: validation
     runs-on: ubuntu-latest
     permissions:
