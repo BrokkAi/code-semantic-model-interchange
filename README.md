@@ -174,6 +174,12 @@ More specialized domains should likewise be expressed as versioned profiles or
 extensions rather than forcing every CSMI consumer to implement every possible
 analysis vocabulary.
 
+The first normative language profile defines deterministic Python import and
+declaration identity, distribution-to-import mappings, runtime/stub
+correspondence, and compatibility boundaries. See the
+[`csmi.python` 0.1 profile](profiles/python/0.1/profile.md) and its
+[conformance cases](conformance/python-profile.md).
+
 ### Completeness
 
 Missing information is not the same thing as absence of behavior.

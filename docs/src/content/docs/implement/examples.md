@@ -12,3 +12,11 @@ The separate [`fixtures/semantic-invalid/`](https://github.com/BrokkAi/code-sema
 set intentionally passes JSON Schema while violating a named semantic
 invariant. This preserves the boundary between parsing a document and proving
 that its claims are conforming.
+
+## Python profile
+
+The normative [`csmi.python` 0.1 profile](https://github.com/BrokkAi/code-semantic-model-interchange/blob/main/profiles/python/0.1/profile.md)
+has a separately versioned [payload schema](https://github.com/BrokkAi/code-semantic-model-interchange/blob/main/profiles/python/0.1/schema.json),
+focused payload fixtures, and [semantic conformance cases](https://github.com/BrokkAi/code-semantic-model-interchange/blob/main/conformance/python-profile.md).
+It deliberately keeps PyPI distribution identity, import-module identity,
+runtime declarations, and stub evidence distinct.

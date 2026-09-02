@@ -18,4 +18,9 @@ Run all structural fixture expectations with:
 
 ```sh
 python3 scripts/validate-schema.py
+python3 scripts/validate-profiles.py
 ```
+
+Versioned profile payload schemas and their focused fixtures live under
+`profiles/<name>/<version>/`. Profile schema acceptance remains distinct from
+the semantic conformance cases under `conformance/`.
