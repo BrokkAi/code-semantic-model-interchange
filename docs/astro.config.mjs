@@ -64,6 +64,7 @@ export default defineConfig({
             { label: 'Python profile 0.1', slug: 'profiles/python' },
             { label: 'JavaScript, TypeScript, and Node', slug: 'profiles/javascript-typescript-node' },
             { label: 'Java/JVM profiles', slug: 'profiles/jvm' },
+            { label: 'Rust profile 0.1', slug: 'profiles/rust' },
           ],
         },
         {

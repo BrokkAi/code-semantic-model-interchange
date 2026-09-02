@@ -419,6 +419,13 @@ spec/
 examples/
   *.json
 
+profiles/
+  rust/
+    0.1/
+      profile.md
+      schema.json
+      fixtures/
+
 fixtures/
   valid/
   invalid/
@@ -429,6 +436,8 @@ conformance/
 
 scripts/
   lint-json.py
+  validate-profiles.py
+  validate-rust-profile.py
   validate-schema.py
 ```
 
@@ -437,6 +446,14 @@ The normative specification should live in the repository. A documentation websi
 The [CSMI 0.1 specification](spec/0.1/specification.md) defines the normative
 semantic boundary, while [schema.json](spec/0.1/schema.json) defines the first
 machine-readable serialization.
+
+Versioned language profiles remain outside the language-neutral core. The
+normative [Rust interoperability profile](profiles/rust/0.1/profile.md) defines
+Rust source-item identity, Cargo/crate/sysroot applicability, compilation
+configuration, implementation and reexport facts, generation evidence, and the
+explicit source-to-native mapping boundary. Its payload schema is
+[profiles/rust/0.1/schema.json](profiles/rust/0.1/schema.json), and its semantic
+cases are [conformance/rust-profile.md](conformance/rust-profile.md).
 
 ## Roadmap
 
@@ -500,6 +517,8 @@ expectations without installing a CSMI SDK:
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements-validation.txt
 .venv/bin/python scripts/validate-schema.py
+.venv/bin/python scripts/validate-profiles.py
+.venv/bin/python scripts/validate-rust-profile.py
 ```
 
 The canonical schema identity is
