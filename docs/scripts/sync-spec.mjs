@@ -101,14 +101,13 @@ await writeFile(
 );
 await mkdir(dirname(schemaOutputPath), { recursive: true });
 await copyFile(schemaSourcePath, schemaOutputPath);
-
 async function publishProfileSchemas(directory, relativeParts = []) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const source = resolve(directory, entry.name);
     const relative = [...relativeParts, entry.name];
     if (entry.isDirectory()) {
       await publishProfileSchemas(source, relative);
-    } else if (entry.name === 'schema.json') {
+    } else if (entry.name === 'schema.json' || entry.name.endsWith('.schema.json')) {
       const destination = resolve(
         repositoryRoot,
         'docs/public/schema/profiles',

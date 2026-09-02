@@ -1,0 +1,42 @@
+{
+  "$comment": "Non-normative reference adapter. Bifrost identifiers are input evidence, never CSMI identity.",
+  "adapter": {
+    "producer": "https://bifrost.brokk.ai/semantic-pack-producer",
+    "nativeScheme": "ai.brokk.csmi.jvm-symbol",
+    "nativeSchemeVersion": "0.1",
+    "requiredEvidence": [
+      "exact artifact selector and JAR digest",
+      "parsed class-file owner internal name",
+      "member name and JVM descriptor",
+      "selected multi-release entry",
+      "compiler or language metadata for any source mapping"
+    ]
+  },
+  "nativeRecord": {
+    "producerLocalId": "member.fda09ed363d1f02ab43a680cebbe507329d04cd1ed014cbda4ba8d30d1596f74",
+    "displayName": "ai.brokk.csmi.demo.ExternalNormalizer.normalize(String)",
+    "ownerInternalName": "ai/brokk/csmi/demo/ExternalNormalizer",
+    "memberName": "normalize",
+    "descriptor": "(Ljava/lang/String;)Ljava/lang/String;"
+  },
+  "projection": {
+    "scheme": "csmi.jvm-binary-identity",
+    "schemeVersion": "0.1",
+    "owner": "ai/brokk/csmi/demo/ExternalNormalizer",
+    "binaryEntity": {
+      "kind": "method",
+      "name": "normalize",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    "variant": {
+      "entryPath": "ai/brokk/csmi/demo/ExternalNormalizer.class",
+      "release": 0
+    }
+  },
+  "nonEvidence": [
+    "producerLocalId",
+    "displayName",
+    "descriptor resemblance without parsed class-file provenance"
+  ],
+  "failureOutcome": "indeterminate"
+}

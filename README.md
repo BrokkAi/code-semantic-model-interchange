@@ -510,6 +510,14 @@ same path on the GitHub Pages site. The Pages custom-domain setting and DNS
 record map `csmi.brokk.ai` to that site; they are deployment configuration, not
 an alternate source of schema truth.
 
+Versioned standard profiles have their own normative definitions and payload
+schemas. The first profile family,
+[Java/JVM interoperability](profiles/java-jvm/0.1/profile.md), keeps Java source
+identities distinct from JVM binary linkage identities and defines an explicit,
+evidence-bearing mapping between them. Run
+`python3 scripts/validate-profiles.py` to validate its schemas and conformance
+instances.
+
 ## License
 
 The contents of this repository are licensed under the [Apache License 2.0](LICENSE).

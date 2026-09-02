@@ -80,6 +80,12 @@ and non-normative. For v0.1, the normative set consists of:
 3. valid and invalid structural fixtures;
 4. semantic conformance fixtures.
 
+Versioned standard-profile definitions under `profiles/` join this normative
+set only for producers and consumers that claim support for the exact profile
+identifier and version. Profile semantics remain outside the language-neutral
+core; a profile use follows the requiredness and fail-closed rules in section
+3.6.
+
 Complete representative documents live under `fixtures/valid/`. Files under
 `examples/` may group isolated component cases for explanation and do not
 override the normative prose, schema, or conformance fixtures.
@@ -445,6 +451,16 @@ CSMI 0.1 does not define a single universal language identity scheme. Language
 or ABI identity schemes are versioned profiles. This preserves an
 analyzer-neutral envelope while allowing Java, Python, JavaScript/TypeScript,
 Rust, and other ecosystems to use their actual binding and overload semantics.
+
+The standard Java/JVM profile family is defined by
+`profiles/java-jvm/0.1/profile.md`. It assigns distinct
+`csmi.java-source-identity` and `csmi.jvm-binary-identity` schemes and the
+evidence-bearing `csmi.java-jvm-mapping` vocabulary. Supporting either identity
+scheme does not imply support for the other or for the mapping. A mapping
+assertion does not
+make source and binary keys equal; it permits only the projection defined by
+that profile after the consumer validates its exact version, artifact scope,
+compiler evidence, and mapping cardinality.
 
 #### 3.2.2 Descriptor paths
 
