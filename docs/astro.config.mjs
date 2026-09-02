@@ -61,6 +61,7 @@ export default defineConfig({
           items: [
             { label: 'Specification architecture', slug: 'specification/architecture' },
             { label: 'Full v0.1 specification', slug: 'specification/v0-1' },
+            { label: 'Python profile 0.1', slug: 'profiles/python' },
           ],
         },
         {

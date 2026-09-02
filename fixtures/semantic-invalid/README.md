@@ -11,6 +11,7 @@ then fails a semantic rule that JSON Schema cannot establish:
 | `undeclared-vocabulary.json` | An extension fact has no corresponding exact vocabulary-use declaration. |
 | `duplicate-completeness-scope.json` | One model assigns two statements to the same family and equivalent scope. |
 | `missing-declaration-dependency.json` | A procedure summary needs a callable shape that is neither embedded nor declared as consumer-resolved. |
+| `python-runtime-overload-identity.json` | A declaration-only Python typing overload is given a runtime procedure summary. |
 
 These fixtures are expected to remain structurally valid. A validator that
 rejects them through undocumented heuristics is not a conforming substitute for
