@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  pull_request:
 
 permissions:
   contents: read
@@ -56,6 +57,7 @@ jobs:
 
   deploy:
     name: Publish documentation
+    if: github.event_name == 'push'
     needs: validation
     runs-on: ubuntu-latest
     permissions:

@@ -6,6 +6,16 @@ Read the navigable [CSMI documentation](https://csmi.brokk.ai/) or go directly
 to the [v0.1 specification](https://csmi.brokk.ai/specification/v0-1/) and
 [JSON Schema](https://csmi.brokk.ai/schema/0.1/schema.json).
 
+The first versioned language/ecosystem definition is the
+[JavaScript, TypeScript, and Node profile family](profiles/javascript-typescript-node/0.1/profile.md),
+with normative positive, near-miss, unsupported, indeterminate, and completeness
+cases in its [conformance suite](conformance/javascript-typescript-node.md).
+A [Bifrost reference mapping](reference/bifrost-javascript-typescript-node.md)
+shows how an analyzer can compile the profile without making its native model
+part of CSMI. The separate
+[`csmi-demo` Node builtin scenario](https://github.com/BrokkAi/csmi-demo/tree/main/scenarios/node-builtin-alias)
+provides an executable independent-consumer interpretation.
+
 The goal is simple: one tool should be able to describe the semantics of a library, framework, dependency, generated API, or otherwise unavailable implementation, and an unrelated analysis tool should be able to consume that knowledge without sharing the producer's internal representation.
 
 > **Status:** early proposal. CSMI is not yet a stable standard. The initial work is intended to establish a small interoperable core, implement it in [Bifrost](https://github.com/BrokkAi/bifrost), and validate it with at least one independent consumer.
