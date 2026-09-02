@@ -20,3 +20,14 @@ has a separately versioned [payload schema](https://github.com/BrokkAi/code-sema
 focused payload fixtures, and [semantic conformance cases](https://github.com/BrokkAi/code-semantic-model-interchange/blob/main/conformance/python-profile.md).
 It deliberately keeps PyPI distribution identity, import-module identity,
 runtime declarations, and stub evidence distinct.
+
+## JavaScript, TypeScript, and Node profiles
+
+Repository-owned standard-profile payloads are validated separately. The
+focused valid and invalid payloads live beside each schema under
+[`profiles/`](https://github.com/BrokkAi/code-semantic-model-interchange/tree/main/profiles).
+The representative
+[`javascript-typescript-node.json`](https://github.com/BrokkAi/code-semantic-model-interchange/blob/main/fixtures/valid/javascript-typescript-node.json)
+fixture exercises Node builtin aliases, separate `@types/node` identity,
+CommonJS/ESM binding evidence, a conditional npm export, TypeScript/TSX
+compatibility, scoped completeness, and fail-closed profile uses.

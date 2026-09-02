@@ -18,3 +18,9 @@ support.
 - [Open the canonical schema](/schema/0.1/schema.json)
 - [View schema source on GitHub](https://github.com/BrokkAi/code-semantic-model-interchange/blob/main/spec/0.1/schema.json)
 - [Read structural and semantic conformance](/specification/v0-1/#4-conformance)
+
+Versioned standard profiles publish separate schemas for their delegated
+payloads. Core validation does not imply profile support:
+
+- [JavaScript and TypeScript profile 0.1](/schema/profiles/javascript-typescript/0.1/schema.json)
+- [Node compatibility profile 0.1](/schema/profiles/node-compatibility/0.1/schema.json)

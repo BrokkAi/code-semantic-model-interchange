@@ -1662,6 +1662,20 @@ JSON property escape hatch, universal effect lattice, or compatibility rule
 for different vocabulary versions. Those facilities must not be inferred from
 an identifier or schema URI.
 
+#### 3.6.10 Standard profile definitions
+
+Standard profile definitions are versioned normative resources next to this
+specification. CSMI 0.1 currently assigns the JavaScript, TypeScript, and Node
+profile family in the
+[JavaScript, TypeScript, and Node profile definition](https://csmi.brokk.ai/profiles/javascript-typescript-node/).
+It defines resolver-proven runtime and declaration identity, Node builtin alias
+rules, runtime-to-declaration mappings, and Node/TypeScript compatibility
+constraints without adding language-specific properties to the core schema.
+
+Implementing CSMI core does not imply implementing that family. A document that
+uses one of its identity or compatibility semantics declares the exact
+vocabulary use as required and fails closed under section 3.6.6 when unsupported.
+
 ### 3.7 Manifest, provenance, and canonicalization
 
 A CSMI pack is a content-addressed logical set consisting of one root manifest

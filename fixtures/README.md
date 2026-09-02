@@ -9,10 +9,18 @@ The fixture groups exercise different conformance boundaries:
   rejected by `spec/0.1/schema.json`.
 - `semantic-invalid/` contains documents that intentionally pass JSON Schema
   but violate a named semantic invariant from the specification.
+- `profile-inputs/` contains canonical inputs whose derived profile identities
+  are recomputed and matched to serialized valid-fixture symbols.
 
-The last group is important: successful JSON Schema validation establishes
-structure only. It does not resolve symbol references, prove artifact
-applicability, establish profile support, or license closed-world inference.
+The semantic-invalid group is important: successful core JSON Schema validation
+establishes structure only. It does not resolve symbol references, prove
+artifact applicability, establish profile support, or license closed-world
+inference. For repository-owned standard profiles, the validation script also
+validates recognized payloads in valid documents against their exact declared
+profile schemas. Standalone schema fixtures use synthetic digest values where
+resource bytes are intentionally not materialized; they are shape and semantic
+invariant evidence, not proof of those external artifacts. Derived TypeScript
+signature digests are the exception and are recomputed from `profile-inputs/`.
 
 Run all structural fixture expectations with:
 
