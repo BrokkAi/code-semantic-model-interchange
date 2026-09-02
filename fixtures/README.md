@@ -32,3 +32,8 @@ python3 scripts/validate-profiles.py
 Versioned profile payload schemas and their focused fixtures live under
 `profiles/<name>/<version>/`. Profile schema acceptance remains distinct from
 the semantic conformance cases under `conformance/`.
+
+The Java/JVM family uses four independently versioned payload schemas and keeps
+its structural and semantic cases under `fixtures/profiles/java-jvm/`. These
+profile-owned schemas do not add language-specific fields or identity rules to
+the language-neutral core schema.
