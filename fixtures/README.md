@@ -27,11 +27,12 @@ Run all structural fixture expectations with:
 ```sh
 python3 scripts/validate-schema.py
 python3 scripts/validate-profiles.py
+python3 scripts/validate-rust-profile.py
 ```
 
-Versioned profile payload schemas and their focused fixtures live under
-`profiles/<name>/<version>/`. Profile schema acceptance remains distinct from
-the semantic conformance cases under `conformance/`.
+Versioned profile payload schemas and their focused valid/invalid fixtures live
+under `profiles/<name>/<version>/`. Profile-schema rejection is separate from
+core structural rejection and semantic conformance.
 
 The Java/JVM family uses four independently versioned payload schemas and keeps
 its structural and semantic cases under `fixtures/profiles/java-jvm/`. These

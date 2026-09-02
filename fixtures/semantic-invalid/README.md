@@ -17,6 +17,10 @@ then fails a semantic rule that JSON Schema cannot establish:
 | `javascript-profile-payload-undeclared.json` | A known profile payload and identity scheme omit the exact vocabulary-use declaration. |
 | `javascript-runtime-binding-scope-mismatch.json` | A runtime/declaration fact's scope and payload name different runtime symbols. |
 | `node-mutually-exclusive-conditions.json` | One Node resolution activates mutually exclusive `import` and `require` conditions. |
+| `rust-name-only-trait-binding.json` | A Rust implementation uses name-only trait and self-type references instead of defined resolver-proven symbols. |
+| `rust-complete-with-unsupported-expansion.json` | Rust generation coverage is claimed complete although the producer marks the relevant expansion unavailable. |
+| `rust-sysroot-selector-mismatch.json` | A Rust sysroot payload points at a different exact sysroot artifact than the enclosing semantic model. |
+| `rust-invalid-identity-normalization.json` | Rust source keys use a lowercase percent escape, retain a raw-identifier prefix, and name a generic parameter instead of using its position. |
 
 These fixtures are expected to remain structurally valid. A validator that
 rejects them through undocumented heuristics is not a conforming substitute for
