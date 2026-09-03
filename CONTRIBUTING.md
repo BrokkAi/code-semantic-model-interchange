@@ -27,6 +27,41 @@ Issues are welcome for topics such as:
 
 Please focus issues on the interchange problem rather than on Bifrost-specific implementation details unless those details expose a broader specification requirement.
 
+## Proposing semantic vocabulary
+
+CSMI is a portable semantic algebra, not a union of every source language's
+features. A proposal for a core concept, standard profile, or extension should
+therefore answer:
+
+1. What analyzer-neutral observation is being exchanged?
+2. Can two independent consumers implement its meaning without embedding one
+   language's compiler or one producer's internal model?
+3. What are its equality, conflict, merge, and completeness rules?
+4. What exact semantic units does it affect, when is its use required, and what
+   remains independently interpretable when it is unsupported?
+5. Which materially different languages or ecosystems can map to it without
+   treating one of them as the canonical shape?
+6. What information does the mapping retain, conservatively erase, leave
+   unknown, or report as unsupported?
+7. Can existing core facts express a sound weaker approximation instead?
+8. Which resolver, compiler, ABI, packaging, or ecosystem evidence must remain
+   in a language-specific profile?
+
+A lossy projection is useful when it remains sound: it may weaken precision but
+must not strengthen identity, applicability, semantic truth, coverage, or
+completeness. An unresolved declaration must not become an approximate named
+symbol, and partial coverage must not become a complete portable summary.
+
+New core concepts require evidence of broad interoperability. A concept used by
+only one language should normally begin in that language's exact-versioned
+profile. When several profiles independently demonstrate equivalent semantics,
+the common observation may be extracted into a shared semantic profile without
+moving language-specific evidence into the core.
+
+Proposals should include realistic positive examples and near misses for each
+claimed mapping. Executable producer and independent-consumer evidence is
+preferred over schema shape alone.
+
 ## Code of conduct
 
 BrokkAi maintainers may close discussions that are abusive, off-topic, or otherwise prevent productive technical discussion.
