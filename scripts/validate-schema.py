@@ -21,16 +21,29 @@ PROFILE_SCHEMAS = {
         ROOT / "profiles" / "javascript-typescript" / "0.1" / "schema.json",
     "https://csmi.brokk.ai/schema/profiles/node-compatibility/0.1/schema.json":
         ROOT / "profiles" / "node-compatibility" / "0.1" / "schema.json",
+    "https://csmi.brokk.ai/schema/profiles/value-transfer/0.1/schema.json":
+        ROOT / "profiles" / "value-transfer" / "0.1" / "schema.json",
+    "https://csmi.brokk.ai/schema/profiles/cpp/0.1/schema.json":
+        ROOT / "profiles" / "cpp" / "0.1" / "schema.json",
 }
 PROFILE_REQUIRED_USES = {
     ("csmi.javascript-typescript", "0.1.0"),
     ("csmi.node-compatibility", "0.1.0"),
+    ("csmi.value-transfer", "0.1.0"),
+    ("csmi.cpp", "0.1.0"),
+    ("csmi.c-cpp-resolution", "0.1.0"),
 }
 PROFILE_VOCABULARIES = {
     ("csmi.javascript-typescript", "0.1.0"):
         "https://csmi.brokk.ai/schema/profiles/javascript-typescript/0.1/schema.json",
     ("csmi.node-compatibility", "0.1.0"):
         "https://csmi.brokk.ai/schema/profiles/node-compatibility/0.1/schema.json",
+    ("csmi.value-transfer", "0.1.0"):
+        "https://csmi.brokk.ai/schema/profiles/value-transfer/0.1/schema.json",
+    ("csmi.cpp", "0.1.0"):
+        "https://csmi.brokk.ai/schema/profiles/cpp/0.1/schema.json",
+    ("csmi.c-cpp-resolution", "0.1.0"):
+        "https://csmi.brokk.ai/schema/profiles/cpp/0.1/schema.json",
 }
 FIXTURE_GROUPS = {
     "valid": True,
@@ -71,6 +84,18 @@ def iter_profile_instances(value: object) -> Iterable[tuple[str, object, str]]:
                         f"$.semanticModels[{model_index}].symbols[{symbol_index}]"
                         f".extensions[{extension_index}].payload"
                     )
+        for summary_index, summary in enumerate(model.get("procedureSummaries", [])):
+            for transfer_index, transfer in enumerate(summary.get("transfers", [])):
+                for extension_index, extension in enumerate(transfer.get("extensions", [])):
+                    schema_uri = PROFILE_VOCABULARIES.get(
+                        (extension.get("vocabulary"), extension.get("version"))
+                    )
+                    if schema_uri in PROFILE_SCHEMAS:
+                        yield schema_uri, extension.get("payload"), (
+                            f"$.semanticModels[{model_index}]"
+                            f".procedureSummaries[{summary_index}].transfers[{transfer_index}]"
+                            f".extensions[{extension_index}].payload"
+                        )
 
 
 def semantic_errors(value: object) -> list[str]:
@@ -119,8 +144,14 @@ def semantic_errors(value: object) -> list[str]:
                     f"{key[0]} {key[1]} must declare its exact standard schema"
                 )
         identity_use = declared_uses.get(("csmi.javascript-typescript", "0.1.0"))
+        cpp_identity_use = declared_uses.get(("csmi.cpp", "0.1.0"))
         for symbol_index, symbol in enumerate(model.get("symbols", [])):
             scheme = symbol.get("scheme")
+            if scheme == "csmi.cpp.declaration" and cpp_identity_use is None:
+                errors.append(
+                    f"$.semanticModels[{model_index}].symbols[{symbol_index}]: "
+                    "C++ profile identity scheme requires an exact vocabulary use"
+                )
             if scheme in {"csmi.javascript-runtime", "csmi.typescript-declaration"}:
                 if identity_use is None:
                     errors.append(

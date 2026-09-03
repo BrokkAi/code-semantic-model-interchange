@@ -20,7 +20,8 @@ validates recognized payloads in valid documents against their exact declared
 profile schemas. Standalone schema fixtures use synthetic digest values where
 resource bytes are intentionally not materialized; they are shape and semantic
 invariant evidence, not proof of those external artifacts. Derived TypeScript
-signature digests are the exception and are recomputed from `profile-inputs/`.
+and C++ signature or resolution-context digests are the exception and are
+recomputed from `profile-inputs/`.
 
 Run all structural fixture expectations with:
 
@@ -28,6 +29,8 @@ Run all structural fixture expectations with:
 python3 scripts/validate-schema.py
 python3 scripts/validate-profiles.py
 python3 scripts/validate-rust-profile.py
+python3 scripts/validate-value-transfer.py
+python3 scripts/validate-cpp-profile.py
 ```
 
 Versioned profile payload schemas and their focused valid/invalid fixtures live
@@ -38,3 +41,9 @@ The Java/JVM family uses four independently versioned payload schemas and keeps
 its structural and semantic cases under `fixtures/profiles/java-jvm/`. These
 profile-owned schemas do not add language-specific fields or identity rules to
 the language-neutral core schema.
+
+The value-transfer and C/C++ profiles keep focused payload and whole-document
+fixtures beside their schemas. Their dedicated validators check cross-record
+scope, required-use, exact declaration ownership, canonical C++ signature
+digests, uncertainty, and completeness invariants that JSON Schema cannot
+express.
