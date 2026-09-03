@@ -133,6 +133,24 @@ vocabularies. They use the same mechanics and differ in namespace authority and
 governance, not in whether a consumer must implement them. Neither may redefine
 or reinterpret a core field.
 
+Language neutrality does not require the core to encode the union of all
+language features. A language or ecosystem profile SHOULD map its constructs to
+existing core facts whenever the resulting fact preserves the core fact's
+defined meaning without overstating it. It MAY also emit richer profile-owned
+facts for consumers that support them.
+
+A projection from richer language or profile semantics into a weaker core fact
+MUST be conservative. Erasing information MUST NOT strengthen symbol identity,
+artifact applicability, fact modality or meaning, coverage, completeness, or
+negative inference. When no sound projection exists, a producer MUST omit the
+affected core fact. If it emits a coverage statement for the affected family
+and scope, that statement MUST be `unknown` or `partial`, with typed limitations
+as required by section 3.5. A consumer MUST preserve indeterminate applicability
+and compatibility, unsupported semantics, and uninterpretable affected units as
+outcomes distinct from coverage. A producer or consumer MUST NOT synthesize an
+approximate identity or fact from display names, rendered signatures, source
+text, regular expressions, or producer-local evidence.
+
 Every vocabulary use is either `optional` or `required` for explicitly affected
 semantic units. If ignoring a vocabulary would change a core fact, applicability,
 binding, completeness claim, or another supported fact, that use is `required`.

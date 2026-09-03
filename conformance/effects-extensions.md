@@ -45,6 +45,18 @@ vocabulary checks that JSON Schema cannot prove.
 | Facts from two profile versions are merged because their payload keys match | Non-conforming aggregation | Exact versions are incomparable without an implemented normative mapping. |
 | One vocabulary version defines mutation and escape families but omits stable family keys | Semantically invalid family definitions | Family identity is the vocabulary identifier, exact version, and family key tuple. |
 
+## Conservative projection
+
+| Case | Outcome | Reason |
+| --- | --- | --- |
+| A language profile's guarded information flow is emitted as an unguarded core may-information transfer | Valid conservative projection | Erasing the guard reduces precision without overstating the core may-transfer. |
+| A precise language declaration kind is emitted under a compatible coarse core declaration category | Valid conservative projection | The core category asserts less than the language-specific kind and does not inherit its behavior. |
+| A type shape unsupported by the core type vocabulary is emitted as `unknown` | Valid loss of precision | The producer preserves the type position without inventing unsupported structure. |
+| Two language operations with similar names are assigned one approximate core symbol identity | Semantically invalid | Erasure cannot strengthen identity; exact scheme-defined identity remains required. |
+| A language analysis omits unsupported constructs but emits a complete core claim for their affected scope | Semantically invalid | Projection cannot turn incomplete source evidence into complete portable coverage. |
+| Required profile evidence is dropped while its dependent core fact is retained as independently interpretable | Non-conforming interpretation | Required semantics cannot be erased without making the affected unit uninterpretable. |
+| No sound core projection exists and the producer emits no affected fact with `partial` coverage and an `unsupported-semantics` limitation | Valid typed incompleteness | Unsupported expressiveness is not evidence of absence or a complete empty result. |
+
 ## Bifrost generator guidance
 
 | Case | Outcome | Reason |
