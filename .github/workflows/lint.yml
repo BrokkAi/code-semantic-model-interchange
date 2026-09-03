@@ -38,6 +38,8 @@ jobs:
           python3 scripts/validate-schema.py
           python3 scripts/validate-profiles.py
           python3 scripts/validate-rust-profile.py
+          python3 scripts/validate-value-transfer.py
+          python3 scripts/validate-cpp-profile.py
       - name: Set up Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:

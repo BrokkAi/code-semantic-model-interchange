@@ -25,6 +25,10 @@ payloads. Core validation does not imply profile support:
 - [JavaScript and TypeScript profile 0.1](/schema/profiles/javascript-typescript/0.1/schema.json)
 - [Node compatibility profile 0.1](/schema/profiles/node-compatibility/0.1/schema.json)
 - [Java/JVM profile family](/profiles/jvm/)
+- [Value-transfer profile 0.1](/schema/profiles/value-transfer/0.1/schema.json)
+- [C and C++ profile 0.1](/schema/profiles/cpp/0.1/schema.json)
 
 Validate repository profile fixtures with
-`python3 scripts/validate-profiles.py`.
+`python3 scripts/validate-profiles.py`, with the profile-specific semantic
+checks in `scripts/validate-value-transfer.py` and
+`scripts/validate-cpp-profile.py`.

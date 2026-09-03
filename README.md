@@ -6,15 +6,13 @@ Read the navigable [CSMI documentation](https://csmi.brokk.ai/) or go directly
 to the [v0.1 specification](https://csmi.brokk.ai/specification/v0-1/) and
 [JSON Schema](https://csmi.brokk.ai/schema/0.1/schema.json).
 
-The first versioned language/ecosystem definition is the
-[JavaScript, TypeScript, and Node profile family](profiles/javascript-typescript-node/0.1/profile.md),
-with normative positive, near-miss, unsupported, indeterminate, and completeness
-cases in its [conformance suite](conformance/javascript-typescript-node.md).
-A [Bifrost reference mapping](reference/bifrost-javascript-typescript-node.md)
-shows how an analyzer can compile the profile without making its native model
-part of CSMI. The separate
-[`csmi-demo` Node builtin scenario](https://github.com/BrokkAi/csmi-demo/tree/main/scenarios/node-builtin-alias)
-provides an executable independent-consumer interpretation.
+Standard profiles now cover several language ecosystems plus analyzer-neutral
+[identity-separating value transfers](profiles/value-transfer/0.1/profile.md).
+The [C and C++ profile](profiles/cpp/0.1/profile.md) supplies exact artifact,
+resolver, alias, and declaration identity for the initial `std::basic_string`
+case. Their [value-transfer](conformance/value-transfer.md) and
+[C/C++](conformance/cpp-profile.md) suites include positive, near-miss,
+indeterminate, and fail-closed cases grounded in the native Bifrost contract.
 
 The goal is simple: one tool should be able to describe the semantics of a library, framework, dependency, generated API, or otherwise unavailable implementation, and an unrelated analysis tool should be able to consume that knowledge without sharing the producer's internal representation.
 
@@ -184,7 +182,16 @@ More specialized domains should likewise be expressed as versioned profiles or
 extensions rather than forcing every CSMI consumer to implement every possible
 analysis vocabulary.
 
-The first normative language profile defines deterministic Python import and
+The [`csmi.value-transfer` 0.1.0 profile](profiles/value-transfer/0.1/profile.md)
+adds copy, aggregate-copy, move, conversion, boxing, and unboxing semantics to
+selected core transfers without changing the CSMI 0.1 core. It keeps value
+dependence separate from storage identity, preserves source invalidation and
+value-preservation uncertainty, and requires exact implicit-operation identity.
+The independent [C and C++ profile family](profiles/cpp/0.1/profile.md) uses
+`csmi.c-cpp-resolution` for the shared structured resolution boundary and
+`csmi.cpp` for the canonical `std::basic_string` fixtures.
+
+A normative language profile defines deterministic Python import and
 declaration identity, distribution-to-import mappings, runtime/stub
 correspondence, and compatibility boundaries. See the
 [`csmi.python` 0.1 profile](profiles/python/0.1/profile.md) and its
@@ -425,6 +432,16 @@ profiles/
       profile.md
       schema.json
       fixtures/
+  value-transfer/
+    0.1/
+      profile.md
+      schema.json
+      fixtures/
+  cpp/
+    0.1/
+      profile.md
+      schema.json
+      fixtures/
 
 fixtures/
   valid/
@@ -438,6 +455,8 @@ scripts/
   lint-json.py
   validate-profiles.py
   validate-rust-profile.py
+  validate-value-transfer.py
+  validate-cpp-profile.py
   validate-schema.py
 ```
 
@@ -519,6 +538,8 @@ python3 -m venv .venv
 .venv/bin/python scripts/validate-schema.py
 .venv/bin/python scripts/validate-profiles.py
 .venv/bin/python scripts/validate-rust-profile.py
+.venv/bin/python scripts/validate-value-transfer.py
+.venv/bin/python scripts/validate-cpp-profile.py
 ```
 
 The canonical schema identity is
@@ -530,12 +551,13 @@ record map `csmi.brokk.ai` to that site; they are deployment configuration, not
 an alternate source of schema truth.
 
 Versioned standard profiles have their own normative definitions and payload
-schemas. The first profile family,
-[Java/JVM interoperability](profiles/java-jvm/0.1/profile.md), keeps Java source
+schemas. The [Java/JVM interoperability profile](profiles/java-jvm/0.1/profile.md)
+keeps Java source
 identities distinct from JVM binary linkage identities and defines an explicit,
 evidence-bearing mapping between them. Run
 `python3 scripts/validate-profiles.py` to validate its schemas and conformance
-instances.
+instances. The value-transfer and C/C++ profiles add dedicated validators for
+their cross-record and canonical-identity invariants.
 
 ## License
 

@@ -98,7 +98,18 @@ def validate_python_profiles() -> tuple[int, dict[str, int]]:
                 continue
             counts[group] += len(fixtures)
             for fixture_path in fixtures:
-                errors = list(validator.iter_errors(load_json(fixture_path)))
+                instance = load_json(fixture_path)
+                # Some profiles carry a complete semantic document to exercise
+                # attachment and cross-record rules. Their dedicated validator
+                # owns core-plus-profile validation; this generic pass validates
+                # the raw payload fixtures beside each schema.
+                if (
+                    group == "valid"
+                    and isinstance(instance, dict)
+                    and instance.get("documentType") == "semantic-document"
+                ):
+                    continue
+                errors = list(validator.iter_errors(instance))
                 if should_validate and errors:
                     failures += 1
                     error = best_match(errors)
