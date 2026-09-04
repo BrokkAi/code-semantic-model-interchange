@@ -207,6 +207,10 @@ body {
   color: var(--csmi-muted);
 }
 
+.csmi-boundary > * {
+  margin-top: 0 !important;
+}
+
 .csmi-boundary div {
   min-width: 0;
   padding: 1.05rem 1.2rem;
