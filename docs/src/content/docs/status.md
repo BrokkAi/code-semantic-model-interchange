@@ -20,3 +20,9 @@ language-neutral core. The `csmi.value-transfer`, `csmi.c-cpp-resolution`, and
 `csmi.cpp` profiles are version `0.1.0` while the containing documents remain
 CSMI semantic model `0.1` serialized as `0.1-json`. Profile evolution follows
 its own exact version and schema URI; schema acceptance alone is not support.
+
+The `csmi.collection-flow` profile begins at exact version `0.1.0`. This is a
+new vocabulary, not an expansion of the accepted core type or transfer forms.
+Existing consumers remain compatible with old documents; consumers receiving
+this required profile must implement it or preserve uninterpretable affected
+units. Repository conformance evidence does not certify production adapters.

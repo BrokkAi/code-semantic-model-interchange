@@ -1,0 +1,639 @@
+{
+  "documentType": "semantic-document",
+  "schema": "https://csmi.brokk.ai/schema/0.1/schema.json",
+  "semanticModelVersion": "0.1",
+  "serializationVersion": "0.1-json",
+  "provenanceRecords": [
+    {
+      "id": "collection-flow-fixture",
+      "producer": {
+        "identifier": "https://csmi.brokk.ai/conformance/collection-flow",
+        "version": "0.1.0"
+      },
+      "generationMethod": "manual-authoring"
+    }
+  ],
+  "defaultProvenance": "collection-flow-fixture",
+  "semanticModels": [
+    {
+      "artifactSelectors": [
+        {
+          "purl": "pkg:generic/csmi-collection-fixture@1.0.0"
+        }
+      ],
+      "symbols": [
+        {
+          "id": "Map",
+          "scheme": "example.collection-flow",
+          "schemeVersion": "0.1.0",
+          "descriptors": [
+            {
+              "name": "Map",
+              "role": "type"
+            }
+          ],
+          "stability": "portable"
+        },
+        {
+          "id": "Callback",
+          "scheme": "example.collection-flow",
+          "schemeVersion": "0.1.0",
+          "descriptors": [
+            {
+              "name": "Callback",
+              "role": "type"
+            }
+          ],
+          "stability": "portable"
+        },
+        {
+          "id": "K",
+          "scheme": "example.collection-flow",
+          "schemeVersion": "0.1.0",
+          "descriptors": [
+            {
+              "name": "K",
+              "role": "type-parameter"
+            }
+          ],
+          "stability": "portable"
+        },
+        {
+          "id": "V",
+          "scheme": "example.collection-flow",
+          "schemeVersion": "0.1.0",
+          "descriptors": [
+            {
+              "name": "V",
+              "role": "type-parameter"
+            }
+          ],
+          "stability": "portable"
+        },
+        {
+          "id": "update",
+          "scheme": "example.collection-flow",
+          "schemeVersion": "0.1.0",
+          "descriptors": [
+            {
+              "name": "update",
+              "role": "term"
+            }
+          ],
+          "stability": "portable"
+        },
+        {
+          "id": "foreach",
+          "scheme": "example.collection-flow",
+          "schemeVersion": "0.1.0",
+          "descriptors": [
+            {
+              "name": "foreach",
+              "role": "term"
+            }
+          ],
+          "stability": "portable"
+        },
+        {
+          "id": "component",
+          "scheme": "example.collection-flow",
+          "schemeVersion": "0.1.0",
+          "descriptors": [
+            {
+              "name": "component",
+              "role": "term"
+            }
+          ],
+          "stability": "portable"
+        }
+      ],
+      "declarations": [
+        {
+          "symbol": "Map",
+          "category": "type",
+          "genericParameters": [
+            {
+              "symbol": "K",
+              "position": 0,
+              "kind": "type"
+            },
+            {
+              "symbol": "V",
+              "position": 1,
+              "kind": "type"
+            }
+          ]
+        },
+        {
+          "symbol": "Callback",
+          "category": "type"
+        },
+        {
+          "symbol": "K",
+          "category": "type-parameter",
+          "owner": "Map"
+        },
+        {
+          "symbol": "V",
+          "category": "type-parameter",
+          "owner": "Map"
+        },
+        {
+          "symbol": "update",
+          "category": "callable",
+          "callable": {
+            "kind": "method",
+            "parameters": [
+              {
+                "position": 0,
+                "binding": "positional-only",
+                "required": true
+              },
+              {
+                "position": 1,
+                "binding": "positional-only",
+                "required": true
+              }
+            ],
+            "results": [],
+            "receiver": {
+              "kind": "instance",
+              "type": {
+                "kind": "reference",
+                "symbol": "Map",
+                "arguments": [
+                  {
+                    "kind": "parameter",
+                    "symbol": "K"
+                  },
+                  {
+                    "kind": "parameter",
+                    "symbol": "V"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "symbol": "foreach",
+          "category": "callable",
+          "callable": {
+            "kind": "method",
+            "parameters": [
+              {
+                "position": 0,
+                "binding": "positional-only",
+                "required": true
+              }
+            ],
+            "results": [],
+            "receiver": {
+              "kind": "instance",
+              "type": {
+                "kind": "reference",
+                "symbol": "Map",
+                "arguments": [
+                  {
+                    "kind": "parameter",
+                    "symbol": "K"
+                  },
+                  {
+                    "kind": "parameter",
+                    "symbol": "V"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "symbol": "component",
+          "category": "callable",
+          "callable": {
+            "kind": "function",
+            "parameters": [
+              {
+                "position": 0,
+                "binding": "positional-only",
+                "required": true
+              }
+            ],
+            "results": [
+              {
+                "position": 0
+              }
+            ]
+          }
+        }
+      ],
+      "vocabularyUses": [
+        {
+          "identifier": "csmi.collection-flow",
+          "version": "0.1.0",
+          "schema": "https://csmi.brokk.ai/schema/profiles/collection-flow/0.1/schema.json",
+          "requirement": "required",
+          "affects": [
+            {
+              "kind": "fact-family",
+              "family": "collection-flows",
+              "scope": {
+                "callable": "update"
+              }
+            },
+            {
+              "kind": "fact-family",
+              "family": "collection-flows",
+              "scope": {
+                "callable": "foreach"
+              }
+            },
+            {
+              "kind": "fact-family",
+              "family": "collection-flows",
+              "scope": {
+                "callable": "component"
+              }
+            }
+          ]
+        }
+      ],
+      "extensionFacts": [
+        {
+          "vocabulary": "csmi.collection-flow",
+          "version": "0.1.0",
+          "family": "collection-flows",
+          "scope": {
+            "callable": "update"
+          },
+          "payload": {
+            "kind": "collection-flow",
+            "callable": "update",
+            "receiverSubstitution": {
+              "kind": "receiver-arguments",
+              "declaration": "Map"
+            },
+            "roots": [
+              {
+                "root": {
+                  "phase": "output",
+                  "role": "receiver"
+                },
+                "shape": {
+                  "kind": "keyed",
+                  "key": {
+                    "kind": "value",
+                    "type": {
+                      "kind": "parameter",
+                      "symbol": "K"
+                    }
+                  },
+                  "value": {
+                    "kind": "value",
+                    "type": {
+                      "kind": "parameter",
+                      "symbol": "V"
+                    }
+                  },
+                  "entryComponents": [
+                    "key",
+                    "value"
+                  ]
+                }
+              },
+              {
+                "root": {
+                  "phase": "input",
+                  "role": "parameter",
+                  "position": 1
+                },
+                "shape": {
+                  "kind": "value",
+                  "type": {
+                    "kind": "parameter",
+                    "symbol": "V"
+                  }
+                }
+              }
+            ],
+            "transfers": [
+              {
+                "source": {
+                  "root": {
+                    "phase": "input",
+                    "role": "parameter",
+                    "position": 1
+                  }
+                },
+                "destination": {
+                  "root": {
+                    "phase": "output",
+                    "role": "receiver"
+                  },
+                  "projection": {
+                    "scheme": "csmi.collection-flow",
+                    "schemeVersion": "0.1.0",
+                    "steps": [
+                      {
+                        "kind": "entry",
+                        "args": {
+                          "key": {
+                            "kind": "parameter",
+                            "position": 20
+                          }
+                        }
+                      },
+                      {
+                        "kind": "entry-value"
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "invocations": []
+          }
+        },
+        {
+          "vocabulary": "csmi.collection-flow",
+          "version": "0.1.0",
+          "family": "collection-flows",
+          "scope": {
+            "callable": "foreach"
+          },
+          "payload": {
+            "kind": "collection-flow",
+            "callable": "foreach",
+            "receiverSubstitution": {
+              "kind": "receiver-arguments",
+              "declaration": "Map"
+            },
+            "roots": [
+              {
+                "root": {
+                  "phase": "input",
+                  "role": "receiver"
+                },
+                "shape": {
+                  "kind": "keyed",
+                  "key": {
+                    "kind": "value",
+                    "type": {
+                      "kind": "parameter",
+                      "symbol": "K"
+                    }
+                  },
+                  "value": {
+                    "kind": "value",
+                    "type": {
+                      "kind": "parameter",
+                      "symbol": "V"
+                    }
+                  },
+                  "entryComponents": [
+                    "key",
+                    "value"
+                  ]
+                }
+              },
+              {
+                "root": {
+                  "phase": "input",
+                  "role": "parameter",
+                  "position": 0
+                },
+                "shape": {
+                  "kind": "value",
+                  "type": {
+                    "kind": "reference",
+                    "symbol": "Callback"
+                  }
+                }
+              }
+            ],
+            "transfers": [],
+            "invocations": [
+              {
+                "callback": {
+                  "root": {
+                    "phase": "input",
+                    "role": "parameter",
+                    "position": 0
+                  }
+                },
+                "parameters": [
+                  {
+                    "kind": "product",
+                    "components": [
+                      {
+                        "kind": "value",
+                        "type": {
+                          "kind": "parameter",
+                          "symbol": "K"
+                        }
+                      },
+                      {
+                        "kind": "value",
+                        "type": {
+                          "kind": "parameter",
+                          "symbol": "V"
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "arguments": [
+                  {
+                    "source": {
+                      "root": {
+                        "phase": "input",
+                        "role": "receiver"
+                      },
+                      "projection": {
+                        "scheme": "csmi.collection-flow",
+                        "schemeVersion": "0.1.0",
+                        "steps": [
+                          {
+                            "kind": "entry",
+                            "args": {
+                              "key": {
+                                "kind": "all"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "parameter": 0
+                  }
+                ],
+                "timing": "during-call"
+              }
+            ]
+          }
+        },
+        {
+          "vocabulary": "csmi.collection-flow",
+          "version": "0.1.0",
+          "family": "collection-flows",
+          "scope": {
+            "callable": "component"
+          },
+          "payload": {
+            "kind": "collection-flow",
+            "callable": "component",
+            "roots": [
+              {
+                "root": {
+                  "phase": "input",
+                  "role": "parameter",
+                  "position": 0
+                },
+                "shape": {
+                  "kind": "product",
+                  "components": [
+                    {
+                      "kind": "value",
+                      "type": {
+                        "kind": "parameter",
+                        "symbol": "K"
+                      }
+                    },
+                    {
+                      "kind": "value",
+                      "type": {
+                        "kind": "parameter",
+                        "symbol": "V"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "root": {
+                  "phase": "output",
+                  "role": "result",
+                  "position": 0
+                },
+                "shape": {
+                  "kind": "value",
+                  "type": {
+                    "kind": "parameter",
+                    "symbol": "V"
+                  }
+                }
+              }
+            ],
+            "transfers": [
+              {
+                "source": {
+                  "root": {
+                    "phase": "input",
+                    "role": "parameter",
+                    "position": 0
+                  },
+                  "projection": {
+                    "scheme": "csmi.collection-flow",
+                    "schemeVersion": "0.1.0",
+                    "steps": [
+                      {
+                        "kind": "component",
+                        "args": {
+                          "position": 1
+                        }
+                      }
+                    ]
+                  }
+                },
+                "destination": {
+                  "root": {
+                    "phase": "output",
+                    "role": "result",
+                    "position": 0
+                  }
+                }
+              }
+            ],
+            "invocations": []
+          }
+        }
+      ],
+      "completenessStatements": [
+        {
+          "vocabulary": "csmi.collection-flow",
+          "version": "0.1.0",
+          "family": "collection-flows",
+          "scope": {
+            "callable": "update"
+          },
+          "status": "partial",
+          "limitations": [
+            {
+              "kind": "unsupported-construct"
+            }
+          ]
+        },
+        {
+          "vocabulary": "csmi.collection-flow",
+          "version": "0.1.0",
+          "family": "collection-flows",
+          "scope": {
+            "callable": "foreach"
+          },
+          "status": "partial",
+          "limitations": [
+            {
+              "kind": "unsupported-construct"
+            }
+          ]
+        },
+        {
+          "vocabulary": "csmi.collection-flow",
+          "version": "0.1.0",
+          "family": "collection-flows",
+          "scope": {
+            "callable": "component"
+          },
+          "status": "partial",
+          "limitations": [
+            {
+              "kind": "unsupported-construct"
+            }
+          ]
+        },
+        {
+          "family": "declaration-aspects",
+          "scope": {
+            "symbol": "update",
+            "aspect": "callable-shape"
+          },
+          "status": "complete"
+        },
+        {
+          "family": "declaration-aspects",
+          "scope": {
+            "symbol": "foreach",
+            "aspect": "callable-shape"
+          },
+          "status": "complete"
+        },
+        {
+          "family": "declaration-aspects",
+          "scope": {
+            "symbol": "component",
+            "aspect": "callable-shape"
+          },
+          "status": "complete"
+        },
+        {
+          "family": "declaration-aspects",
+          "scope": {
+            "symbol": "Map",
+            "aspect": "generic-parameters"
+          },
+          "status": "complete"
+        }
+      ]
+    }
+  ]
+}

@@ -17,6 +17,8 @@ from jsonschema.exceptions import SchemaError, ValidationError, best_match
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "spec" / "0.1" / "schema.json"
 PROFILE_SCHEMAS = {
+    "https://csmi.brokk.ai/schema/profiles/collection-flow/0.1/schema.json":
+        ROOT / "profiles" / "collection-flow" / "0.1" / "schema.json",
     "https://csmi.brokk.ai/schema/profiles/javascript-typescript/0.1/schema.json":
         ROOT / "profiles" / "javascript-typescript" / "0.1" / "schema.json",
     "https://csmi.brokk.ai/schema/profiles/node-compatibility/0.1/schema.json":
@@ -29,6 +31,7 @@ PROFILE_SCHEMAS = {
         ROOT / "profiles" / "runtime-values" / "0.1" / "schema.json",
 }
 PROFILE_REQUIRED_USES = {
+    ("csmi.collection-flow", "0.1.0"),
     ("csmi.javascript-typescript", "0.1.0"),
     ("csmi.node-compatibility", "0.1.0"),
     ("csmi.value-transfer", "0.1.0"),
@@ -37,6 +40,8 @@ PROFILE_REQUIRED_USES = {
     ("csmi.runtime-values", "0.1.0"),
 }
 PROFILE_VOCABULARIES = {
+    ("csmi.collection-flow", "0.1.0"):
+        "https://csmi.brokk.ai/schema/profiles/collection-flow/0.1/schema.json",
     ("csmi.javascript-typescript", "0.1.0"):
         "https://csmi.brokk.ai/schema/profiles/javascript-typescript/0.1/schema.json",
     ("csmi.node-compatibility", "0.1.0"):

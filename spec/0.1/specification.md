@@ -170,6 +170,15 @@ changes the meaning or shape of the core versions. A consumer MUST support each
 required profile at its exact version or treat its affected units as
 uninterpretable.
 
+The analyzer-neutral `csmi.collection-flow` `0.1.0` profile at
+`profiles/collection-flow/0.1/profile.md` defines structured generic receiver
+substitution, keyed entry and product projection, and higher-order invocation
+transfer. It uses the existing extension mechanism and does not change core
+`0.1` semantics or `0.1-json` structure. Its exact version is required for each
+affected unit. In particular, a callback input is not a core output parameter,
+and a collection entry is not implicitly a positional product. Core summary
+completeness does not close this profile's fact families.
+
 ### 2.5 Normative JSON mapping
 
 The canonical schema identifier for the v0.1 JSON serialization is

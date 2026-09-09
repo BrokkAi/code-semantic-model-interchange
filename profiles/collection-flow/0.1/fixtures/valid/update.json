@@ -1,0 +1,87 @@
+{
+  "kind": "collection-flow",
+  "callable": "update",
+  "receiverSubstitution": {
+    "kind": "receiver-arguments",
+    "declaration": "Map"
+  },
+  "roots": [
+    {
+      "root": {
+        "phase": "output",
+        "role": "receiver"
+      },
+      "shape": {
+        "kind": "keyed",
+        "key": {
+          "kind": "value",
+          "type": {
+            "kind": "parameter",
+            "symbol": "K"
+          }
+        },
+        "value": {
+          "kind": "value",
+          "type": {
+            "kind": "parameter",
+            "symbol": "V"
+          }
+        },
+        "entryComponents": [
+          "key",
+          "value"
+        ]
+      }
+    },
+    {
+      "root": {
+        "phase": "input",
+        "role": "parameter",
+        "position": 1
+      },
+      "shape": {
+        "kind": "value",
+        "type": {
+          "kind": "parameter",
+          "symbol": "V"
+        }
+      }
+    }
+  ],
+  "transfers": [
+    {
+      "source": {
+        "root": {
+          "phase": "input",
+          "role": "parameter",
+          "position": 1
+        }
+      },
+      "destination": {
+        "root": {
+          "phase": "output",
+          "role": "receiver"
+        },
+        "projection": {
+          "scheme": "csmi.collection-flow",
+          "schemeVersion": "0.1.0",
+          "steps": [
+            {
+              "kind": "entry",
+              "args": {
+                "key": {
+                  "kind": "parameter",
+                  "position": 0
+                }
+              }
+            },
+            {
+              "kind": "entry-value"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "invocations": []
+}
