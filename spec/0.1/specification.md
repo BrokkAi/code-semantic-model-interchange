@@ -1736,6 +1736,14 @@ Implementing CSMI core does not imply implementing that family. A document that
 uses one of its identity or compatibility semantics declares the exact
 vocabulary use as required and fails closed under section 3.6.6 when unsupported.
 
+CSMI 0.1 also assigns the analyzer-neutral `csmi.runtime-values` `0.1.0`
+standard profile in the [runtime exposure and keyed-read value profile](https://csmi.brokk.ai/profiles/runtime-values/).
+It keeps producer-authored runtime exposure and behavior contracts separate
+from operation-specific binding and value observations. In particular, it does
+not reinterpret declaration mappings or create declarations for arbitrary
+property keys and array indices. Implementations negotiate this required
+vocabulary independently from the JavaScript, TypeScript, and Node family.
+
 ### 3.7 Manifest, provenance, and canonicalization
 
 A CSMI pack is a content-addressed logical set consisting of one root manifest

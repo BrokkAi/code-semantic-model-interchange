@@ -1,0 +1,43 @@
+{
+  "kind": "keyed-read-observation",
+  "observationId": "dynamic-env",
+  "bindingEvidenceId": "js-process-binding",
+  "behaviorId": "node-process-env-read",
+  "baseValue": {
+    "ownerDigest": "2020202020202020202020202020202020202020202020202020202020202020",
+    "kind": "value",
+    "locatorDigest": "3232323232323232323232323232323232323232323232323232323232323232"
+  },
+  "key": { "kind": "dynamic", "value": "key" },
+  "loadOperation": {
+    "ownerDigest": "2020202020202020202020202020202020202020202020202020202020202020",
+    "kind": "operation",
+    "locatorDigest": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "resultValue": {
+    "ownerDigest": "2020202020202020202020202020202020202020202020202020202020202020",
+    "kind": "value",
+    "locatorDigest": "3232323232323232323232323232323232323232323232323232323232323232"
+  },
+  "observationPoint": {
+    "ownerDigest": "2020202020202020202020202020202020202020202020202020202020202020",
+    "kind": "point",
+    "locatorDigest": "3434343434343434343434343434343434343434343434343434343434343434"
+  },
+  "phase": "after-effects",
+  "expression": {
+    "resource": "probe.js",
+    "resourceDigest": "2020202020202020202020202020202020202020202020202020202020202020",
+    "startByte": 0,
+    "endByte": 16
+  },
+  "sourceOrigin": "indeterminate",
+  "normalOutcome": "indeterminate",
+  "exceptionOutcome": "indeterminate",
+  "evidence": {
+    "producer": "https://example.test/analyzer",
+    "method": "syntax",
+    "inputsDigest": "9999999999999999999999999999999999999999999999999999999999999999"
+  },
+  "coverage": { "status": "unknown", "limitations": ["dynamic-key"] }
+}

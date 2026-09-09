@@ -1,0 +1,6 @@
+{
+  "kind": "runtime-declaration-binding",
+  "runtimeSymbol": "process",
+  "declarationSymbols": ["DFB_INPUT"],
+  "relation": "describes-runtime-binding"
+}

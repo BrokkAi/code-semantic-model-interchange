@@ -11,3 +11,7 @@ text that are deliberately excluded from portable identity.
 
 Complete representative documents using the normative field placement live in
 `../fixtures/valid/` and validate against `../spec/0.1/schema.json`.
+
+`runtime-values.json` gives a compact overview of runtime-global and keyed-read
+semantics. Its normative payloads and near misses live under
+`../profiles/runtime-values/0.1/fixtures/`.

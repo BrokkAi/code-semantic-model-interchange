@@ -1,0 +1,35 @@
+{
+  "kind": "runtime-global-binding-evidence",
+  "bindingEvidenceId": "bad-shadowed-process",
+  "exposureId": "node-process-main",
+  "activation": {
+    "outcome": "matched",
+    "runtimeProfileDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "activeSetDigest": "fa472a4d9b27841a2ac6a1ac566d75ed97e1d0f95058464b9538e7049cd67be6",
+    "activeExposureIds": ["node-process-main"],
+    "modelDigest": "2323232323232323232323232323232323232323232323232323232323232323",
+    "activationSource": "https://example.test/activation/node-main",
+    "exposureId": "node-process-main"
+  },
+  "language": "javascript",
+  "dialect": "javascript",
+  "rootOccurrence": {
+    "resource": "probe.js",
+    "resourceDigest": "2020202020202020202020202020202020202020202020202020202020202020",
+    "startByte": 26,
+    "endByte": 33
+  },
+  "scopeIdentity": {
+    "ownerDigest": "2020202020202020202020202020202020202020202020202020202020202020",
+    "kind": "scope",
+    "locatorDigest": "3131313131313131313131313131313131313131313131313131313131313131"
+  },
+  "lexicalBinding": "present",
+  "rebinding": "excluded",
+  "evidence": {
+    "producer": "https://example.test/analyzer",
+    "method": "binder",
+    "inputsDigest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "coverage": { "status": "complete" }
+}

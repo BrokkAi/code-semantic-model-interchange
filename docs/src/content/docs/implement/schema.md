@@ -26,9 +26,11 @@ payloads. Core validation does not imply profile support:
 - [Node compatibility profile 0.1](/schema/profiles/node-compatibility/0.1/schema.json)
 - [Java/JVM profile family](/profiles/jvm/)
 - [Value-transfer profile 0.1](/schema/profiles/value-transfer/0.1/schema.json)
+- [Runtime exposure and keyed-read values 0.1](/schema/profiles/runtime-values/0.1/schema.json)
 - [C and C++ profile 0.1](/schema/profiles/cpp/0.1/schema.json)
 
 Validate repository profile fixtures with
 `python3 scripts/validate-profiles.py`, with the profile-specific semantic
 checks in `scripts/validate-value-transfer.py` and
-`scripts/validate-cpp-profile.py`.
+`scripts/validate-cpp-profile.py`, and the runtime operation and cross-record
+checks in `scripts/validate-runtime-values.py`.

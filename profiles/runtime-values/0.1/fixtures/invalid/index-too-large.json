@@ -1,0 +1,43 @@
+{
+  "kind": "keyed-read-observation",
+  "observationId": "large-index",
+  "bindingEvidenceId": "js-process-binding",
+  "behaviorId": "node-process-argv-read",
+  "baseValue": {
+    "ownerDigest": "2020202020202020202020202020202020202020202020202020202020202020",
+    "kind": "value",
+    "locatorDigest": "3232323232323232323232323232323232323232323232323232323232323232"
+  },
+  "key": { "kind": "index", "value": 4294967295 },
+  "loadOperation": {
+    "ownerDigest": "2020202020202020202020202020202020202020202020202020202020202020",
+    "kind": "operation",
+    "locatorDigest": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "resultValue": {
+    "ownerDigest": "2020202020202020202020202020202020202020202020202020202020202020",
+    "kind": "value",
+    "locatorDigest": "3232323232323232323232323232323232323232323232323232323232323232"
+  },
+  "observationPoint": {
+    "ownerDigest": "2020202020202020202020202020202020202020202020202020202020202020",
+    "kind": "point",
+    "locatorDigest": "3434343434343434343434343434343434343434343434343434343434343434"
+  },
+  "phase": "after-effects",
+  "expression": {
+    "resource": "probe.js",
+    "resourceDigest": "2020202020202020202020202020202020202020202020202020202020202020",
+    "startByte": 0,
+    "endByte": 19
+  },
+  "sourceOrigin": "indeterminate",
+  "normalOutcome": "unsupported",
+  "exceptionOutcome": "indeterminate",
+  "evidence": {
+    "producer": "https://example.test/analyzer",
+    "method": "syntax",
+    "inputsDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "coverage": { "status": "unknown", "limitations": ["unsupported-index"] }
+}

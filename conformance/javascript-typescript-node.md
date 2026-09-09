@@ -57,6 +57,7 @@ named in the profile definition.
 | Consumer lacks `csmi.node-compatibility` `0.1.0` | Affected compatibility is uninterpretable | Unsupported semantics are not `indeterminate` evidence. |
 | Consumer supports profile `0.2.0`, not exact `0.1.0` | Unsupported unless a normative mapping is implemented | Similar versions are not automatically compatible. |
 | Runtime-declaration payload contains only `runtimeName` and `declarationName` | Profile-structurally invalid | Names do not resolve CSMI symbol handles. |
+| Runtime-declaration payload treats `DFB_INPUT` or index `2` as a declaration | Semantically wrong profile | Arbitrary keys are value accesses; use `csmi.runtime-values` without changing declaration identity. |
 | Node runtime constraint uses free-form `>=20 <23` | Profile-structurally invalid | The profile requires explicit canonical SemVer bounds. |
 | Producer declares identity profile optional | Semantically invalid use | Removing it changes symbol binding and all dependent facts. |
 | Profile payload validates but consumer does not implement its comparison rules | Unsupported | Schema validity is not semantic support. |

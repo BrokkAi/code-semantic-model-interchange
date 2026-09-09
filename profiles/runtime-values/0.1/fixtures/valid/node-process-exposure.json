@@ -1,0 +1,34 @@
+{
+  "kind": "runtime-global-exposure",
+  "exposureId": "node-process-main",
+  "languages": ["javascript", "typescript", "tsx"],
+  "bindingName": "process",
+  "runtime": {
+    "runtimeFamily": "node",
+    "runtimeArtifact": "pkg:generic/nodejs.org/node@22.11.0",
+    "runtimeArtifactDigest": "1111111111111111111111111111111111111111111111111111111111111111",
+    "platform": "linux",
+    "architecture": "x64",
+    "realm": "main",
+    "moduleMode": "commonjs",
+    "initializationBoundary": "pristine-runtime-entry",
+    "hostAssumptions": ["no-preloads", "closed-module-invocation"]
+  },
+  "runtimeProfileDigest": "1212121212121212121212121212121212121212121212121212121212121212",
+  "rootIdentity": {
+    "scheme": "csmi.runtime-global",
+    "schemeVersion": "0.1.0",
+    "descriptors": [
+      { "role": "runtime", "name": "node" },
+      { "role": "global", "name": "process" }
+    ]
+  },
+  "members": ["env", "argv"],
+  "activation": "enabled",
+  "evidence": {
+    "producer": "https://example.test/node-profile-producer",
+    "method": "reviewed-runtime-contract",
+    "inputsDigest": "2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "coverage": { "status": "complete" }
+}

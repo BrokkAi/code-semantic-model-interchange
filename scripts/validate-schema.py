@@ -25,6 +25,8 @@ PROFILE_SCHEMAS = {
         ROOT / "profiles" / "value-transfer" / "0.1" / "schema.json",
     "https://csmi.brokk.ai/schema/profiles/cpp/0.1/schema.json":
         ROOT / "profiles" / "cpp" / "0.1" / "schema.json",
+    "https://csmi.brokk.ai/schema/profiles/runtime-values/0.1/schema.json":
+        ROOT / "profiles" / "runtime-values" / "0.1" / "schema.json",
 }
 PROFILE_REQUIRED_USES = {
     ("csmi.javascript-typescript", "0.1.0"),
@@ -32,6 +34,7 @@ PROFILE_REQUIRED_USES = {
     ("csmi.value-transfer", "0.1.0"),
     ("csmi.cpp", "0.1.0"),
     ("csmi.c-cpp-resolution", "0.1.0"),
+    ("csmi.runtime-values", "0.1.0"),
 }
 PROFILE_VOCABULARIES = {
     ("csmi.javascript-typescript", "0.1.0"):
@@ -44,6 +47,8 @@ PROFILE_VOCABULARIES = {
         "https://csmi.brokk.ai/schema/profiles/cpp/0.1/schema.json",
     ("csmi.c-cpp-resolution", "0.1.0"):
         "https://csmi.brokk.ai/schema/profiles/cpp/0.1/schema.json",
+    ("csmi.runtime-values", "0.1.0"):
+        "https://csmi.brokk.ai/schema/profiles/runtime-values/0.1/schema.json",
 }
 FIXTURE_GROUPS = {
     "valid": True,
