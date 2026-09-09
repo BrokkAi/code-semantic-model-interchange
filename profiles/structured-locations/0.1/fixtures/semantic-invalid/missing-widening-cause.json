@@ -1,0 +1,9 @@
+{
+  "scheme": "csmi.structured-locations",
+  "schemeVersion": "0.1.0",
+  "steps": [
+    { "kind": "field", "args": { "symbol": "later" } },
+    { "kind": "summary-tail", "args": { "causes": ["path-limit"] } },
+    { "kind": "index", "args": { "selector": { "kind": "constant", "value": 0 } } }
+  ]
+}

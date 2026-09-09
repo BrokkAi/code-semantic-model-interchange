@@ -179,6 +179,14 @@ affected unit. In particular, a callback input is not a core output parameter,
 and a collection entry is not implicitly a positional product. Core summary
 completeness does not close this profile's fact families.
 
+The analyzer-neutral `csmi.structured-locations` profile at
+`profiles/structured-locations/0.1/profile.md` supplies the first standard
+projection scheme for bounded fields, associative keys, sequential indices,
+variant payloads, and explicit summarized tails. It uses the core-delegated
+projection slot without adding container, enum, or language-specific fields to
+the core. Its `0.1.0` version is negotiated independently and is required for
+every callable whose summary uses the scheme.
+
 ### 2.5 Normative JSON mapping
 
 The canonical schema identifier for the v0.1 JSON serialization is
@@ -1752,6 +1760,13 @@ from operation-specific binding and value observations. In particular, it does
 not reinterpret declaration mappings or create declarations for arbitrary
 property keys and array indices. Implementations negotiate this required
 vocabulary independently from the JavaScript, TypeScript, and Node family.
+
+CSMI 0.1 also assigns `csmi.structured-locations` `0.1.0` in the
+[structured procedure-summary locations profile](https://csmi.brokk.ai/profiles/structured-locations/).
+It defines bounded, structured sublocation selectors and their exact versus
+summarized overlap rules. It does not define language lowering, receiver
+resolution, ownership, or implicit cleanup, and an unsupported projection
+remains uninterpretable rather than becoming a root-level transfer.
 
 ### 3.7 Manifest, provenance, and canonicalization
 

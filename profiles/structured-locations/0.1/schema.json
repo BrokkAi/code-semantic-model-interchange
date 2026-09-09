@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://csmi.brokk.ai/schema/profiles/structured-locations/0.1/schema.json",
+  "title": "CSMI structured procedure-summary locations profile 0.1.0",
+  "$ref": "#/$defs/projection",
+  "$defs": {
+    "localId": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9._-]*$" },
+    "boundaryKey": {
+      "oneOf": [
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "position"],
+          "properties": {
+            "kind": { "const": "parameter" },
+            "position": { "type": "integer", "minimum": 0 }
+          }
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "symbol"],
+          "properties": {
+            "kind": { "const": "capture" },
+            "symbol": { "$ref": "#/$defs/localId" }
+          }
+        }
+      ]
+    },
+    "fieldStep": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "args"],
+      "properties": {
+        "kind": { "const": "field" },
+        "args": {
+          "type": "object", "additionalProperties": false,
+          "required": ["symbol"],
+          "properties": { "symbol": { "$ref": "#/$defs/localId" } }
+        }
+      }
+    },
+    "keyStep": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "args"],
+      "properties": {
+        "kind": { "const": "key" },
+        "args": {
+          "type": "object", "additionalProperties": false,
+          "required": ["selector"],
+          "properties": {
+            "selector": {
+              "oneOf": [
+                { "$ref": "#/$defs/boundaryKey" },
+                {
+                  "type": "object", "additionalProperties": false,
+                  "required": ["kind", "cause"],
+                  "properties": { "kind": { "const": "any" }, "cause": { "const": "unknown-key" } }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "indexStep": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "args"],
+      "properties": {
+        "kind": { "const": "index" },
+        "args": {
+          "type": "object", "additionalProperties": false,
+          "required": ["selector"],
+          "properties": {
+            "selector": {
+              "oneOf": [
+                { "$ref": "#/$defs/boundaryKey" },
+                {
+                  "type": "object", "additionalProperties": false,
+                  "required": ["kind", "value"],
+                  "properties": {
+                    "kind": { "const": "constant" },
+                    "value": { "type": "integer", "minimum": 0 }
+                  }
+                },
+                {
+                  "type": "object", "additionalProperties": false,
+                  "required": ["kind", "cause"],
+                  "properties": { "kind": { "const": "any" }, "cause": { "const": "unknown-index" } }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "variantPayloadStep": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "args"],
+      "properties": {
+        "kind": { "const": "variant-payload" },
+        "args": {
+          "type": "object", "additionalProperties": false,
+          "required": ["variant", "position"],
+          "properties": {
+            "variant": { "$ref": "#/$defs/localId" },
+            "position": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "wideningCause": {
+      "enum": ["unknown-key", "unknown-index", "path-limit", "unsupported-selector", "unresolved-identity", "ambiguous-identity", "coverage-limited"]
+    },
+    "summaryTailStep": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "args"],
+      "properties": {
+        "kind": { "const": "summary-tail" },
+        "args": {
+          "type": "object", "additionalProperties": false,
+          "required": ["causes"],
+          "properties": { "causes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/wideningCause" } } }
+        }
+      }
+    },
+    "step": {
+      "oneOf": [
+        { "$ref": "#/$defs/fieldStep" },
+        { "$ref": "#/$defs/keyStep" },
+        { "$ref": "#/$defs/indexStep" },
+        { "$ref": "#/$defs/variantPayloadStep" },
+        { "$ref": "#/$defs/summaryTailStep" }
+      ]
+    },
+    "projection": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scheme", "schemeVersion", "steps"],
+      "properties": {
+        "scheme": { "const": "csmi.structured-locations" },
+        "schemeVersion": { "const": "0.1.0" },
+        "steps": {
+          "type": "array", "minItems": 1, "maxItems": 16,
+          "items": { "$ref": "#/$defs/step" }
+        }
+      }
+    }
+  }
+}

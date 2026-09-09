@@ -7,7 +7,8 @@ to the [v0.1 specification](https://csmi.brokk.ai/specification/v0-1/) and
 [JSON Schema](https://csmi.brokk.ai/schema/0.1/schema.json).
 
 Standard profiles now cover several language ecosystems plus analyzer-neutral
-[identity-separating value transfers](profiles/value-transfer/0.1/profile.md).
+[identity-separating value transfers](profiles/value-transfer/0.1/profile.md)
+and [structured summary locations](profiles/structured-locations/0.1/profile.md).
 The [C and C++ profile](profiles/cpp/0.1/profile.md) supplies exact artifact,
 resolver, alias, and declaration identity for the initial `std::basic_string`
 case. Their [value-transfer](conformance/value-transfer.md) and
@@ -190,6 +191,12 @@ value-preservation uncertainty, and requires exact implicit-operation identity.
 The independent [C and C++ profile family](profiles/cpp/0.1/profile.md) uses
 `csmi.c-cpp-resolution` for the shared structured resolution boundary and
 `csmi.cpp` for the canonical `std::basic_string` fixtures.
+
+The [`csmi.structured-locations` 0.1.0 profile](profiles/structured-locations/0.1/profile.md)
+defines bounded field, key, index, and variant-payload projections for core
+procedure summaries. Exact and summarized paths remain distinct from summary
+coverage, and unsupported selectors fail closed instead of being flattened to
+their roots.
 
 A normative language profile defines deterministic Python import and
 declaration identity, distribution-to-import mappings, runtime/stub
@@ -437,6 +444,11 @@ profiles/
       profile.md
       schema.json
       fixtures/
+  structured-locations/
+    0.1/
+      profile.md
+      schema.json
+      fixtures/
   cpp/
     0.1/
       profile.md
@@ -456,6 +468,7 @@ scripts/
   validate-profiles.py
   validate-rust-profile.py
   validate-value-transfer.py
+  validate-structured-locations.py
   validate-cpp-profile.py
   validate-schema.py
 ```
@@ -539,6 +552,7 @@ python3 -m venv .venv
 .venv/bin/python scripts/validate-profiles.py
 .venv/bin/python scripts/validate-rust-profile.py
 .venv/bin/python scripts/validate-value-transfer.py
+.venv/bin/python scripts/validate-structured-locations.py
 .venv/bin/python scripts/validate-cpp-profile.py
 .venv/bin/python scripts/validate-runtime-values.py
 .venv/bin/python scripts/validate-collection-flow.py
@@ -558,8 +572,9 @@ keeps Java source
 identities distinct from JVM binary linkage identities and defines an explicit,
 evidence-bearing mapping between them. Run
 `python3 scripts/validate-profiles.py` to validate its schemas and conformance
-instances. The value-transfer and C/C++ profiles add dedicated validators for
-their cross-record and canonical-identity invariants.
+instances. The value-transfer, structured-location, and C/C++ profiles add
+dedicated validators for their cross-record, projection, and canonical-identity
+invariants.
 
 ## License
 

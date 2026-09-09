@@ -29,6 +29,8 @@ PROFILE_SCHEMAS = {
         ROOT / "profiles" / "cpp" / "0.1" / "schema.json",
     "https://csmi.brokk.ai/schema/profiles/runtime-values/0.1/schema.json":
         ROOT / "profiles" / "runtime-values" / "0.1" / "schema.json",
+    "https://csmi.brokk.ai/schema/profiles/structured-locations/0.1/schema.json":
+        ROOT / "profiles" / "structured-locations" / "0.1" / "schema.json",
 }
 PROFILE_REQUIRED_USES = {
     ("csmi.collection-flow", "0.1.0"),
@@ -38,6 +40,7 @@ PROFILE_REQUIRED_USES = {
     ("csmi.cpp", "0.1.0"),
     ("csmi.c-cpp-resolution", "0.1.0"),
     ("csmi.runtime-values", "0.1.0"),
+    ("csmi.structured-locations", "0.1.0"),
 }
 PROFILE_VOCABULARIES = {
     ("csmi.collection-flow", "0.1.0"):
@@ -54,6 +57,8 @@ PROFILE_VOCABULARIES = {
         "https://csmi.brokk.ai/schema/profiles/cpp/0.1/schema.json",
     ("csmi.runtime-values", "0.1.0"):
         "https://csmi.brokk.ai/schema/profiles/runtime-values/0.1/schema.json",
+    ("csmi.structured-locations", "0.1.0"):
+        "https://csmi.brokk.ai/schema/profiles/structured-locations/0.1/schema.json",
 }
 FIXTURE_GROUPS = {
     "valid": True,
@@ -96,6 +101,17 @@ def iter_profile_instances(value: object) -> Iterable[tuple[str, object, str]]:
                     )
         for summary_index, summary in enumerate(model.get("procedureSummaries", [])):
             for transfer_index, transfer in enumerate(summary.get("transfers", [])):
+                for endpoint_name in ("source", "destination"):
+                    projection = transfer.get(endpoint_name, {}).get("projection", {})
+                    schema_uri = PROFILE_VOCABULARIES.get(
+                        (projection.get("scheme"), projection.get("schemeVersion"))
+                    )
+                    if schema_uri in PROFILE_SCHEMAS:
+                        yield schema_uri, projection, (
+                            f"$.semanticModels[{model_index}]"
+                            f".procedureSummaries[{summary_index}].transfers[{transfer_index}]"
+                            f".{endpoint_name}.projection"
+                        )
                 for extension_index, extension in enumerate(transfer.get("extensions", [])):
                     schema_uri = PROFILE_VOCABULARIES.get(
                         (extension.get("vocabulary"), extension.get("version"))
