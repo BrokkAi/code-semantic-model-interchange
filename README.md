@@ -540,6 +540,8 @@ python3 -m venv .venv
 .venv/bin/python scripts/validate-rust-profile.py
 .venv/bin/python scripts/validate-value-transfer.py
 .venv/bin/python scripts/validate-cpp-profile.py
+.venv/bin/python scripts/validate-runtime-values.py
+.venv/bin/python scripts/validate-collection-flow.py
 ```
 
 The canonical schema identity is
@@ -562,3 +564,12 @@ their cross-record and canonical-identity invariants.
 ## License
 
 The contents of this repository are licensed under the [Apache License 2.0](LICENSE).
+
+## Collection-flow profile
+
+The independently versioned [`csmi.collection-flow` 0.1.0 profile](profiles/collection-flow/0.1/profile.md)
+adds generic receiver substitution, keyed collection entry projections,
+higher-order callback transfers, and product component projections through the
+existing CSMI 0.1 extension mechanism. See the
+[conformance contract](conformance/collection-flow.md) and
+[consumer integration guidance](reference/collection-flow-lowering.md).

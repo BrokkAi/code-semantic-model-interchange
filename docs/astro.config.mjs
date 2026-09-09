@@ -65,6 +65,7 @@ export default defineConfig({
             { label: 'JavaScript, TypeScript, and Node', slug: 'profiles/javascript-typescript-node' },
             { label: 'Java/JVM profiles', slug: 'profiles/jvm' },
             { label: 'Rust profile 0.1', slug: 'profiles/rust' },
+            { label: 'Collection-flow profile 0.1', slug: 'profiles/collection-flow' },
             { label: 'Value-transfer profile 0.1', slug: 'profiles/value-transfer' },
             { label: 'Runtime exposure and keyed reads', slug: 'profiles/runtime-values' },
             { label: 'C and C++ profile 0.1', slug: 'profiles/cpp' },

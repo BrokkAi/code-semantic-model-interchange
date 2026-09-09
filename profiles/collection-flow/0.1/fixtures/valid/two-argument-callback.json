@@ -1,0 +1,130 @@
+{
+  "kind": "collection-flow",
+  "callable": "foreach",
+  "receiverSubstitution": {
+    "kind": "receiver-arguments",
+    "declaration": "Map"
+  },
+  "roots": [
+    {
+      "root": {
+        "phase": "input",
+        "role": "receiver"
+      },
+      "shape": {
+        "kind": "keyed",
+        "key": {
+          "kind": "value",
+          "type": {
+            "kind": "parameter",
+            "symbol": "K"
+          }
+        },
+        "value": {
+          "kind": "value",
+          "type": {
+            "kind": "parameter",
+            "symbol": "V"
+          }
+        }
+      }
+    },
+    {
+      "root": {
+        "phase": "input",
+        "role": "parameter",
+        "position": 0
+      },
+      "shape": {
+        "kind": "value",
+        "type": {
+          "kind": "reference",
+          "symbol": "Callback"
+        }
+      }
+    }
+  ],
+  "transfers": [],
+  "invocations": [
+    {
+      "callback": {
+        "root": {
+          "phase": "input",
+          "role": "parameter",
+          "position": 0
+        }
+      },
+      "parameters": [
+        {
+          "kind": "value",
+          "type": {
+            "kind": "parameter",
+            "symbol": "K"
+          }
+        },
+        {
+          "kind": "value",
+          "type": {
+            "kind": "parameter",
+            "symbol": "V"
+          }
+        }
+      ],
+      "arguments": [
+        {
+          "source": {
+            "root": {
+              "phase": "input",
+              "role": "receiver"
+            },
+            "projection": {
+              "scheme": "csmi.collection-flow",
+              "schemeVersion": "0.1.0",
+              "steps": [
+                {
+                  "kind": "entry",
+                  "args": {
+                    "key": {
+                      "kind": "all"
+                    }
+                  }
+                },
+                {
+                  "kind": "entry-key"
+                }
+              ]
+            }
+          },
+          "parameter": 0
+        },
+        {
+          "source": {
+            "root": {
+              "phase": "input",
+              "role": "receiver"
+            },
+            "projection": {
+              "scheme": "csmi.collection-flow",
+              "schemeVersion": "0.1.0",
+              "steps": [
+                {
+                  "kind": "entry",
+                  "args": {
+                    "key": {
+                      "kind": "all"
+                    }
+                  }
+                },
+                {
+                  "kind": "entry-value"
+                }
+              ]
+            }
+          },
+          "parameter": 1
+        }
+      ],
+      "timing": "during-call"
+    }
+  ]
+}
