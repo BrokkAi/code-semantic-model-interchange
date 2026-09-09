@@ -289,16 +289,21 @@ def main():
     # Independent consumer interprets paths into token sets, not producer IDs.
     def select(location, receiver, arguments):
         root = location['root']
-        value = receiver if root['role'] == 'receiver' else arguments[root['position']]
-        for step in location.get('projection', {}).get('steps', []):
+        initial = receiver if root['role'] == 'receiver' else arguments[root['position']]
+        values = [initial]
+        steps = location.get('projection', {}).get('steps', [])
+        for step in steps:
             if step['kind'] == 'entry':
                 key = step['args']['key']
-                value = list(value.items()) if key['kind'] == 'all' else [(arguments[key['position']], value[arguments[key['position']]])]
+                values = [pair for value in values for pair in (
+                    list(value.items()) if key['kind'] == 'all' else
+                    [(arguments[key['position']], value[arguments[key['position']]])]
+                )]
             elif step['kind'] in ('entry-key', 'entry-value'):
-                value = [pair[0 if step['kind'] == 'entry-key' else 1] for pair in value]
+                values = [pair[0 if step['kind'] == 'entry-key' else 1] for pair in values]
             elif step['kind'] == 'component':
-                value = [pair[step['args']['position']] for pair in value]
-        return value
+                values = [pair[step['args']['position']] for pair in values]
+        return values if steps else initial
     # Consume independently authored wire fixtures, preserving callback arity.
     for filename, expected in [('entry-callback.json', [[('key-token', 'value-token')]]), ('two-argument-callback.json', [['key-token'], ['value-token']])]:
         payload = json.loads((PROFILE / 'fixtures/valid' / filename).read_text())
@@ -307,6 +312,9 @@ def main():
         for argument in invocation['arguments']:
             bound[argument['parameter']].extend(select(argument['source'], {'key-token': 'value-token'}, ['callback-token']))
         assert bound == expected
+    component = json.loads((PROFILE / 'fixtures/valid/product-component.json').read_text())
+    local_binding = select(component['transfers'][0]['source'], {}, [('key-token', 'value-token')])
+    assert local_binding == ['value-token']
     update = json.loads((PROFILE / 'fixtures/valid/update.json').read_text())
     transfer = update['transfers'][0]
     arguments = ['selected-key', 'new-token']
