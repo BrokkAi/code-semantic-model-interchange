@@ -172,8 +172,6 @@ def document_errors(document):
     if errors:
         return errors
     provenance = {p['id'] for p in document.get('provenanceRecords', [])}
-    if document.get('defaultProvenance') not in provenance:
-        errors.append('reference documents require resolvable default provenance')
     for model in document['semanticModels']:
         symbols = {symbol['id'] for symbol in model.get('symbols', [])}
         declarations = {d['symbol']: d for d in model.get('declarations', [])}
@@ -191,7 +189,9 @@ def document_errors(document):
         for fact in model.get('extensionFacts', []):
             if fact['vocabulary'] != IDENTIFIER:
                 continue
-            if any(p not in provenance for p in fact.get('provenance', [])):
+            inherited = [document['defaultProvenance']] if 'defaultProvenance' in document else []
+            evidence = fact.get('provenance', inherited)
+            if not evidence or any(p not in provenance for p in evidence):
                 errors.append('unresolved fact provenance')
             payload = fact['payload']
             structural = list(VALIDATOR.iter_errors(payload))
