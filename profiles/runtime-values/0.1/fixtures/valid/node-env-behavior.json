@@ -1,0 +1,20 @@
+{
+  "kind": "keyed-read-behavior",
+  "behaviorId": "node-process-env-read",
+  "exposureId": "node-process-main",
+  "containerMember": "env",
+  "acceptedKeys": "static-property",
+  "normalResult": "value-or-undefined",
+  "exceptionBehavior": "unknown",
+  "mutationModel": "pristine-input-until-write",
+  "materialization": "host-defined",
+  "evidence": {
+    "producer": "https://example.test/node-profile-producer",
+    "method": "reviewed-runtime-contract",
+    "inputsDigest": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "coverage": {
+    "status": "partial",
+    "limitations": ["accessor-or-proxy-incomplete"]
+  }
+}

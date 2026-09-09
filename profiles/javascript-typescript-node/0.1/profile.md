@@ -346,3 +346,8 @@ The normative conformance cases are in
 `conformance/javascript-typescript-node.md`. The representative positive
 document is `fixtures/valid/javascript-typescript-node.json`; focused payload
 acceptance and rejection fixtures live beside each profile schema.
+
+Runtime-global exposure and keyed-read value observations are not defined by
+this family. Models needing them declare `csmi.runtime-values` `0.1.0`
+separately. In particular, `runtime-declaration-binding` MUST NOT represent a
+global exposure, a map key, an array index, or a keyed load result.
