@@ -1,0 +1,98 @@
+{
+  "documentType": "semantic-document",
+  "schema": "https://csmi.brokk.ai/schema/0.1/schema.json",
+  "semanticModelVersion": "0.1",
+  "serializationVersion": "0.1-json",
+  "provenanceRecords": [
+    {
+      "id": "reviewed",
+      "producer": {
+        "identifier": "https://example.org/tools/model-author",
+        "version": "1.0.0"
+      },
+      "generationMethod": "manual-authoring"
+    }
+  ],
+  "defaultProvenance": "reviewed",
+  "semanticModels": [
+    {
+      "artifactSelectors": [
+        { "purl": "pkg:generic/example-collection@1.0.0" }
+      ],
+      "vocabularyUses": [
+        {
+          "identifier": "csmi.structured-locations",
+          "version": "0.1.0",
+          "schema": "https://csmi.brokk.ai/schema/profiles/structured-locations/0.1/schema.json",
+          "requirement": "required",
+          "affects": [
+            {
+              "kind": "core-slot",
+              "slot": "procedure-summary-projection",
+              "target": { "callable": "put" }
+            }
+          ]
+        }
+      ],
+      "symbols": [
+        {
+          "id": "put",
+          "scheme": "org.example.declaration",
+          "schemeVersion": "1.0",
+          "stability": "portable",
+          "descriptors": [
+            { "role": "namespace", "name": "example" },
+            { "role": "callable", "name": "put", "disambiguator": "(key,value)" }
+          ]
+        }
+      ],
+      "declarations": [
+        {
+          "symbol": "put",
+          "category": "callable",
+          "callable": {
+            "kind": "method",
+            "receiver": { "kind": "instance" },
+            "parameters": [
+              { "position": 0, "binding": "positional-only", "required": true },
+              { "position": 1, "binding": "positional-only", "required": true }
+            ],
+            "results": []
+          }
+        }
+      ],
+      "procedureSummaries": [
+        {
+          "callable": "put",
+          "transfers": [
+            {
+              "source": {
+                "root": { "phase": "input", "role": "parameter", "position": 1 }
+              },
+              "destination": {
+                "root": { "phase": "output", "role": "receiver" },
+                "projection": {
+                  "scheme": "csmi.structured-locations",
+                  "schemeVersion": "0.1.0",
+                  "steps": [
+                    {
+                      "kind": "key",
+                      "args": { "selector": { "kind": "parameter", "position": 0 } }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "completenessStatements": [
+        {
+          "family": "procedure-summaries",
+          "scope": { "callable": "put" },
+          "status": "complete"
+        }
+      ]
+    }
+  ]
+}

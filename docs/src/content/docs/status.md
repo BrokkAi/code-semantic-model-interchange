@@ -16,8 +16,8 @@ version-controlled content and links to its exact schema and source revision.
 
 Separately versioned standard vocabularies define language identity,
 applicability, and analyzer-neutral semantic extensions without changing the
-language-neutral core. The `csmi.value-transfer`, `csmi.c-cpp-resolution`, and
-`csmi.cpp` profiles are version `0.1.0` while the containing documents remain
+language-neutral core. The `csmi.value-transfer`, `csmi.structured-locations`,
+`csmi.c-cpp-resolution`, and `csmi.cpp` profiles are version `0.1.0` while the containing documents remain
 CSMI semantic model `0.1` serialized as `0.1-json`. Profile evolution follows
 its own exact version and schema URI; schema acceptance alone is not support.
 

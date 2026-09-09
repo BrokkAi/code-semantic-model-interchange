@@ -27,6 +27,7 @@ payloads. Core validation does not imply profile support:
 - [Java/JVM profile family](/profiles/jvm/)
 - [Value-transfer profile 0.1](/schema/profiles/value-transfer/0.1/schema.json)
 - [Runtime exposure and keyed-read values 0.1](/schema/profiles/runtime-values/0.1/schema.json)
+- [Structured summary locations 0.1](/schema/profiles/structured-locations/0.1/schema.json)
 - [C and C++ profile 0.1](/schema/profiles/cpp/0.1/schema.json)
 
 Validate repository profile fixtures with
@@ -34,3 +35,5 @@ Validate repository profile fixtures with
 checks in `scripts/validate-value-transfer.py` and
 `scripts/validate-cpp-profile.py`, and the runtime operation and cross-record
 checks in `scripts/validate-runtime-values.py`.
+Structured projection references, bounds, widening, and negotiation are checked
+by `scripts/validate-structured-locations.py`.

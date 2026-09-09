@@ -1,0 +1,23 @@
+{
+  "scheme": "csmi.structured-locations",
+  "schemeVersion": "0.1.0",
+  "steps": [
+    { "kind": "field", "args": { "symbol": "f01" } },
+    { "kind": "field", "args": { "symbol": "f02" } },
+    { "kind": "field", "args": { "symbol": "f03" } },
+    { "kind": "field", "args": { "symbol": "f04" } },
+    { "kind": "field", "args": { "symbol": "f05" } },
+    { "kind": "field", "args": { "symbol": "f06" } },
+    { "kind": "field", "args": { "symbol": "f07" } },
+    { "kind": "field", "args": { "symbol": "f08" } },
+    { "kind": "field", "args": { "symbol": "f09" } },
+    { "kind": "field", "args": { "symbol": "f10" } },
+    { "kind": "field", "args": { "symbol": "f11" } },
+    { "kind": "field", "args": { "symbol": "f12" } },
+    { "kind": "field", "args": { "symbol": "f13" } },
+    { "kind": "field", "args": { "symbol": "f14" } },
+    { "kind": "field", "args": { "symbol": "f15" } },
+    { "kind": "field", "args": { "symbol": "f16" } },
+    { "kind": "field", "args": { "symbol": "f17" } }
+  ]
+}

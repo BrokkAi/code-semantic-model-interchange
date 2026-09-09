@@ -68,6 +68,7 @@ export default defineConfig({
             { label: 'Collection-flow profile 0.1', slug: 'profiles/collection-flow' },
             { label: 'Value-transfer profile 0.1', slug: 'profiles/value-transfer' },
             { label: 'Runtime exposure and keyed reads', slug: 'profiles/runtime-values' },
+            { label: 'Structured summary locations', slug: 'profiles/structured-locations' },
             { label: 'C and C++ profile 0.1', slug: 'profiles/cpp' },
           ],
         },

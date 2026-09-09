@@ -1,0 +1,7 @@
+{
+  "scheme": "csmi.structured-locations",
+  "schemeVersion": "0.1.0",
+  "steps": [
+    { "kind": "index", "args": { "selector": { "kind": "any", "cause": "unknown-index" } } }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "scheme": "csmi.structured-locations",
+  "schemeVersion": "0.1.0",
+  "steps": [
+    { "kind": "key", "args": { "selector": { "kind": "source-text", "value": "key.clone()" } } }
+  ]
+}

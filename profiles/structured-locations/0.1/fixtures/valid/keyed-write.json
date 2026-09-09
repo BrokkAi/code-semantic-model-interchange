@@ -1,0 +1,10 @@
+{
+  "scheme": "csmi.structured-locations",
+  "schemeVersion": "0.1.0",
+  "steps": [
+    {
+      "kind": "key",
+      "args": { "selector": { "kind": "parameter", "position": 0 } }
+    }
+  ]
+}

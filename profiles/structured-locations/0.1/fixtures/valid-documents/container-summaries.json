@@ -1,0 +1,144 @@
+{
+  "documentType": "semantic-document",
+  "schema": "https://csmi.brokk.ai/schema/0.1/schema.json",
+  "semanticModelVersion": "0.1",
+  "serializationVersion": "0.1-json",
+  "provenanceRecords": [{
+    "id": "reviewed-model",
+    "producer": { "identifier": "https://example.org/tools/summary-author", "version": "1.0.0" },
+    "generationMethod": "manual-authoring"
+  }],
+  "defaultProvenance": "reviewed-model",
+  "semanticModels": [{
+    "artifactSelectors": [{
+      "purl": "pkg:generic/example-containers@1.0.0",
+      "digests": [{
+        "algorithm": "sha-256",
+        "coverage": "binary",
+        "value": "1111111111111111111111111111111111111111111111111111111111111111"
+      }]
+    }],
+    "vocabularyUses": [{
+      "identifier": "csmi.structured-locations",
+      "version": "0.1.0",
+      "schema": "https://csmi.brokk.ai/schema/profiles/structured-locations/0.1/schema.json",
+      "requirement": "required",
+      "affects": [
+        { "kind": "core-slot", "slot": "procedure-summary-projection", "target": { "callable": "associativePut" } },
+        { "kind": "core-slot", "slot": "procedure-summary-projection", "target": { "callable": "sequenceAppend" } },
+        { "kind": "core-slot", "slot": "procedure-summary-projection", "target": { "callable": "wrapSuccess" } }
+      ]
+    }],
+    "symbols": [
+      {
+        "id": "containers", "scheme": "org.example.declaration", "schemeVersion": "1.0", "stability": "portable",
+        "descriptors": [{ "role": "namespace", "name": "containers" }]
+      },
+      {
+        "id": "associativePut", "scheme": "org.example.declaration", "schemeVersion": "1.0", "stability": "portable",
+        "descriptors": [{ "role": "namespace", "name": "containers" }, { "role": "callable", "name": "put", "disambiguator": "(key,value)" }]
+      },
+      {
+        "id": "sequenceAppend", "scheme": "org.example.declaration", "schemeVersion": "1.0", "stability": "portable",
+        "descriptors": [{ "role": "namespace", "name": "containers" }, { "role": "callable", "name": "append", "disambiguator": "(value)" }]
+      },
+      {
+        "id": "wrapSuccess", "scheme": "org.example.declaration", "schemeVersion": "1.0", "stability": "portable",
+        "descriptors": [{ "role": "namespace", "name": "containers" }, { "role": "callable", "name": "success", "disambiguator": "(value)" }]
+      },
+      {
+        "id": "success", "scheme": "org.example.declaration", "schemeVersion": "1.0", "stability": "portable",
+        "descriptors": [{ "role": "namespace", "name": "containers" }, { "role": "term", "name": "success" }]
+      }
+    ],
+    "declarations": [
+      { "symbol": "containers", "category": "namespace" },
+      {
+        "symbol": "associativePut", "category": "callable",
+        "callable": {
+          "kind": "method", "receiver": { "kind": "instance" },
+          "parameters": [
+            { "position": 0, "binding": "positional-only", "required": true },
+            { "position": 1, "binding": "positional-only", "required": true }
+          ],
+          "results": [{ "position": 0 }]
+        }
+      },
+      {
+        "symbol": "sequenceAppend", "category": "callable",
+        "callable": {
+          "kind": "method", "receiver": { "kind": "instance" },
+          "parameters": [{ "position": 0, "binding": "positional-only", "required": true }],
+          "results": []
+        }
+      },
+      {
+        "symbol": "wrapSuccess", "category": "callable",
+        "callable": {
+          "kind": "function",
+          "parameters": [{ "position": 0, "binding": "positional-only", "required": true }],
+          "results": [{ "position": 0 }]
+        }
+      },
+      { "symbol": "success", "category": "value", "owner": "containers" }
+    ],
+    "procedureSummaries": [
+      {
+        "callable": "associativePut",
+        "transfers": [
+          {
+            "source": { "root": { "phase": "input", "role": "parameter", "position": 1 } },
+            "destination": {
+              "root": { "phase": "output", "role": "receiver" },
+              "projection": {
+                "scheme": "csmi.structured-locations", "schemeVersion": "0.1.0",
+                "steps": [{ "kind": "key", "args": { "selector": { "kind": "parameter", "position": 0 } } }]
+              }
+            }
+          },
+          {
+            "source": {
+              "root": { "phase": "input", "role": "receiver" },
+              "projection": {
+                "scheme": "csmi.structured-locations", "schemeVersion": "0.1.0",
+                "steps": [{ "kind": "key", "args": { "selector": { "kind": "parameter", "position": 0 } } }]
+              }
+            },
+            "destination": { "root": { "phase": "output", "role": "result", "position": 0 } }
+          }
+        ]
+      },
+      {
+        "callable": "sequenceAppend",
+        "transfers": [{
+          "source": { "root": { "phase": "input", "role": "parameter", "position": 0 } },
+          "destination": {
+            "root": { "phase": "output", "role": "receiver" },
+            "projection": {
+              "scheme": "csmi.structured-locations", "schemeVersion": "0.1.0",
+              "steps": [{ "kind": "index", "args": { "selector": { "kind": "any", "cause": "unknown-index" } } }]
+            }
+          }
+        }]
+      },
+      {
+        "callable": "wrapSuccess",
+        "transfers": [{
+          "source": { "root": { "phase": "input", "role": "parameter", "position": 0 } },
+          "destination": {
+            "root": { "phase": "output", "role": "result", "position": 0 },
+            "projection": {
+              "scheme": "csmi.structured-locations", "schemeVersion": "0.1.0",
+              "steps": [{ "kind": "variant-payload", "args": { "variant": "success", "position": 0 } }]
+            }
+          }
+        }]
+      }
+    ],
+    "completenessStatements": [
+      { "family": "procedure-summaries", "scope": { "callable": "associativePut" }, "status": "complete" },
+      { "family": "procedure-summaries", "scope": { "callable": "sequenceAppend" }, "status": "partial", "limitations": [{ "kind": "coverage-limited" }] },
+      { "family": "procedure-summaries", "scope": { "callable": "wrapSuccess" }, "status": "unknown" }
+    ]
+  }]
+}
