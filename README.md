@@ -9,6 +9,8 @@ to the [v0.1 specification](https://csmi.brokk.ai/specification/v0-1/) and
 Standard profiles now cover several language ecosystems plus analyzer-neutral
 [identity-separating value transfers](profiles/value-transfer/0.1/profile.md)
 and [structured summary locations](profiles/structured-locations/0.1/profile.md).
+The [deferred-yield profile](profiles/deferred-yield/0.1/profile.md) separately
+models handles that expose values only on later resume operations.
 The [C and C++ profile](profiles/cpp/0.1/profile.md) supplies exact artifact,
 resolver, alias, and declaration identity for the initial `std::basic_string`
 case. Their [value-transfer](conformance/value-transfer.md) and
@@ -449,6 +451,16 @@ profiles/
       profile.md
       schema.json
       fixtures/
+  deferred-yield/
+    0.1/
+      profile.md
+      schema.json
+      fixtures/
+  collection-flow/
+    0.1/
+      profile.md
+      schema.json
+      fixtures/
   cpp/
     0.1/
       profile.md
@@ -470,6 +482,9 @@ scripts/
   validate-value-transfer.py
   validate-structured-locations.py
   validate-cpp-profile.py
+  validate-runtime-values.py
+  validate-collection-flow.py
+  validate-deferred-yield.py
   validate-schema.py
 ```
 
@@ -553,6 +568,7 @@ python3 -m venv .venv
 .venv/bin/python scripts/validate-rust-profile.py
 .venv/bin/python scripts/validate-value-transfer.py
 .venv/bin/python scripts/validate-structured-locations.py
+.venv/bin/python scripts/validate-deferred-yield.py
 .venv/bin/python scripts/validate-cpp-profile.py
 .venv/bin/python scripts/validate-runtime-values.py
 .venv/bin/python scripts/validate-collection-flow.py
@@ -588,3 +604,15 @@ higher-order callback transfers, and product component projections through the
 existing CSMI 0.1 extension mechanism. See the
 [conformance contract](conformance/collection-flow.md) and
 [consumer integration guidance](reference/collection-flow-lowering.md).
+
+## Deferred-yield profile
+
+The independently versioned [`csmi.deferred-yield` 0.1.0 profile](profiles/deferred-yield/0.1/profile.md)
+links one resolver-proven factory callable to one later resume callable. The
+factory establishes a handle retaining an input source; each resume may expose
+zero or one item, and the handle may expose zero or more items over its
+lifetime. Entry key/value members, shared or exclusive borrowing, ownership,
+copy/move/derived delivery, validity, and invalidation are explicit. No
+deferred item is approximated as an eager during-call transfer. See the
+[conformance contract](conformance/deferred-yield.md) and
+[consumer integration guidance](reference/deferred-yield-lowering.md).

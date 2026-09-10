@@ -26,3 +26,9 @@ new vocabulary, not an expansion of the accepted core type or transfer forms.
 Existing consumers remain compatible with old documents; consumers receiving
 this required profile must implement it or preserve uninterpretable affected
 units. Repository conformance evidence does not certify production adapters.
+
+The independent `csmi.deferred-yield` profile also begins at exact version
+`0.1.0`. It does not revise collection-flow `0.1.0`: producers opt in only for
+exact factory/resume/handle-type scopes, and consumers that lack this required vocabulary
+must keep those scopes uninterpretable rather than treating omitted yields as
+an empty stream.

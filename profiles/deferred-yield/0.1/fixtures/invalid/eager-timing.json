@@ -1,0 +1,10 @@
+{
+  "kind": "deferred-yield",
+  "factory": "iter",
+  "resume": "next",
+  "handleType": "Iter",
+  "roots": [],
+  "construction": {},
+  "resumeContract": {},
+  "yield": { "timing": "during-call", "perResume": "one", "perHandle": "one", "members": [] }
+}
