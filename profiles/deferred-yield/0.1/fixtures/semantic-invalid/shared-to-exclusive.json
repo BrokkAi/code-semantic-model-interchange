@@ -1,0 +1,31 @@
+{
+  "kind": "deferred-yield",
+  "factory": "iter",
+  "resume": "next",
+  "handleType": "Iter",
+  "roots": [
+    { "callable": "iter", "root": { "phase": "input", "role": "receiver" }, "shape": { "kind": "keyed", "key": { "kind": "value", "type": { "kind": "unknown" } }, "value": { "kind": "value", "type": { "kind": "unknown" } }, "entryComponents": ["key", "value"] } },
+    { "callable": "iter", "root": { "phase": "output", "role": "result", "position": 0 }, "shape": { "kind": "value", "type": { "kind": "reference", "symbol": "Iter" } } },
+    { "callable": "next", "root": { "phase": "input", "role": "receiver" }, "shape": { "kind": "value", "type": { "kind": "reference", "symbol": "Iter" } } },
+    { "callable": "next", "root": { "phase": "output", "role": "result", "position": 0 }, "shape": { "kind": "product", "components": [{ "kind": "value", "type": { "kind": "unknown" } }] } }
+  ],
+  "construction": {
+    "source": { "callable": "iter", "root": { "phase": "input", "role": "receiver" } },
+    "handle": { "callable": "iter", "root": { "phase": "output", "role": "result", "position": 0 } },
+    "retention": "borrowed-shared",
+    "validity": { "kind": "source-retained", "invalidation": { "kind": "none-asserted" } }
+  },
+  "resumeContract": {
+    "handleInput": { "callable": "next", "root": { "phase": "input", "role": "receiver" } },
+    "yieldedResult": { "callable": "next", "root": { "phase": "output", "role": "result", "position": 0 } },
+    "factoryResultFlow": { "kind": "required-consumer-proof", "factoryResult": { "callable": "iter", "root": { "phase": "output", "role": "result", "position": 0 } }, "resumeInput": { "callable": "next", "root": { "phase": "input", "role": "receiver" } } }
+  },
+  "yield": {
+    "timing": "after-construction",
+    "perResume": "zero-or-one",
+    "perHandle": "zero-or-more",
+    "members": [
+      { "position": 0, "role": "value", "source": { "callable": "iter", "root": { "phase": "input", "role": "receiver" }, "projection": { "scheme": "csmi.deferred-yield", "schemeVersion": "0.1.0", "steps": [{ "kind": "entry", "args": { "key": { "kind": "all" } } }, { "kind": "entry-value" }] } }, "delivery": "exclusive-borrow" }
+    ]
+  }
+}

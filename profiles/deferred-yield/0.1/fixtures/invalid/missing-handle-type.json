@@ -1,0 +1,9 @@
+{
+  "kind": "deferred-yield",
+  "factory": "iter",
+  "resume": "next",
+  "roots": [],
+  "construction": {},
+  "resumeContract": {},
+  "yield": { "timing": "after-construction", "perResume": "zero-or-one", "perHandle": "zero-or-more", "members": [] }
+}

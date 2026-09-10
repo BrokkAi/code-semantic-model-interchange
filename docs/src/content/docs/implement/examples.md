@@ -46,3 +46,11 @@ uses `csmi.c-cpp-resolution` for exact artifact and resolver context and
 `std::string` alias target, and reproducible declaration keys for the selected
 copy constructor and copy assignment. Same-named custom types and incomplete
 header closure remain non-matches.
+
+## Deferred yields
+
+The [`csmi.deferred-yield` profile](https://github.com/BrokkAi/code-semantic-model-interchange/blob/main/profiles/deferred-yield/0.1/profile.md)
+has raw payload fixtures plus complete-document semantic cases. Its independent
+consumer exercise distinguishes factory construction from later repeated
+resume events, including an empty source, explicit item-member projections,
+borrow and ownership modes, invalidation, and unsupported completeness.

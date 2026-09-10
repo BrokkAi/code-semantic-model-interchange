@@ -66,6 +66,7 @@ export default defineConfig({
             { label: 'Java/JVM profiles', slug: 'profiles/jvm' },
             { label: 'Rust profile 0.1', slug: 'profiles/rust' },
             { label: 'Collection-flow profile 0.1', slug: 'profiles/collection-flow' },
+            { label: 'Deferred-yield profile 0.1', slug: 'profiles/deferred-yield' },
             { label: 'Value-transfer profile 0.1', slug: 'profiles/value-transfer' },
             { label: 'Runtime exposure and keyed reads', slug: 'profiles/runtime-values' },
             { label: 'Structured summary locations', slug: 'profiles/structured-locations' },

@@ -187,6 +187,15 @@ projection slot without adding container, enum, or language-specific fields to
 the core. Its `0.1.0` version is negotiated independently and is required for
 every callable whose summary uses the scheme.
 
+The analyzer-neutral `csmi.deferred-yield` `0.1.0` profile at
+`profiles/deferred-yield/0.1/profile.md` models a factory that establishes a
+stateful handle and a distinct resume callable that may expose values later.
+It keeps construction-time transfer separate from zero-or-more later yield
+events, and carries explicit retention, delivery, projection, validity, and
+invalidation semantics. Core procedure-summary transfers and
+`csmi.collection-flow` `0.1.0` remain during-call contracts and MUST NOT be
+reinterpreted as deferred yields.
+
 ### 2.5 Normative JSON mapping
 
 The canonical schema identifier for the v0.1 JSON serialization is
@@ -1767,6 +1776,15 @@ It defines bounded, structured sublocation selectors and their exact versus
 summarized overlap rules. It does not define language lowering, receiver
 resolution, ownership, or implicit cleanup, and an unsupported projection
 remains uninterpretable rather than becoming a root-level transfer.
+
+CSMI 0.1 also assigns `csmi.deferred-yield` `0.1.0` in the
+[deferred-yield profile](https://csmi.brokk.ai/profiles/deferred-yield/).
+It defines a linked factory/resume contract for values exposed after the
+factory invocation, including per-resume and per-handle multiplicity,
+retention and delivery modes, structured item members, and invalidation
+constraints. It neither changes core transfer timing nor extends
+`csmi.collection-flow` `0.1.0`; unsupported required use makes the exact
+factory/resume/handle-type scope uninterpretable.
 
 ### 3.7 Manifest, provenance, and canonicalization
 
