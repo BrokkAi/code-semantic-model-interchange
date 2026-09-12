@@ -12,10 +12,12 @@ resolution, and consumer support are separate outcomes.
 | Intrinsic target without an exact required vocabulary use | Treat the refinement as uninterpretable. |
 | `biconditional` mode and true result | Refine the subject to the target type. |
 | `biconditional` mode and false result | Refine the subject to the complement of the target within the subject's incoming type. |
-| `positive-only` mode and true result | Refine the subject to the target type. |
+| `positive-only` mode and true result | Replace the incoming type with the target, including non-subtype invariant generic targets. |
 | `positive-only` mode and false result | Make no refinement; do not infer the complement. |
 | Target not representable exactly | Preserve a typed unsupported outcome; do not emit a weaker target or an empty fact. |
 | Callable or parameter cannot be resolved | Treat the affected scope as uninterpretable. |
+| Incomplete applicable overload set or missing candidate fact | Preserve uncertainty and apply no narrowing. |
+| Equivalent duplicate facts | Deduplicate without adding evidence or creating a conflict. |
 | Conflicting applicable overload facts | Preserve a conflict and apply neither candidate; document order never chooses truth. |
 | Unsupported required profile version | Treat the exact affected callable/parameter scope as uninterpretable. |
 | Empty or omitted facts | Keep the family open-world unless a separately valid completeness statement closes the exact scope. |

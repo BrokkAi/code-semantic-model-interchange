@@ -61,6 +61,11 @@ def payload_issues(payload: dict[str, Any], declarations: dict[str, dict[str, An
         issues.append("callable shape must be available")
         return issues
     positions = [item.get("position") for item in shape.get("parameters", []) if isinstance(item, dict)]
+    if positions != list(range(len(positions))):
+        issues.append("parameter positions must be unique contiguous canonical ordinals")
+    results = shape.get("results", [])
+    if len(results) != 1 or results[0].get("position") != 0:
+        issues.append("refinement requires exactly one logical result at position zero")
     subject_position = payload.get("subject", {}).get("position")
     if subject_position not in positions:
         issues.append("subject parameter ordinal must exist in the exact callable shape")
@@ -81,10 +86,26 @@ def candidate_issues(payloads: list[dict[str, Any]]) -> list[str]:
 
 
 def document_issues(document: dict[str, Any]) -> list[str]:
+    # Validate before indexing: extension payloads are opaque to the core schema.
+    core = Draft202012Validator(load(ROOT / "spec" / "0.1" / "schema.json"), format_checker=FormatChecker())
+    payload_schema = Draft202012Validator(load(PROFILE / "schema.json"))
+    if not core.is_valid(document) or document.get("documentType") != "semantic-document":
+        return ["invalid core structure"]
+    for model in document["semanticModels"]:
+        for fact in model.get("extensionFacts", []):
+            if fact.get("vocabulary") == VOCABULARY and not payload_schema.is_valid(fact.get("payload")):
+                return ["invalid refinement payload structure"]
     issues: list[str] = []
     provenance_ids = {record.get("id") for record in document.get("provenanceRecords", [])}
     default_provenance = document.get("defaultProvenance")
     for model in document.get("semanticModels", []):
+        symbols = model.get("symbols", [])
+        symbol_ids = [item["id"] for item in symbols]
+        declaration_ids = [item["symbol"] for item in model.get("declarations", [])]
+        if len(symbol_ids) != len(set(symbol_ids)) or len(declaration_ids) != len(set(declaration_ids)):
+            issues.append("duplicate symbol or declaration identity")
+        if any(identity not in symbol_ids for identity in declaration_ids):
+            issues.append("declaration identity missing from symbol table")
         declarations = {item.get("symbol"): item for item in model.get("declarations", [])}
         declared_required_uses = {
             (use.get("identifier"), use.get("version"))
@@ -164,35 +185,71 @@ def document_issues(document: dict[str, Any]) -> list[str]:
 
 
 def consume_branch(payloads: list[dict[str, Any]], callable_id: str, position: int, truthy: bool) -> dict[str, Any]:
-    """Consume only the portable wire contract; never collapse uncertainty to no-op."""
+    """Consume validated payloads after identity, applicability, and binding proof."""
     matches = [
         payload for payload in payloads
         if payload.get("callable") == callable_id
         and payload.get("subject") == {"kind": "parameter", "position": position}
     ]
+    # Equivalent duplicates are idempotent, not conflicts.
+    matches = list({canonical(payload): payload for payload in matches}.values())
     if len(matches) != 1:
         return {"kind": "uninterpretable", "reason": "missing-or-conflicting-candidates"}
     outcome = matches[0]["outcome"]
     if outcome["kind"] != "supported":
         return {"kind": "uninterpretable", "reason": outcome["limitation"]["kind"]}
     if truthy:
-        return {"kind": "include", "target": outcome["target"]}
+        return {"kind": "intersect" if outcome["semantics"] == "biconditional" else "replace", "target": outcome["target"]}
     if outcome["semantics"] == "biconditional":
         return {"kind": "exclude", "target": outcome["target"]}
     return {"kind": "unchanged"}
+
+
+def consume_overloads(
+    payloads: list[dict[str, Any]], subjects: list[tuple[str, int]], truthy: bool,
+    *, dispatch_complete: bool, same_bound_value: bool,
+) -> dict[str, Any]:
+    """Caller supplies exact applicable scopes after binding and substitution.
+
+    This demonstrates agreement only, not overload discovery or type checking.
+    Input payloads must already pass document/profile validation.
+    """
+    if not dispatch_complete or not same_bound_value or not subjects:
+        return {"kind": "uninterpretable", "reason": "incomplete-dispatch-or-binding"}
+    outcomes = []
+    for callable_id, position in subjects:
+        candidates = [item for item in payloads if item["callable"] == callable_id
+                      and item["subject"] == {"kind": "parameter", "position": position}]
+        unique = {canonical(item["outcome"]): item["outcome"] for item in candidates}
+        if len(unique) != 1:
+            return {"kind": "uninterpretable", "reason": "missing-or-conflicting-overload"}
+        outcome = next(iter(unique.values()))
+        if outcome["kind"] != "supported":
+            return {"kind": "uninterpretable", "reason": outcome["limitation"]["kind"]}
+        outcomes.append(canonical(outcome))
+    # Compare the full contract even when both false branches would be unchanged.
+    if len(set(outcomes)) != 1:
+        return {"kind": "uninterpretable", "reason": "conflicting-overloads"}
+    return consume_branch(payloads, subjects[0][0], subjects[0][1], truthy)
 
 
 def consume_document(
     document: dict[str, Any], supported_versions: set[str], truthy: bool,
     supported_vocabularies: set[tuple[str, str]] | None = None,
 ) -> dict[str, Any]:
+    if document_issues(document):
+        return {"kind": "uninterpretable", "reason": "invalid-profile-join"}
+    if len(document["semanticModels"]) != 1:
+        return {"kind": "uninterpretable", "reason": "unresolved-model-selection"}
     model = document["semanticModels"][0]
     use = next((item for item in model.get("vocabularyUses", []) if item.get("identifier") == VOCABULARY), None)
     if use is None or use.get("version") not in supported_versions or use.get("requirement") != "required":
         return {"kind": "uninterpretable", "reason": "unsupported-required-vocabulary"}
-    if document_issues(document):
-        return {"kind": "uninterpretable", "reason": "invalid-profile-join"}
-    facts = [item for item in model["extensionFacts"] if item.get("vocabulary") == VOCABULARY]
+    facts = [item for item in model.get("extensionFacts", []) if item.get("vocabulary") == VOCABULARY]
+    if not facts:
+        return {"kind": "uninterpretable", "reason": "missing-candidates"}
+    if len({canonical(item["scope"]) for item in facts}) != 1:
+        return {"kind": "uninterpretable", "reason": "unresolved-callable-selection"}
     fact = facts[0]
     scope = fact["scope"]
     payloads = [item["payload"] for item in facts if item.get("scope") == scope]
@@ -211,9 +268,9 @@ def main() -> int:
     validator = Draft202012Validator(schema, format_checker=FormatChecker())
     core_validator = Draft202012Validator(load(ROOT / "spec" / "0.1" / "schema.json"), format_checker=FormatChecker())
     declarations = {
-        "is_text_sequence": {"category": "callable", "callable": {"parameters": [{"position": 0}]}},
-        "is_text": {"category": "callable", "callable": {"parameters": [{"position": 0}]}},
-        "has_dynamic_shape": {"category": "callable", "callable": {"parameters": [{"position": 0}, {"position": 1}]}},
+        "is_text_sequence": {"category": "callable", "callable": {"parameters": [{"position": 0}], "results": [{"position": 0}]}},
+        "is_text": {"category": "callable", "callable": {"parameters": [{"position": 0}], "results": [{"position": 0}]}},
+        "has_dynamic_shape": {"category": "callable", "callable": {"parameters": [{"position": 0}, {"position": 1}], "results": [{"position": 0}]}},
         "Sequence": {"category": "type"},
         "Text": {"category": "type"},
     }
@@ -244,9 +301,9 @@ def main() -> int:
     type_is = valid_payloads["type-is-sequence-text"]
     type_guard = valid_payloads["type-guard-text"]
     unsupported = valid_payloads["unsupported-target"]
-    assert consume_branch([type_is], "is_text_sequence", 0, True)["kind"] == "include"
+    assert consume_branch([type_is], "is_text_sequence", 0, True)["kind"] == "intersect"
     assert consume_branch([type_is], "is_text_sequence", 0, False)["kind"] == "exclude"
-    assert consume_branch([type_guard], "is_text", 0, True)["kind"] == "include"
+    assert consume_branch([type_guard], "is_text", 0, True)["kind"] == "replace"
     assert consume_branch([type_guard], "is_text", 0, False) == {"kind": "unchanged"}
     assert consume_branch([unsupported], "has_dynamic_shape", 1, True) == {
         "kind": "uninterpretable", "reason": "unsupported-target"
@@ -295,6 +352,7 @@ def main() -> int:
     declared_intrinsic = copy.deepcopy(undeclared_intrinsic)
     declared_intrinsic["semanticModels"][0]["vocabularyUses"].append({
         "identifier": "example.types", "version": "1.0.0", "requirement": "required",
+        "schema": "https://example.org/types/1.0.0/schema.json",
         "affects": [{
             "kind": "fact-family", "family": FAMILY,
             "scope": declared_intrinsic["semanticModels"][0]["extensionFacts"][0]["scope"],
@@ -307,7 +365,7 @@ def main() -> int:
     assert consume_document(
         declared_intrinsic, {VERSION}, True,
         {(VOCABULARY, VERSION), ("example.types", "1.0.0")},
-    )["kind"] == "include"
+    )["kind"] == "intersect"
     conflict = copy.deepcopy(documents["complete-biconditional"])
     alternate = copy.deepcopy(conflict["semanticModels"][0]["extensionFacts"][0])
     alternate["payload"]["outcome"]["semantics"] = "positive-only"
@@ -328,9 +386,61 @@ def main() -> int:
         "kind": "indeterminate", "limitation": {"kind": "uninterpretable-semantics"}
     }
     assert "complete scope contains unsupported, indeterminate, conflict, or no fact" in document_issues(indeterminate)
+    # Exercise public document consumption, not just schema fixture rejection.
+    for target in ({"kind": "unknown"}, {"kind": "invented"}):
+        malformed = copy.deepcopy(documents["complete-biconditional"])
+        malformed["semanticModels"][0]["extensionFacts"][0]["payload"]["outcome"]["target"] = target
+        assert consume_document(malformed, {VERSION}, True)["kind"] == "uninterpretable"
+    bad_mode = copy.deepcopy(documents["complete-biconditional"])
+    bad_mode["semanticModels"][0]["extensionFacts"][0]["payload"]["outcome"]["semantics"] = "invented"
+    assert consume_document(bad_mode, {VERSION}, False)["kind"] == "uninterpretable"
+    for mutation in ("missing-symbol", "duplicate-symbol", "duplicate-declaration", "wrong-result", "wrong-ordinal"):
+        malformed = copy.deepcopy(documents["complete-biconditional"])
+        model = malformed["semanticModels"][0]
+        if mutation == "missing-symbol":
+            model["symbols"].pop(0)
+        elif mutation == "duplicate-symbol":
+            model["symbols"].append(copy.deepcopy(model["symbols"][0]))
+        elif mutation == "duplicate-declaration":
+            model["declarations"].append(copy.deepcopy(model["declarations"][0]))
+        elif mutation == "wrong-result":
+            model["declarations"][1]["callable"]["results"] = []
+        else:
+            model["declarations"][1]["callable"]["parameters"].append(copy.deepcopy(model["declarations"][1]["callable"]["parameters"][0]))
+        assert consume_document(malformed, {VERSION}, True)["kind"] == "uninterpretable", mutation
+    empty = copy.deepcopy(documents["complete-biconditional"])
+    empty["semanticModels"][0].pop("extensionFacts")
+    empty["semanticModels"][0].pop("completenessStatements")
+    assert consume_document(empty, {VERSION}, True)["kind"] == "uninterpretable"
+    duplicates = copy.deepcopy(documents["complete-biconditional"])
+    duplicate_fact = copy.deepcopy(duplicates["semanticModels"][0]["extensionFacts"][0])
+    # Core arrays reject byte-identical records; different provenance may carry
+    # the same logical fact and must still deduplicate at the profile layer.
+    extra_provenance = copy.deepcopy(duplicates["provenanceRecords"][0])
+    extra_provenance["id"] = "second-producer"
+    duplicates["provenanceRecords"].append(extra_provenance)
+    duplicate_fact["provenance"] = ["second-producer"]
+    duplicates["semanticModels"][0]["extensionFacts"].append(duplicate_fact)
+    assert consume_document(duplicates, {VERSION}, True)["kind"] == "intersect"
+    assert consume_branch([type_guard, type_guard], "is_text", 0, True)["kind"] == "replace"
+    assert consume_branch([type_guard], "is_text", 1, True)["kind"] == "uninterpretable"
+    overload = copy.deepcopy(type_guard)
+    overload["callable"] = "is_text_overload"
+    subjects = [("is_text", 0), ("is_text_overload", 0)]
+    agree = [type_guard, overload]
+    assert consume_overloads(agree, subjects, True, dispatch_complete=True, same_bound_value=True)["kind"] == "replace"
+    assert consume_overloads(agree, subjects, False, dispatch_complete=True, same_bound_value=True)["kind"] == "unchanged"
+    for complete, bound in ((False, True), (True, False)):
+        assert consume_overloads(agree, subjects, True, dispatch_complete=complete, same_bound_value=bound)["kind"] == "uninterpretable"
+    assert consume_overloads([type_guard], subjects, True, dispatch_complete=True, same_bound_value=True)["kind"] == "uninterpretable"
+    for changed_outcome in (type_is["outcome"], unsupported["outcome"], {**type_guard["outcome"], "target": type_is["outcome"]["target"]}):
+        disagree = [type_guard, {**overload, "outcome": changed_outcome}]
+        for branch in (True, False):
+            assert consume_overloads(disagree, subjects, branch, dispatch_complete=True, same_bound_value=True)["kind"] == "uninterpretable"
     print(
         f"conditional type refinement: {counts}; exact subject/type resolution, "
         "TypeIs/TypeGuard branch distinction, three core-valid document joins, completeness, "
+        "malformed input, equivalent duplicates, complete overload agreement, "
         "and fail-closed/unsupported-version consumer cases passed"
     )
     return 0

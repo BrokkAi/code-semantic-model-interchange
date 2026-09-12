@@ -25,8 +25,11 @@ normative wire contract is in
 
 ## Branch semantics
 
-On a true result, both modes intersect the incoming subject type with the exact
-target type. On a false result, `biconditional` removes the target type from the
+On a true result, `biconditional` intersects the incoming subject type with the
+exact target type. `positive-only` replaces the incoming type with the target;
+it must not assume subtype compatibility or intersect invariant generic types
+into an impossible branch. On a false result, `biconditional` removes the target
+type from the
 incoming subject domain, while `positive-only` makes no refinement. Neither
 mode proves that the call occurs, that it returns normally, or that the target
 is inhabited.
@@ -48,3 +51,32 @@ Python's `TypeIs[T]` can project to `biconditional` only when the producer has
 proved its specified two-branch meaning and exact `T`. `TypeGuard[T]` projects
 to `positive-only`. Decorator names, return annotations parsed as text, or a
 similar helper name do not establish either contract.
+
+A Python method's `self` or `cls` maps to the core receiver, which is excluded
+from the explicit parameter ordinal sequence. Bind the guarded argument through
+the resolved callable shape, not the source parameter index. Preserve
+`type[object]` as a structured target; this profile does not authorize erasing
+generic arguments or treating an arbitrary structural target as a nominal class.
+The [Python typing specification](https://typing.python.org/en/latest/spec/narrowing.html)
+defines positive TypeGuard replacement and the distinct TypeIs intersection.
+
+## Cross-language projection boundary
+
+The [TypeScript narrowing handbook](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates)
+also demonstrates user predicates narrowing both branches. A producer with an
+exact resolved parameter predicate and target can project that two-branch
+contract to `biconditional`, subject to the same dispatch, identity, agreement,
+and completeness rules as Python TypeIs. Parameter names in the source must be
+resolved to canonical ordinals; TypeScript structural targets require supported
+structured identity or an exact required intrinsic vocabulary. A rendered
+`parameterName is Type` annotation alone is insufficient evidence.
+
+| Source contract | Retained fact | Left to the language adapter |
+| --- | --- | --- |
+| Python TypeIs | True intersection and false exclusion | Annotation identity, subtype validity, binding, generic substitution |
+| Python TypeGuard | True replacement and unchanged false branch | Annotation identity, invariant generic semantics, binding |
+| TypeScript parameter type predicate | Proven two-branch refinement | Predicate binding, structural type meaning, overload applicability |
+
+These are manual mapping analyses. The repository wire consumer demonstrates
+shared comparison and fail-closed behavior; no generated cross-language pack
+or production adapter interoperability is claimed.

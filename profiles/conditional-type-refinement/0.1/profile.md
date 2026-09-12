@@ -45,12 +45,14 @@ Every intrinsic target MUST have an exact required vocabulary use for its
 identifier and version; an undeclared, optional, or unsupported intrinsic makes
 the refinement uninterpretable.
 
-`semantics: "biconditional"` means a truthy result refines the subject to the
+`semantics: "biconditional"` means a true result intersects the subject with the
 target and a false result excludes the target from the subject. This is the
 portable meaning needed for Python `TypeIs`. `semantics: "positive-only"`
-means only the truthy refinement is asserted; the false branch carries no
-negative refinement. This is the portable meaning needed for Python
-`TypeGuard`. Neither value identifies a runtime test implementation, promises
+means the true branch takes the target type as its refined type; the false
+branch carries no negative refinement. Unlike biconditional intersection, this
+positive replacement does not require the target to be a subtype of the incoming
+type (for example, invariant `list[object]` to `list[str]`). This is the portable
+meaning needed for Python `TypeGuard`. Neither value identifies a runtime test implementation, promises
 purity, nor establishes subtype compatibility outside separately available
 type-system evidence.
 
@@ -80,11 +82,38 @@ prohibit complete coverage. Partial coverage retains core limitations.
 Omission remains open-world and never means “no refinement.”
 
 An independent consumer applies a supported fact only after exact callable,
-subject, vocabulary, artifact, and target identities match. On a truthy branch
-both semantic modes add the target. On a false branch only `biconditional`
+subject, vocabulary, artifact, and target identities match. On a true branch
+`biconditional` intersects the incoming type with the target; `positive-only`
+replaces the incoming type with the target. On a false branch only `biconditional`
 excludes it; `positive-only` leaves the input type information unchanged. A
 closed failure, a conflict, an unknown required vocabulary, or uninterpretable
 identity yields an uninterpretable refinement result rather than empty facts.
+
+## Invocation and overload agreement
+
+Version 0.1.0 applies to a normal Boolean result of a callable with exactly one
+logical result at position zero. A producer or consumer MUST establish that
+Boolean result contract through trusted semantic evidence; arbitrary truthiness
+conversions and exceptional returns are outside this profile. The subject is
+the bound parameter value at the result observation; transporting the fact back
+to a caller expression requires proof that the expression still denotes that
+value. The fact does not prove absence of mutation or alias invalidation.
+
+A resolved single callable may use its exact scope. If dispatch leaves multiple
+applicable overloads, the consumer MUST enumerate the complete candidate set,
+bind each subject ordinal to the same caller value, instantiate type parameters,
+and compare the resulting semantics and structured target identities. Every
+candidate MUST supply an interpretable supported fact and agree; missing,
+unsupported, or conflicting candidates prohibit narrowing. A partial candidate
+set cannot establish agreement. Distinct overload symbols do not compare equal
+merely because their display names match. Equivalent repeated facts for one
+scope are deduplicated before this comparison. This profile carries facts for
+individual callable symbols, not an overload-resolution algorithm.
+
+Unbound or out-of-scope type parameters, unknown generic argument semantics,
+unresolved aliases, and unsupported structural predicates are uninterpretable.
+The structural shape alone does not certify that a consumer can interpret a
+target; generic arguments MUST NOT be erased to a nominal class test.
 
 ## Evidence and version history
 
@@ -94,3 +123,9 @@ consumer in `scripts/validate-conditional-type-refinement.py` consumes only the
 wire contract and demonstrates the distinct false-branch behavior plus
 fail-closed handling. It is interoperability evidence, not a Bifrost adapter or
 production certification.
+
+The motivating semantics are checked against the [Python typing specification's
+TypeGuard and TypeIs rules](https://typing.python.org/en/latest/spec/narrowing.html).
+The fixtures exercise a language-neutral projection, not a generated Python
+producer or an independent production implementation. Other language mappings
+require their own identity, invocation, and type-system evidence.

@@ -7,9 +7,10 @@ description: Exact callable predicates that refine one parameter to a structured
 type meaning of an exact predicate callable. Each fact identifies the exact
 callable, a zero-based parameter ordinal, and an exact structured target type.
 
-`biconditional` semantics refine the true branch to the target and the false
-branch to its complement within the incoming subject type. `positive-only`
-semantics refine only the true branch. These correspond to the portable meaning
+`biconditional` semantics intersect the incoming type with the target on the
+true branch and exclude the target on the false branch. `positive-only`
+semantics replace the incoming type with the target only on the true branch;
+the false branch is unchanged. These correspond to the portable meaning
 needed for Python `TypeIs` and `TypeGuard`, without adding either language form
 to CSMI core.
 
