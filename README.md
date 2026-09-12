@@ -11,6 +11,9 @@ Standard profiles now cover several language ecosystems plus analyzer-neutral
 and [structured summary locations](profiles/structured-locations/0.1/profile.md).
 The [deferred-yield profile](profiles/deferred-yield/0.1/profile.md) separately
 models handles that expose values only on later resume operations.
+The [conditional type-refinement profile](profiles/conditional-type-refinement/0.1/profile.md)
+models exact predicate-call refinements without adding source-language type-guard
+forms to CSMI core.
 The [C and C++ profile](profiles/cpp/0.1/profile.md) supplies exact artifact,
 resolver, alias, and declaration identity for the initial `std::basic_string`
 case. Their [value-transfer](conformance/value-transfer.md) and
@@ -456,6 +459,11 @@ profiles/
       profile.md
       schema.json
       fixtures/
+  conditional-type-refinement/
+    0.1/
+      profile.md
+      schema.json
+      fixtures/
   collection-flow/
     0.1/
       profile.md
@@ -485,6 +493,7 @@ scripts/
   validate-runtime-values.py
   validate-collection-flow.py
   validate-deferred-yield.py
+  validate-conditional-type-refinement.py
   validate-schema.py
 ```
 
@@ -569,6 +578,7 @@ python3 -m venv .venv
 .venv/bin/python scripts/validate-value-transfer.py
 .venv/bin/python scripts/validate-structured-locations.py
 .venv/bin/python scripts/validate-deferred-yield.py
+.venv/bin/python scripts/validate-conditional-type-refinement.py
 .venv/bin/python scripts/validate-cpp-profile.py
 .venv/bin/python scripts/validate-runtime-values.py
 .venv/bin/python scripts/validate-collection-flow.py
@@ -616,3 +626,15 @@ copy/move/derived delivery, validity, and invalidation are explicit. No
 deferred item is approximated as an eager during-call transfer. See the
 [conformance contract](conformance/deferred-yield.md) and
 [consumer integration guidance](reference/deferred-yield-lowering.md).
+
+## Conditional type-refinement profile
+
+The independently versioned
+[`csmi.conditional-type-refinement` 0.1.0 profile](profiles/conditional-type-refinement/0.1/profile.md)
+binds a predicate result to an exact callable subject, parameter ordinal, and
+structured target type. Its `biconditional` mode refines both result branches;
+its `positive-only` mode refines only the true branch. Unsupported target forms,
+conflicting overload semantics, and uninterpretable required vocabulary remain
+typed fail-closed outcomes. See the
+[conformance contract](conformance/conditional-type-refinement.md) and
+[consumer integration guidance](reference/conditional-type-refinement-lowering.md).

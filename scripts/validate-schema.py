@@ -31,6 +31,8 @@ PROFILE_SCHEMAS = {
         ROOT / "profiles" / "runtime-values" / "0.1" / "schema.json",
     "https://csmi.brokk.ai/schema/profiles/structured-locations/0.1/schema.json":
         ROOT / "profiles" / "structured-locations" / "0.1" / "schema.json",
+    "https://csmi.brokk.ai/schema/profiles/conditional-type-refinement/0.1/schema.json":
+        ROOT / "profiles" / "conditional-type-refinement" / "0.1" / "schema.json",
 }
 PROFILE_REQUIRED_USES = {
     ("csmi.collection-flow", "0.1.0"),
@@ -41,6 +43,7 @@ PROFILE_REQUIRED_USES = {
     ("csmi.c-cpp-resolution", "0.1.0"),
     ("csmi.runtime-values", "0.1.0"),
     ("csmi.structured-locations", "0.1.0"),
+    ("csmi.conditional-type-refinement", "0.1.0"),
 }
 PROFILE_VOCABULARIES = {
     ("csmi.collection-flow", "0.1.0"):
@@ -59,6 +62,8 @@ PROFILE_VOCABULARIES = {
         "https://csmi.brokk.ai/schema/profiles/runtime-values/0.1/schema.json",
     ("csmi.structured-locations", "0.1.0"):
         "https://csmi.brokk.ai/schema/profiles/structured-locations/0.1/schema.json",
+    ("csmi.conditional-type-refinement", "0.1.0"):
+        "https://csmi.brokk.ai/schema/profiles/conditional-type-refinement/0.1/schema.json",
 }
 FIXTURE_GROUPS = {
     "valid": True,

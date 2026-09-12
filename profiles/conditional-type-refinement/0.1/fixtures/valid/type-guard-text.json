@@ -1,0 +1,10 @@
+{
+  "kind": "conditional-type-refinement",
+  "callable": "is_text",
+  "subject": { "kind": "parameter", "position": 0 },
+  "outcome": {
+    "kind": "supported",
+    "semantics": "positive-only",
+    "target": { "kind": "reference", "symbol": "Text" }
+  }
+}

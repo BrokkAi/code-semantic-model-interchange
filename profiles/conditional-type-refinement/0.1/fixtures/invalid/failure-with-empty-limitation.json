@@ -1,0 +1,6 @@
+{
+  "kind": "conditional-type-refinement",
+  "callable": "is_text",
+  "subject": { "kind": "parameter", "position": 0 },
+  "outcome": { "kind": "indeterminate", "limitation": {} }
+}

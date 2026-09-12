@@ -32,3 +32,10 @@ The independent `csmi.deferred-yield` profile also begins at exact version
 exact factory/resume/handle-type scopes, and consumers that lack this required vocabulary
 must keep those scopes uninterpretable rather than treating omitted yields as
 an empty stream.
+
+The independent `csmi.conditional-type-refinement` profile begins at exact
+version `0.1.0`. It distinguishes biconditional true-and-false refinement from
+positive-only refinement and binds each fact to an exact callable, parameter
+ordinal, and structured target type. Unsupported targets, unresolved overloads,
+and uninterpretable semantics remain fail-closed outcomes rather than empty
+facts.

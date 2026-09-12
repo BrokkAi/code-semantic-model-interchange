@@ -1,0 +1,18 @@
+{
+  "documentType": "semantic-document",
+  "schema": "https://csmi.brokk.ai/schema/0.1/schema.json",
+  "semanticModelVersion": "0.1",
+  "serializationVersion": "0.1-json",
+  "provenanceRecords": [{ "id": "refinement-fixture", "producer": { "identifier": "https://csmi.brokk.ai/conformance/conditional-type-refinement", "version": "0.1.0" }, "generationMethod": "manual-authoring" }],
+  "semanticModels": [{
+    "artifactSelectors": [{ "purl": "pkg:generic/conditional-refinement-fixture@1.0.0" }],
+    "symbols": [{ "id": "has_dynamic_shape", "scheme": "example.refinement", "schemeVersion": "0.1.0", "descriptors": [{ "name": "has_dynamic_shape", "role": "term" }], "stability": "portable" }],
+    "declarations": [{ "symbol": "has_dynamic_shape", "category": "callable", "callable": { "kind": "function", "parameters": [{ "position": 0, "binding": "positional-only", "required": true }, { "position": 1, "binding": "positional-only", "required": true }], "results": [{ "position": 0 }] } }],
+    "vocabularyUses": [{ "identifier": "csmi.conditional-type-refinement", "version": "0.1.0", "schema": "https://csmi.brokk.ai/schema/profiles/conditional-type-refinement/0.1/schema.json", "requirement": "required", "affects": [{ "kind": "fact-family", "family": "conditional-type-refinements", "scope": { "callable": "has_dynamic_shape", "subject": { "kind": "parameter", "position": 1 } } }] }],
+    "extensionFacts": [{ "vocabulary": "csmi.conditional-type-refinement", "version": "0.1.0", "family": "conditional-type-refinements", "scope": { "callable": "has_dynamic_shape", "subject": { "kind": "parameter", "position": 1 } }, "payload": { "kind": "conditional-type-refinement", "callable": "has_dynamic_shape", "subject": { "kind": "parameter", "position": 1 }, "outcome": { "kind": "unsupported", "limitation": { "kind": "unsupported-target" } } }, "provenance": ["refinement-fixture"] }],
+    "completenessStatements": [
+      { "vocabulary": "csmi.conditional-type-refinement", "version": "0.1.0", "family": "conditional-type-refinements", "scope": { "callable": "has_dynamic_shape", "subject": { "kind": "parameter", "position": 1 } }, "status": "partial", "limitations": [{ "kind": "unsupported-construct" }] },
+      { "family": "declaration-aspects", "scope": { "symbol": "has_dynamic_shape", "aspect": "callable-shape" }, "status": "complete" }
+    ]
+  }]
+}
