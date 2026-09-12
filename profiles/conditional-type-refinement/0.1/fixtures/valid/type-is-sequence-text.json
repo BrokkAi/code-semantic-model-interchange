@@ -1,0 +1,14 @@
+{
+  "kind": "conditional-type-refinement",
+  "callable": "is_text_sequence",
+  "subject": { "kind": "parameter", "position": 0 },
+  "outcome": {
+    "kind": "supported",
+    "semantics": "biconditional",
+    "target": {
+      "kind": "reference",
+      "symbol": "Sequence",
+      "arguments": [{ "kind": "reference", "symbol": "Text" }]
+    }
+  }
+}

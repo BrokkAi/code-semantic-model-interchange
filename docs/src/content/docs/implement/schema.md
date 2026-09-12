@@ -29,6 +29,7 @@ payloads. Core validation does not imply profile support:
 - [Runtime exposure and keyed-read values 0.1](/schema/profiles/runtime-values/0.1/schema.json)
 - [Structured summary locations 0.1](/schema/profiles/structured-locations/0.1/schema.json)
 - [Deferred-yield profile 0.1](/schema/profiles/deferred-yield/0.1/schema.json)
+- [Conditional type-refinement profile 0.1](/schema/profiles/conditional-type-refinement/0.1/schema.json)
 - [C and C++ profile 0.1](/schema/profiles/cpp/0.1/schema.json)
 
 Validate repository profile fixtures with
@@ -40,3 +41,6 @@ Structured projection references, bounds, widening, and negotiation are checked
 by `scripts/validate-structured-locations.py`.
 Linked factory/resume scopes, multiplicity, retention, delivery, validity, and
 fail-closed coverage are checked by `scripts/validate-deferred-yield.py`.
+Exact callable subjects, structured target types, conditional modes, overload
+conflicts, and fail-closed coverage are checked by
+`scripts/validate-conditional-type-refinement.py`.

@@ -54,3 +54,10 @@ has raw payload fixtures plus complete-document semantic cases. Its independent
 consumer exercise distinguishes factory construction from later repeated
 resume events, including an empty source, explicit item-member projections,
 borrow and ownership modes, invalidation, and unsupported completeness.
+
+## Conditional type refinements
+
+The [`csmi.conditional-type-refinement` profile](https://github.com/BrokkAi/code-semantic-model-interchange/blob/main/profiles/conditional-type-refinement/0.1/profile.md)
+has payload and complete-document cases for exact callable/parameter identity,
+structured generic target types, biconditional and positive-only branch
+semantics, overload conflicts, unsupported targets, and fail-closed coverage.

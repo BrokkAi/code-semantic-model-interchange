@@ -1,0 +1,9 @@
+{
+  "kind": "conditional-type-refinement",
+  "callable": "has_dynamic_shape",
+  "subject": { "kind": "parameter", "position": 1 },
+  "outcome": {
+    "kind": "unsupported",
+    "limitation": { "kind": "unsupported-target" }
+  }
+}
