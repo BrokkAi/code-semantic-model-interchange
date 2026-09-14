@@ -47,3 +47,11 @@ fixtures beside their schemas. Their dedicated validators check cross-record
 scope, required-use, exact declaration ownership, canonical C++ signature
 digests, uncertainty, and completeness invariants that JSON Schema cannot
 express.
+
+Portable runtime contracts keep a separate 0.2.0 corpus under
+`profiles/runtime-values/0.2/fixtures/`. Run
+`python3 scripts/validate-runtime-values-0.2.py` for its document joins,
+applicability/conflict outcomes, digest commitments, and negotiation tests.
+Synthetic source/runtime/review evidence in that corpus is identified as
+conformance data; recomputed contract and activation identities do not make it
+deployment evidence. The 0.1.0 corpus remains unchanged and independently tested.

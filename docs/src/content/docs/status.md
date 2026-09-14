@@ -39,3 +39,9 @@ positive-only refinement and binds each fact to an exact callable, parameter
 ordinal, and structured target type. Unsupported targets, unresolved overloads,
 and uninterpretable semantics remain fail-closed outcomes rather than empty
 facts.
+
+`csmi.runtime-values` **0.2.0** is a separately negotiated revision for
+reviewed portable contracts, explicit target applicability, and executable
+store/read evidence. Version 0.1.0 retains its exact-artifact semantics and
+schema. A contract digest never denotes runtime bytes. A successful declared
+target analysis is conditional evidence, not deployment verification.

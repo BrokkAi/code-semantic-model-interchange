@@ -1,0 +1,52 @@
+{
+  "kind": "runtime-binding",
+  "bindingId": "portable-node-env-binding",
+  "activationId": "portable-node-env-activation",
+  "activationDigest": "8a415c2915b600811b89e6b807a32e7e2107369761a6d6f833721b545ad4218b",
+  "contractId": "node-env-portable",
+  "language": "javascript",
+  "source": {
+    "resource": "conformance://runtime-values-0.2/source/portable-node-env",
+    "resourceDigest": "62bf1c7f3de0eaf6a0f0e1ad80c8be00bf0f6c4a1574a6f968bb6b9d6710379f",
+    "startByte": 0,
+    "endByte": 1
+  },
+  "scope": {
+    "scheme": {
+      "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+      "version": "0.2.0"
+    },
+    "ownerDigest": "62bf1c7f3de0eaf6a0f0e1ad80c8be00bf0f6c4a1574a6f968bb6b9d6710379f",
+    "locatorDigest": "fe206389479f363b40f10d9a753d0c4a6500ebbd9ceaab19391ffd52fb6d3119",
+    "kind": "scope"
+  },
+  "root": {
+    "scheme": {
+      "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+      "version": "0.2.0"
+    },
+    "ownerDigest": "62bf1c7f3de0eaf6a0f0e1ad80c8be00bf0f6c4a1574a6f968bb6b9d6710379f",
+    "locatorDigest": "d339cd12dc6bb20d7d362b486e9c74d32b60545d5ea2f622695c705606b460d8",
+    "kind": "value"
+  },
+  "container": {
+    "scheme": {
+      "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+      "version": "0.2.0"
+    },
+    "ownerDigest": "62bf1c7f3de0eaf6a0f0e1ad80c8be00bf0f6c4a1574a6f968bb6b9d6710379f",
+    "locatorDigest": "06dcdbc1e32bb2d38e66ebce275afa64a85047337e1780cf80419319ff5e7369",
+    "kind": "value"
+  },
+  "lexicalBinding": "absent",
+  "rebinding": "excluded",
+  "outcome": "exact",
+  "evidence": {
+    "producer": "https://csmi.brokk.ai/conformance/runtime-values-0.2",
+    "method": "synthetic-resolver-binding",
+    "inputsDigest": "f94ef91d9761f6a1a834ebeec587de634b06264c9043fad403e0385e0f782d62"
+  },
+  "coverage": {
+    "status": "complete"
+  }
+}

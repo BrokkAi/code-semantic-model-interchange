@@ -1,0 +1,497 @@
+{
+  "documentType": "semantic-document",
+  "schema": "https://csmi.brokk.ai/schema/0.1/schema.json",
+  "semanticModelVersion": "0.1",
+  "serializationVersion": "0.1-json",
+  "provenanceRecords": [
+    {
+      "id": "runtime-values-conformance",
+      "producer": {
+        "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2",
+        "version": "0.2.0"
+      },
+      "generationMethod": "manual-authoring"
+    }
+  ],
+  "defaultProvenance": "runtime-values-conformance",
+  "semanticModels": [
+    {
+      "artifactSelectors": [
+        {
+          "purl": "pkg:generic/python.org/cpython",
+          "versionRange": "vers:pypi/>=3.13.0|<3.14.0"
+        }
+      ],
+      "vocabularyUses": [
+        {
+          "identifier": "csmi.runtime-values",
+          "version": "0.2.0",
+          "schema": "https://csmi.brokk.ai/schema/profiles/runtime-values/0.2/schema.json",
+          "requirement": "required",
+          "affects": [
+            {
+              "kind": "fact-family",
+              "family": "runtime-contracts",
+              "scope": {
+                "contractId": "cpython-os-environ-portable"
+              }
+            },
+            {
+              "kind": "fact-family",
+              "family": "runtime-targets",
+              "scope": {
+                "targetId": "python-env-target"
+              }
+            },
+            {
+              "kind": "fact-family",
+              "family": "runtime-activations",
+              "scope": {
+                "activationId": "python-env-activation"
+              }
+            },
+            {
+              "kind": "fact-family",
+              "family": "runtime-bindings",
+              "scope": {
+                "bindingId": "python-env-binding"
+              }
+            },
+            {
+              "kind": "fact-family",
+              "family": "runtime-observations",
+              "scope": {
+                "observationId": "python-env-observation"
+              }
+            }
+          ]
+        }
+      ],
+      "extensionFacts": [
+        {
+          "vocabulary": "csmi.runtime-values",
+          "version": "0.2.0",
+          "family": "runtime-contracts",
+          "scope": {
+            "contractId": "cpython-os-environ-portable"
+          },
+          "payload": {
+            "kind": "runtime-contract",
+            "contractId": "cpython-os-environ-portable",
+            "definition": {
+              "identifier": "https://csmi.brokk.ai/runtime-contract/cpython-os-environ",
+              "version": "0.2.0",
+              "applicability": {
+                "basis": "portable",
+                "selectors": [
+                  {
+                    "purl": "pkg:generic/python.org/cpython",
+                    "versionRange": "vers:pypi/>=3.13.0|<3.14.0"
+                  }
+                ]
+              },
+              "context": {
+                "scheme": {
+                  "identifier": "https://csmi.brokk.ai/runtime-context/cpython",
+                  "version": "0.2.0"
+                },
+                "platform": [
+                  "linux",
+                  "darwin"
+                ],
+                "architecture": [
+                  "x64"
+                ],
+                "realm": [
+                  "main"
+                ],
+                "moduleMode": [
+                  "python"
+                ],
+                "launchMode": [
+                  "script",
+                  "module",
+                  "command",
+                  "stdin",
+                  "repl"
+                ],
+                "initializationBoundary": [
+                  "module-import",
+                  "application-entry"
+                ]
+              },
+              "surface": {
+                "root": "https://csmi.brokk.ai/runtime-root/python-os",
+                "container": "environ"
+              },
+              "languages": [
+                "python"
+              ],
+              "assumptions": [
+                "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/import-time-mapping"
+              ],
+              "behavior": {
+                "keyDomain": "static-property",
+                "lookup": "mapping-entry",
+                "presentValue": "string",
+                "absent": "exception",
+                "keyEquality": {
+                  "identifier": "https://csmi.brokk.ai/key-equality/exact-string",
+                  "version": "0.2.0"
+                },
+                "read": {
+                  "exceptions": "may-throw",
+                  "materialization": "host-defined"
+                },
+                "write": {
+                  "conversion": "requires-contract",
+                  "normal": "store-converted-value",
+                  "exceptional": "may-mutate"
+                },
+                "delete": {
+                  "normal": "remove-entry",
+                  "exceptional": "may-mutate"
+                },
+                "initialOrigins": [
+                  {
+                    "keys": {
+                      "kind": "all-properties"
+                    },
+                    "origin": "external-environment"
+                  }
+                ],
+                "coverage": {
+                  "status": "partial",
+                  "limitations": [
+                    "exception-behavior-indeterminate",
+                    "materialization-incomplete"
+                  ]
+                }
+              }
+            },
+            "contractDigest": "8ca26d52de47ccc1e0ef854678a3e89d48e85eb1b41f6fbd1cee2f4c30467f17",
+            "evidence": {
+              "producer": "https://csmi.brokk.ai/conformance/runtime-values-0.2",
+              "method": "synthetic-contract-review",
+              "inputsDigest": "1462a9af1fe63d4542b152874587bce311a1da533622b73f4201b3be7435d90a"
+            }
+          },
+          "provenance": [
+            "runtime-values-conformance"
+          ]
+        },
+        {
+          "vocabulary": "csmi.runtime-values",
+          "version": "0.2.0",
+          "family": "runtime-targets",
+          "scope": {
+            "targetId": "python-env-target"
+          },
+          "payload": {
+            "kind": "runtime-target",
+            "targetId": "python-env-target",
+            "definition": {
+              "partition": "conformance://runtime-values-0.2/partition/python-env",
+              "resources": [
+                {
+                  "resource": "conformance://runtime-values-0.2/source/python-env",
+                  "resourceDigest": "ee79e38245c0261f72ad27fc8b4a767d14371f4dce1d8129877177e796bb62d7"
+                }
+              ],
+              "basis": "declared-target",
+              "context": {
+                "scheme": {
+                  "identifier": "https://csmi.brokk.ai/runtime-context/cpython",
+                  "version": "0.2.0"
+                },
+                "platform": "linux",
+                "architecture": "x64",
+                "realm": "main",
+                "moduleMode": "python",
+                "launchMode": "script",
+                "initializationBoundary": "module-import"
+              },
+              "assumptions": [
+                "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/synthetic-source-closure",
+                "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/host-runtime-input",
+                "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/import-time-mapping",
+                "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/verified-synthetic-artifact",
+                "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/conflict-a",
+                "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/conflict-b"
+              ],
+              "evidence": {
+                "producer": "https://csmi.brokk.ai/conformance/runtime-values-0.2",
+                "method": "synthetic-declared-target",
+                "inputsDigest": "c60de690b070dbef9e467634803527aa91eed9adb51df7f6f20d5d628f6c54a3"
+              },
+              "coverage": {
+                "status": "complete"
+              },
+              "runtime": {
+                "purl": "pkg:generic/python.org/cpython@3.13.0"
+              }
+            },
+            "targetDigest": "ff4f3e6b08b1a5415d0354ea8d0c6ed9f2e087422f0621856767ae486fcbf53d"
+          },
+          "provenance": [
+            "runtime-values-conformance"
+          ]
+        },
+        {
+          "vocabulary": "csmi.runtime-values",
+          "version": "0.2.0",
+          "family": "runtime-activations",
+          "scope": {
+            "activationId": "python-env-activation"
+          },
+          "payload": {
+            "kind": "runtime-activation",
+            "activationId": "python-env-activation",
+            "targetId": "python-env-target",
+            "surface": {
+              "root": "https://csmi.brokk.ai/runtime-root/python-os",
+              "container": "environ"
+            },
+            "candidateIds": [
+              "cpython-os-environ-portable"
+            ],
+            "candidateCoverage": {
+              "status": "complete"
+            },
+            "disabledIds": [],
+            "reviews": [
+              {
+                "contractDigest": "8ca26d52de47ccc1e0ef854678a3e89d48e85eb1b41f6fbd1cee2f4c30467f17",
+                "targetDigest": "ff4f3e6b08b1a5415d0354ea8d0c6ed9f2e087422f0621856767ae486fcbf53d",
+                "purpose": "https://csmi.brokk.ai/conformance/runtime-values-0.2/purpose/activation",
+                "reviewer": "https://csmi.brokk.ai/conformance/runtime-values-0.2/reviewer",
+                "decision": "approved",
+                "evidence": {
+                  "producer": "https://csmi.brokk.ai/conformance/runtime-values-0.2",
+                  "method": "synthetic-scoped-review",
+                  "inputsDigest": "6bda0ee845c6b6917f5ef5b0e0cba37d69375e7cd8db45f4abb97f0f85bc2ef7"
+                }
+              }
+            ],
+            "policy": {
+              "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/policy",
+              "version": "0.2.0",
+              "inputsDigest": "04f568a86efd6d9f014f3a53ce2aee9b768df6f9e3fc45eec8993f63c5ba6f2e",
+              "trustedReviewers": [
+                "https://csmi.brokk.ai/conformance/runtime-values-0.2/reviewer"
+              ],
+              "purpose": "https://csmi.brokk.ai/conformance/runtime-values-0.2/purpose/activation"
+            },
+            "outcome": "matched",
+            "selectedIds": [
+              "cpython-os-environ-portable"
+            ],
+            "activationDigest": "07d41975f901decf017a64e8d47899211809dbce94245db3592780665905e3fb"
+          },
+          "provenance": [
+            "runtime-values-conformance"
+          ]
+        },
+        {
+          "vocabulary": "csmi.runtime-values",
+          "version": "0.2.0",
+          "family": "runtime-bindings",
+          "scope": {
+            "bindingId": "python-env-binding"
+          },
+          "payload": {
+            "kind": "runtime-binding",
+            "bindingId": "python-env-binding",
+            "activationId": "python-env-activation",
+            "activationDigest": "07d41975f901decf017a64e8d47899211809dbce94245db3592780665905e3fb",
+            "contractId": "cpython-os-environ-portable",
+            "language": "python",
+            "source": {
+              "resource": "conformance://runtime-values-0.2/source/python-env",
+              "resourceDigest": "ee79e38245c0261f72ad27fc8b4a767d14371f4dce1d8129877177e796bb62d7",
+              "startByte": 27,
+              "endByte": 50
+            },
+            "scope": {
+              "scheme": {
+                "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                "version": "0.2.0"
+              },
+              "ownerDigest": "ee79e38245c0261f72ad27fc8b4a767d14371f4dce1d8129877177e796bb62d7",
+              "locatorDigest": "bec2abc0cc5afd696083223d2d28bf3ac4e051f9bab956b1d80d4658abd0318b",
+              "kind": "scope"
+            },
+            "root": {
+              "scheme": {
+                "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                "version": "0.2.0"
+              },
+              "ownerDigest": "ee79e38245c0261f72ad27fc8b4a767d14371f4dce1d8129877177e796bb62d7",
+              "locatorDigest": "aed0c0ac4da9786a7ef21407cc409506c3115bbd5bbd90e20ac6a40cf1e1df88",
+              "kind": "value"
+            },
+            "container": {
+              "scheme": {
+                "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                "version": "0.2.0"
+              },
+              "ownerDigest": "ee79e38245c0261f72ad27fc8b4a767d14371f4dce1d8129877177e796bb62d7",
+              "locatorDigest": "793c8145e1e8f5a196bd639dd92e563ae6e823fe3cd09ecdbde62392490bc279",
+              "kind": "value"
+            },
+            "lexicalBinding": "absent",
+            "rebinding": "excluded",
+            "outcome": "exact",
+            "evidence": {
+              "producer": "https://csmi.brokk.ai/conformance/runtime-values-0.2",
+              "method": "synthetic-resolver-binding",
+              "inputsDigest": "9fcede70e29583a0e049a0e02c4930c665b1769c1db6adea8e0a857be0703d25"
+            },
+            "coverage": {
+              "status": "complete"
+            }
+          },
+          "provenance": [
+            "runtime-values-conformance"
+          ]
+        },
+        {
+          "vocabulary": "csmi.runtime-values",
+          "version": "0.2.0",
+          "family": "runtime-observations",
+          "scope": {
+            "observationId": "python-env-observation"
+          },
+          "payload": {
+            "kind": "runtime-observation",
+            "observationId": "python-env-observation",
+            "bindingId": "python-env-binding",
+            "key": {
+              "kind": "property",
+              "value": "CONFIG_TOKEN"
+            },
+            "storageKey": {
+              "kind": "property",
+              "value": "CONFIG_TOKEN"
+            },
+            "sourceForm": "mapping",
+            "source": {
+              "resource": "conformance://runtime-values-0.2/source/python-env",
+              "resourceDigest": "ee79e38245c0261f72ad27fc8b4a767d14371f4dce1d8129877177e796bb62d7",
+              "startByte": 27,
+              "endByte": 50
+            },
+            "baseValue": {
+              "scheme": {
+                "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                "version": "0.2.0"
+              },
+              "ownerDigest": "ee79e38245c0261f72ad27fc8b4a767d14371f4dce1d8129877177e796bb62d7",
+              "locatorDigest": "793c8145e1e8f5a196bd639dd92e563ae6e823fe3cd09ecdbde62392490bc279",
+              "kind": "value"
+            },
+            "loadOperation": {
+              "scheme": {
+                "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                "version": "0.2.0"
+              },
+              "ownerDigest": "ee79e38245c0261f72ad27fc8b4a767d14371f4dce1d8129877177e796bb62d7",
+              "locatorDigest": "871c87333800970a5c392a3faae8f24feef74cdd6391dc7a23dd1212c6e51b81",
+              "kind": "operation"
+            },
+            "resultValue": {
+              "scheme": {
+                "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                "version": "0.2.0"
+              },
+              "ownerDigest": "ee79e38245c0261f72ad27fc8b4a767d14371f4dce1d8129877177e796bb62d7",
+              "locatorDigest": "b32084cba556682986ed4d3680eec94a2e97965ba8fc9d7db5b6f40d2e30d326",
+              "kind": "value"
+            },
+            "point": {
+              "scheme": {
+                "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                "version": "0.2.0"
+              },
+              "ownerDigest": "ee79e38245c0261f72ad27fc8b4a767d14371f4dce1d8129877177e796bb62d7",
+              "locatorDigest": "9aff2c513fb68761ed732955357fb00967c958059aaf6b5742a1118b68180382",
+              "kind": "point"
+            },
+            "phase": "after-effects",
+            "store": {
+              "invocation": {
+                "scheme": {
+                  "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                  "version": "0.2.0"
+                },
+                "ownerDigest": "ff4f3e6b08b1a5415d0354ea8d0c6ed9f2e087422f0621856767ae486fcbf53d",
+                "locatorDigest": "59c20e47d08e6094c0710b89ab7ce31322d399c170f00e6cd13848da763c62d6",
+                "kind": "invocation"
+              },
+              "realm": {
+                "scheme": {
+                  "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                  "version": "0.2.0"
+                },
+                "ownerDigest": "ff4f3e6b08b1a5415d0354ea8d0c6ed9f2e087422f0621856767ae486fcbf53d",
+                "locatorDigest": "28bfac4a597836de83ccb63868e70a9b109ffc13cd1a677323888d01de5b1fd1",
+                "kind": "realm"
+              },
+              "container": {
+                "scheme": {
+                  "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                  "version": "0.2.0"
+                },
+                "ownerDigest": "ee79e38245c0261f72ad27fc8b4a767d14371f4dce1d8129877177e796bb62d7",
+                "locatorDigest": "793c8145e1e8f5a196bd639dd92e563ae6e823fe3cd09ecdbde62392490bc279",
+                "kind": "value"
+              },
+              "backing": {
+                "scheme": {
+                  "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                  "version": "0.2.0"
+                },
+                "ownerDigest": "ff4f3e6b08b1a5415d0354ea8d0c6ed9f2e087422f0621856767ae486fcbf53d",
+                "locatorDigest": "46cfa882d0732515f32bb2dbd674fff01de015c9758eff3476bdab5289880ea2",
+                "kind": "store"
+              },
+              "relationship": "isolated",
+              "evidence": {
+                "producer": "https://csmi.brokk.ai/conformance/runtime-values-0.2",
+                "method": "synthetic-store-identity",
+                "inputsDigest": "29a352906fa95ac5a9828fe51103950f0154b997f9ff455ee36699ee6ad836f7"
+              }
+            },
+            "origin": "initial-if-present",
+            "proof": {
+              "initialization": "closed",
+              "dependencies": "closed",
+              "mutation": "pristine",
+              "lookup": "mapping-present",
+              "materialization": "resolved",
+              "normal": "exact",
+              "exceptional": "modeled",
+              "keyNormalization": "exact",
+              "evidence": {
+                "producer": "https://csmi.brokk.ai/conformance/runtime-values-0.2",
+                "method": "synthetic-observation-proof",
+                "inputsDigest": "6e0a2ad82bc953d7dc2d7254399027285a8206324fab605ad49180436734bcad"
+              },
+              "closureDigest": "c17aff10c3de1006d273a6af48c13b8e908d332593be4921053e255e1e5fa5e7"
+            },
+            "coverage": {
+              "status": "partial",
+              "limitations": [
+                "exception-behavior-indeterminate",
+                "materialization-incomplete"
+              ]
+            }
+          },
+          "provenance": [
+            "runtime-values-conformance"
+          ]
+        }
+      ]
+    }
+  ]
+}

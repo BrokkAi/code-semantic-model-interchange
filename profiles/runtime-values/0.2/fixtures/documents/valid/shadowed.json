@@ -1,0 +1,501 @@
+{
+  "documentType": "semantic-document",
+  "schema": "https://csmi.brokk.ai/schema/0.1/schema.json",
+  "semanticModelVersion": "0.1",
+  "serializationVersion": "0.1-json",
+  "provenanceRecords": [
+    {
+      "id": "runtime-values-conformance",
+      "producer": {
+        "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2",
+        "version": "0.2.0"
+      },
+      "generationMethod": "manual-authoring"
+    }
+  ],
+  "defaultProvenance": "runtime-values-conformance",
+  "semanticModels": [
+    {
+      "artifactSelectors": [
+        {
+          "purl": "pkg:generic/nodejs.org/node",
+          "versionRange": "vers:semver/>=22.11.0|<23.0.0"
+        }
+      ],
+      "vocabularyUses": [
+        {
+          "identifier": "csmi.runtime-values",
+          "version": "0.2.0",
+          "schema": "https://csmi.brokk.ai/schema/profiles/runtime-values/0.2/schema.json",
+          "requirement": "required",
+          "affects": [
+            {
+              "kind": "fact-family",
+              "family": "runtime-contracts",
+              "scope": {
+                "contractId": "node-env-portable"
+              }
+            },
+            {
+              "kind": "fact-family",
+              "family": "runtime-targets",
+              "scope": {
+                "targetId": "shadowed-target"
+              }
+            },
+            {
+              "kind": "fact-family",
+              "family": "runtime-activations",
+              "scope": {
+                "activationId": "shadowed-activation"
+              }
+            },
+            {
+              "kind": "fact-family",
+              "family": "runtime-bindings",
+              "scope": {
+                "bindingId": "shadowed-binding"
+              }
+            },
+            {
+              "kind": "fact-family",
+              "family": "runtime-observations",
+              "scope": {
+                "observationId": "shadowed-observation"
+              }
+            }
+          ]
+        }
+      ],
+      "extensionFacts": [
+        {
+          "vocabulary": "csmi.runtime-values",
+          "version": "0.2.0",
+          "family": "runtime-contracts",
+          "scope": {
+            "contractId": "node-env-portable"
+          },
+          "payload": {
+            "kind": "runtime-contract",
+            "contractId": "node-env-portable",
+            "definition": {
+              "identifier": "https://csmi.brokk.ai/runtime-contract/node-process-env",
+              "version": "0.2.0",
+              "applicability": {
+                "basis": "portable",
+                "selectors": [
+                  {
+                    "purl": "pkg:generic/nodejs.org/node",
+                    "versionRange": "vers:semver/>=22.11.0|<23.0.0"
+                  }
+                ]
+              },
+              "context": {
+                "scheme": {
+                  "identifier": "https://csmi.brokk.ai/runtime-context/node",
+                  "version": "0.2.0"
+                },
+                "platform": [
+                  "linux",
+                  "darwin"
+                ],
+                "architecture": [
+                  "x64"
+                ],
+                "realm": [
+                  "main",
+                  "worker-copy",
+                  "worker-shared"
+                ],
+                "moduleMode": [
+                  "commonjs",
+                  "esm"
+                ],
+                "launchMode": [
+                  "script",
+                  "eval",
+                  "stdin",
+                  "repl",
+                  "worker"
+                ],
+                "initializationBoundary": [
+                  "runtime-entry",
+                  "application-entry"
+                ]
+              },
+              "surface": {
+                "root": "https://csmi.brokk.ai/runtime-root/node-process",
+                "container": "env"
+              },
+              "languages": [
+                "javascript",
+                "typescript",
+                "tsx"
+              ],
+              "assumptions": [
+                "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/host-runtime-input"
+              ],
+              "behavior": {
+                "keyDomain": "static-property",
+                "lookup": "own-value",
+                "presentValue": "string",
+                "absent": "undefined",
+                "keyEquality": {
+                  "identifier": "https://csmi.brokk.ai/key-equality/exact-string",
+                  "version": "0.2.0"
+                },
+                "read": {
+                  "exceptions": "may-throw",
+                  "materialization": "host-defined"
+                },
+                "write": {
+                  "conversion": "string-conversion",
+                  "normal": "store-converted-value",
+                  "exceptional": "may-mutate"
+                },
+                "delete": {
+                  "normal": "remove-entry",
+                  "exceptional": "may-mutate"
+                },
+                "initialOrigins": [
+                  {
+                    "keys": {
+                      "kind": "all-properties"
+                    },
+                    "origin": "external-environment"
+                  }
+                ],
+                "coverage": {
+                  "status": "partial",
+                  "limitations": [
+                    "exception-behavior-indeterminate",
+                    "materialization-incomplete"
+                  ]
+                }
+              }
+            },
+            "contractDigest": "46588f45d11ba555b10671ae2fdaf568b34273c79a98b81a880996269c1f7f99",
+            "evidence": {
+              "producer": "https://csmi.brokk.ai/conformance/runtime-values-0.2",
+              "method": "synthetic-contract-review",
+              "inputsDigest": "03bc521412db86bbaca751c4a971d3e24fd6d0ff53fc436c525fb347a7b9fbab"
+            }
+          },
+          "provenance": [
+            "runtime-values-conformance"
+          ]
+        },
+        {
+          "vocabulary": "csmi.runtime-values",
+          "version": "0.2.0",
+          "family": "runtime-targets",
+          "scope": {
+            "targetId": "shadowed-target"
+          },
+          "payload": {
+            "kind": "runtime-target",
+            "targetId": "shadowed-target",
+            "definition": {
+              "partition": "conformance://runtime-values-0.2/partition/shadowed",
+              "resources": [
+                {
+                  "resource": "conformance://runtime-values-0.2/source/shadowed",
+                  "resourceDigest": "906e9a863851c7ca9d188f00ece5817d2cada7ecec62cc5a05580116a8fe03ed"
+                }
+              ],
+              "basis": "declared-target",
+              "context": {
+                "scheme": {
+                  "identifier": "https://csmi.brokk.ai/runtime-context/node",
+                  "version": "0.2.0"
+                },
+                "platform": "linux",
+                "architecture": "x64",
+                "realm": "main",
+                "moduleMode": "commonjs",
+                "launchMode": "script",
+                "initializationBoundary": "runtime-entry"
+              },
+              "assumptions": [
+                "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/synthetic-source-closure",
+                "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/host-runtime-input",
+                "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/import-time-mapping",
+                "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/verified-synthetic-artifact",
+                "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/conflict-a",
+                "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/conflict-b"
+              ],
+              "evidence": {
+                "producer": "https://csmi.brokk.ai/conformance/runtime-values-0.2",
+                "method": "synthetic-declared-target",
+                "inputsDigest": "960f5df5946eba99073c92c2ddba749c4fbf988efef086c018191e480671feff"
+              },
+              "coverage": {
+                "status": "complete"
+              },
+              "runtime": {
+                "purl": "pkg:generic/nodejs.org/node@22.11.0"
+              }
+            },
+            "targetDigest": "e85cef256571d48aa1f63d4adb381a4b7951ffb3c4d728a99e372de2e73ddf54"
+          },
+          "provenance": [
+            "runtime-values-conformance"
+          ]
+        },
+        {
+          "vocabulary": "csmi.runtime-values",
+          "version": "0.2.0",
+          "family": "runtime-activations",
+          "scope": {
+            "activationId": "shadowed-activation"
+          },
+          "payload": {
+            "kind": "runtime-activation",
+            "activationId": "shadowed-activation",
+            "targetId": "shadowed-target",
+            "surface": {
+              "root": "https://csmi.brokk.ai/runtime-root/node-process",
+              "container": "env"
+            },
+            "candidateIds": [
+              "node-env-portable"
+            ],
+            "candidateCoverage": {
+              "status": "complete"
+            },
+            "disabledIds": [],
+            "reviews": [
+              {
+                "contractDigest": "46588f45d11ba555b10671ae2fdaf568b34273c79a98b81a880996269c1f7f99",
+                "targetDigest": "e85cef256571d48aa1f63d4adb381a4b7951ffb3c4d728a99e372de2e73ddf54",
+                "purpose": "https://csmi.brokk.ai/conformance/runtime-values-0.2/purpose/activation",
+                "reviewer": "https://csmi.brokk.ai/conformance/runtime-values-0.2/reviewer",
+                "decision": "approved",
+                "evidence": {
+                  "producer": "https://csmi.brokk.ai/conformance/runtime-values-0.2",
+                  "method": "synthetic-scoped-review",
+                  "inputsDigest": "d3526b5f2b9d83b0ccd07e73bce6841156823992f81622911f44e16bcf7afa48"
+                }
+              }
+            ],
+            "policy": {
+              "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/policy",
+              "version": "0.2.0",
+              "inputsDigest": "08f1e6ec198b1e3340836d6cc75be111d0db60997d9e27f857047b1c0512d96d",
+              "trustedReviewers": [
+                "https://csmi.brokk.ai/conformance/runtime-values-0.2/reviewer"
+              ],
+              "purpose": "https://csmi.brokk.ai/conformance/runtime-values-0.2/purpose/activation"
+            },
+            "outcome": "matched",
+            "selectedIds": [
+              "node-env-portable"
+            ],
+            "activationDigest": "837c8405c36ce548732f378fb5a2d11247c6ae60e0e5dec76dd7762e712b70ce"
+          },
+          "provenance": [
+            "runtime-values-conformance"
+          ]
+        },
+        {
+          "vocabulary": "csmi.runtime-values",
+          "version": "0.2.0",
+          "family": "runtime-bindings",
+          "scope": {
+            "bindingId": "shadowed-binding"
+          },
+          "payload": {
+            "kind": "runtime-binding",
+            "bindingId": "shadowed-binding",
+            "activationId": "shadowed-activation",
+            "activationDigest": "837c8405c36ce548732f378fb5a2d11247c6ae60e0e5dec76dd7762e712b70ce",
+            "contractId": "node-env-portable",
+            "language": "javascript",
+            "source": {
+              "resource": "conformance://runtime-values-0.2/source/shadowed",
+              "resourceDigest": "906e9a863851c7ca9d188f00ece5817d2cada7ecec62cc5a05580116a8fe03ed",
+              "startByte": 0,
+              "endByte": 1
+            },
+            "scope": {
+              "scheme": {
+                "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                "version": "0.2.0"
+              },
+              "ownerDigest": "906e9a863851c7ca9d188f00ece5817d2cada7ecec62cc5a05580116a8fe03ed",
+              "locatorDigest": "96cca6391f0527315cfb95bb6bdefebe2c01b821bc5b10a3fa66ea017d83cf8e",
+              "kind": "scope"
+            },
+            "root": {
+              "scheme": {
+                "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                "version": "0.2.0"
+              },
+              "ownerDigest": "906e9a863851c7ca9d188f00ece5817d2cada7ecec62cc5a05580116a8fe03ed",
+              "locatorDigest": "762579e9dba4a6eced2a23b44379f03a57e206d693c3f5e9d89f6ae638b6ab65",
+              "kind": "value"
+            },
+            "container": {
+              "scheme": {
+                "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                "version": "0.2.0"
+              },
+              "ownerDigest": "906e9a863851c7ca9d188f00ece5817d2cada7ecec62cc5a05580116a8fe03ed",
+              "locatorDigest": "0574ef7ffc59554d51b6fd699ec4d74d96a581ac6b212b7ee67b010d47727e03",
+              "kind": "value"
+            },
+            "lexicalBinding": "present",
+            "rebinding": "excluded",
+            "outcome": "excluded",
+            "evidence": {
+              "producer": "https://csmi.brokk.ai/conformance/runtime-values-0.2",
+              "method": "synthetic-resolver-binding",
+              "inputsDigest": "3ace2a39a382506bfe3ccedb562e3d898e9cc50eb0d91bd05d76b9ab7ed628f1"
+            },
+            "coverage": {
+              "status": "complete"
+            }
+          },
+          "provenance": [
+            "runtime-values-conformance"
+          ]
+        },
+        {
+          "vocabulary": "csmi.runtime-values",
+          "version": "0.2.0",
+          "family": "runtime-observations",
+          "scope": {
+            "observationId": "shadowed-observation"
+          },
+          "payload": {
+            "kind": "runtime-observation",
+            "observationId": "shadowed-observation",
+            "bindingId": "shadowed-binding",
+            "key": {
+              "kind": "property",
+              "value": "CONFIG_TOKEN"
+            },
+            "storageKey": {
+              "kind": "property",
+              "value": "CONFIG_TOKEN"
+            },
+            "sourceForm": "dot",
+            "source": {
+              "resource": "conformance://runtime-values-0.2/source/shadowed",
+              "resourceDigest": "906e9a863851c7ca9d188f00ece5817d2cada7ecec62cc5a05580116a8fe03ed",
+              "startByte": 0,
+              "endByte": 48
+            },
+            "baseValue": {
+              "scheme": {
+                "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                "version": "0.2.0"
+              },
+              "ownerDigest": "906e9a863851c7ca9d188f00ece5817d2cada7ecec62cc5a05580116a8fe03ed",
+              "locatorDigest": "0574ef7ffc59554d51b6fd699ec4d74d96a581ac6b212b7ee67b010d47727e03",
+              "kind": "value"
+            },
+            "loadOperation": {
+              "scheme": {
+                "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                "version": "0.2.0"
+              },
+              "ownerDigest": "906e9a863851c7ca9d188f00ece5817d2cada7ecec62cc5a05580116a8fe03ed",
+              "locatorDigest": "5ece192e2260e07d815e45ef86ac2e12f3bcd54276e5246aa6ee4dbb6f2cdbb0",
+              "kind": "operation"
+            },
+            "resultValue": {
+              "scheme": {
+                "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                "version": "0.2.0"
+              },
+              "ownerDigest": "906e9a863851c7ca9d188f00ece5817d2cada7ecec62cc5a05580116a8fe03ed",
+              "locatorDigest": "71a55fce6a40b84d6e1755e725af454be78357b8f56d8a16f781020ad6b39cbc",
+              "kind": "value"
+            },
+            "point": {
+              "scheme": {
+                "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                "version": "0.2.0"
+              },
+              "ownerDigest": "906e9a863851c7ca9d188f00ece5817d2cada7ecec62cc5a05580116a8fe03ed",
+              "locatorDigest": "592a839826d19c46a76ae43a23b00bbcf7eb6e9c2c643fda3295bd239737a097",
+              "kind": "point"
+            },
+            "phase": "after-effects",
+            "store": {
+              "invocation": {
+                "scheme": {
+                  "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                  "version": "0.2.0"
+                },
+                "ownerDigest": "e85cef256571d48aa1f63d4adb381a4b7951ffb3c4d728a99e372de2e73ddf54",
+                "locatorDigest": "2fa07dd77e9d703c98dd8bc528f686abe5887c110e4ab27aa32fc631a9c0571d",
+                "kind": "invocation"
+              },
+              "realm": {
+                "scheme": {
+                  "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                  "version": "0.2.0"
+                },
+                "ownerDigest": "e85cef256571d48aa1f63d4adb381a4b7951ffb3c4d728a99e372de2e73ddf54",
+                "locatorDigest": "f386fd9115b8344a0e13c95990e45193b15e2c6a6e274c825b2b065856455bfc",
+                "kind": "realm"
+              },
+              "container": {
+                "scheme": {
+                  "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                  "version": "0.2.0"
+                },
+                "ownerDigest": "906e9a863851c7ca9d188f00ece5817d2cada7ecec62cc5a05580116a8fe03ed",
+                "locatorDigest": "0574ef7ffc59554d51b6fd699ec4d74d96a581ac6b212b7ee67b010d47727e03",
+                "kind": "value"
+              },
+              "backing": {
+                "scheme": {
+                  "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/synthetic-locator",
+                  "version": "0.2.0"
+                },
+                "ownerDigest": "e85cef256571d48aa1f63d4adb381a4b7951ffb3c4d728a99e372de2e73ddf54",
+                "locatorDigest": "19a63f963cf9d420bc51f3c2a03b95c42898fb67ad52266204a61e0851f8e56a",
+                "kind": "store"
+              },
+              "relationship": "isolated",
+              "evidence": {
+                "producer": "https://csmi.brokk.ai/conformance/runtime-values-0.2",
+                "method": "synthetic-store-identity",
+                "inputsDigest": "a760f26f87397030b443b9718185419fbe1495be90d89d8ca067359fc39e0e15"
+              }
+            },
+            "origin": "unknown",
+            "proof": {
+              "initialization": "closed",
+              "dependencies": "closed",
+              "mutation": "unknown",
+              "lookup": "unknown",
+              "materialization": "unresolved",
+              "normal": "unreachable",
+              "exceptional": "excluded",
+              "keyNormalization": "exact",
+              "evidence": {
+                "producer": "https://csmi.brokk.ai/conformance/runtime-values-0.2",
+                "method": "synthetic-observation-proof",
+                "inputsDigest": "4196544e2e5220e8d3e655a5da0afed255639bafeb6753d78ae52b8152914ff0"
+              },
+              "closureDigest": "b91bcba3689afc40e8d5215dabb4b3508448f2940fb5622169e6adb4c5943750"
+            },
+            "coverage": {
+              "status": "partial",
+              "limitations": [
+                "lookup-incomplete"
+              ]
+            }
+          },
+          "provenance": [
+            "runtime-values-conformance"
+          ]
+        }
+      ]
+    }
+  ]
+}

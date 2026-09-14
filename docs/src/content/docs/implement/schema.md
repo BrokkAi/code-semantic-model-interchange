@@ -27,6 +27,7 @@ payloads. Core validation does not imply profile support:
 - [Java/JVM profile family](/profiles/jvm/)
 - [Value-transfer profile 0.1](/schema/profiles/value-transfer/0.1/schema.json)
 - [Runtime exposure and keyed-read values 0.1](/schema/profiles/runtime-values/0.1/schema.json)
+- [Portable runtime contracts 0.2](/schema/profiles/runtime-values/0.2/schema.json)
 - [Structured summary locations 0.1](/schema/profiles/structured-locations/0.1/schema.json)
 - [Deferred-yield profile 0.1](/schema/profiles/deferred-yield/0.1/schema.json)
 - [Conditional type-refinement profile 0.1](/schema/profiles/conditional-type-refinement/0.1/schema.json)
@@ -44,3 +45,6 @@ fail-closed coverage are checked by `scripts/validate-deferred-yield.py`.
 Exact callable subjects, structured target types, conditional modes, overload
 conflicts, and fail-closed coverage are checked by
 `scripts/validate-conditional-type-refinement.py`.
+Portable runtime applicability, review/trust scope, candidate conflicts,
+contract/target/activation digests, executable evidence, and negotiation are
+checked by `scripts/validate-runtime-values-0.2.py`.

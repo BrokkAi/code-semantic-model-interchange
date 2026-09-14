@@ -70,6 +70,7 @@ export default defineConfig({
             { label: 'Conditional type refinement 0.1', slug: 'profiles/conditional-type-refinement' },
             { label: 'Value-transfer profile 0.1', slug: 'profiles/value-transfer' },
             { label: 'Runtime exposure and keyed reads', slug: 'profiles/runtime-values' },
+            { label: 'Portable runtime contracts 0.2', slug: 'profiles/runtime-values-0-2' },
             { label: 'Structured summary locations', slug: 'profiles/structured-locations' },
             { label: 'C and C++ profile 0.1', slug: 'profiles/cpp' },
           ],

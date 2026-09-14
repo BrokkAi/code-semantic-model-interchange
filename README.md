@@ -14,6 +14,10 @@ models handles that expose values only on later resume operations.
 The [conditional type-refinement profile](profiles/conditional-type-refinement/0.1/profile.md)
 models exact predicate-call refinements without adding source-language type-guard
 forms to CSMI core.
+The [portable runtime contracts profile](profiles/runtime-values/0.2/profile.md)
+separates reviewed semantic identity, target applicability, and executable
+runtime-value evidence. It supports portable contracts and artifact-specific
+specializations while preserving the existing runtime-values 0.1.0 contract.
 The [C and C++ profile](profiles/cpp/0.1/profile.md) supplies exact artifact,
 resolver, alias, and declaration identity for the initial `std::basic_string`
 case. Their [value-transfer](conformance/value-transfer.md) and
