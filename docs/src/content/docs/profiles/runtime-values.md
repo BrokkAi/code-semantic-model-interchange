@@ -9,6 +9,11 @@ description: Analyzer-neutral runtime-global activation and operation-specific k
 
 The profile keeps activation, lexical shadowing, rebinding, mutation, exceptional behavior, materialization, provenance, completeness, and consumer support explicit. Unsupported semantics cannot silently become an empty or exact model.
 
+This exact-artifact version remains unchanged. The separately negotiated
+[portable runtime contracts version 0.2.0](/profiles/runtime-values-0-2/) adds
+reviewed portable applicability, target evidence, and explicit store/lookup
+obligations. A 0.1-only consumer must refuse the newer required version.
+
 - [Read the normative profile source](https://github.com/BrokkAi/code-semantic-model-interchange/blob/main/profiles/runtime-values/0.1/profile.md)
 - [Open the profile payload schema](/schema/profiles/runtime-values/0.1/schema.json)
 - [Review the conformance cases](https://github.com/BrokkAi/code-semantic-model-interchange/blob/main/conformance/runtime-values.md)

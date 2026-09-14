@@ -15,3 +15,8 @@ Complete representative documents using the normative field placement live in
 `runtime-values.json` gives a compact overview of runtime-global and keyed-read
 semantics. Its normative payloads and near misses live under
 `../profiles/runtime-values/0.1/fixtures/`.
+
+The versioned portable successor is documented in
+`../profiles/runtime-values/0.2/profile.md`, with executable documents beside its
+schema. Those examples separate contract identity, declared target conditions,
+review/trust, and program observations; they are not shipped production models.

@@ -327,7 +327,11 @@ A selector MUST use exactly one of these version forms:
 
 A selector MUST NOT contain both an exact PURL version and a VERS constraint.
 Free-form version ranges and non-canonical VERS strings are invalid. The VERS
-type MUST equal the selector's PURL type. A producer MUST NOT compare versions
+type MUST equal the selector's PURL type unless an exact-version vocabulary
+declared `required` explicitly assigns a registered comparison scheme to the
+selector's exact package coordinates. Such an assignment applies only within
+that vocabulary's scope; a generic PURL alone never implies SemVer or another
+ecosystem's ordering. A producer MUST NOT compare versions
 using lexical ordering, Semantic Versioning, or any other substitute for the
 comparison procedure selected by VERS.
 
@@ -1802,6 +1806,17 @@ structured target type. Biconditional semantics include false-branch exclusion;
 positive-only semantics do not. Unsupported targets, conflicts, and
 uninterpretable semantics prevent complete coverage and never denote an empty
 refinement set.
+
+CSMI 0.1 also assigns `csmi.runtime-values` **0.2.0** in the
+[portable runtime semantic contracts profile](https://csmi.brokk.ai/profiles/runtime-values-0-2/).
+It separates reviewed contract identity, declared or observed target evidence,
+scoped activation, occurrence binding, and executable store/read observations.
+Portable applicability uses ordinary PURL/VERS semantics; artifact-specific
+contracts additionally require actual artifact evidence. Contract content
+digests never substitute for artifact digests. The required profile version
+negotiates context, lookup, key equality, effects, conflict, and conditional
+claims without changing the core schema or runtime-values 0.1.0. Unsupported
+required semantics remain uninterpretable, even if structural validation passes.
 
 ### 3.7 Manifest, provenance, and canonicalization
 

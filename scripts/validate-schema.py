@@ -29,6 +29,8 @@ PROFILE_SCHEMAS = {
         ROOT / "profiles" / "cpp" / "0.1" / "schema.json",
     "https://csmi.brokk.ai/schema/profiles/runtime-values/0.1/schema.json":
         ROOT / "profiles" / "runtime-values" / "0.1" / "schema.json",
+    "https://csmi.brokk.ai/schema/profiles/runtime-values/0.2/schema.json":
+        ROOT / "profiles" / "runtime-values" / "0.2" / "schema.json",
     "https://csmi.brokk.ai/schema/profiles/structured-locations/0.1/schema.json":
         ROOT / "profiles" / "structured-locations" / "0.1" / "schema.json",
     "https://csmi.brokk.ai/schema/profiles/conditional-type-refinement/0.1/schema.json":
@@ -42,6 +44,7 @@ PROFILE_REQUIRED_USES = {
     ("csmi.cpp", "0.1.0"),
     ("csmi.c-cpp-resolution", "0.1.0"),
     ("csmi.runtime-values", "0.1.0"),
+    ("csmi.runtime-values", "0.2.0"),
     ("csmi.structured-locations", "0.1.0"),
     ("csmi.conditional-type-refinement", "0.1.0"),
 }
@@ -60,6 +63,8 @@ PROFILE_VOCABULARIES = {
         "https://csmi.brokk.ai/schema/profiles/cpp/0.1/schema.json",
     ("csmi.runtime-values", "0.1.0"):
         "https://csmi.brokk.ai/schema/profiles/runtime-values/0.1/schema.json",
+    ("csmi.runtime-values", "0.2.0"):
+        "https://csmi.brokk.ai/schema/profiles/runtime-values/0.2/schema.json",
     ("csmi.structured-locations", "0.1.0"):
         "https://csmi.brokk.ai/schema/profiles/structured-locations/0.1/schema.json",
     ("csmi.conditional-type-refinement", "0.1.0"):
@@ -151,8 +156,16 @@ def semantic_errors(value: object) -> list[str]:
             if isinstance(selector, dict)
             and selector.get("purl", "").startswith("pkg:generic/nodejs.org/node@")
         ]
+        runtime_use = declared_uses.get(("csmi.runtime-values", "0.2.0"), {})
+        portable_runtime_scope = (
+            runtime_use.get("requirement") == "required"
+            and runtime_use.get("schema") == PROFILE_VOCABULARIES[("csmi.runtime-values", "0.2.0")]
+            and ("csmi.javascript-typescript", "0.1.0") not in declared_uses
+            and ("csmi.runtime-values", "0.1.0") not in declared_uses
+            and ("csmi.node-compatibility", "0.1.0") not in declared_uses
+        )
         for selector in node_distribution_selectors:
-            if not any(
+            if not portable_runtime_scope and not any(
                 digest.get("coverage") == "official-distribution-archive"
                 for digest in selector.get("digests", [])
                 if isinstance(digest, dict)

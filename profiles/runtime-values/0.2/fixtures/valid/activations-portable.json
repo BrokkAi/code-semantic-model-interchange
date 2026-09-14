@@ -1,0 +1,44 @@
+{
+  "kind": "runtime-activation",
+  "activationId": "portable-node-env-activation",
+  "targetId": "portable-node-env-target",
+  "surface": {
+    "root": "https://csmi.brokk.ai/runtime-root/node-process",
+    "container": "env"
+  },
+  "candidateIds": [
+    "node-env-portable"
+  ],
+  "candidateCoverage": {
+    "status": "complete"
+  },
+  "disabledIds": [],
+  "reviews": [
+    {
+      "contractDigest": "46588f45d11ba555b10671ae2fdaf568b34273c79a98b81a880996269c1f7f99",
+      "targetDigest": "965071b19c0b92923e8aec836972760abcaa41c7ff5c57cf4e19653d450345f1",
+      "purpose": "https://csmi.brokk.ai/conformance/runtime-values-0.2/purpose/activation",
+      "reviewer": "https://csmi.brokk.ai/conformance/runtime-values-0.2/reviewer",
+      "decision": "approved",
+      "evidence": {
+        "producer": "https://csmi.brokk.ai/conformance/runtime-values-0.2",
+        "method": "synthetic-scoped-review",
+        "inputsDigest": "b11166e3f0d4ad99ad05b30e8c1c1cee40adc3783b16d4eb2c7b3c77056c4b6e"
+      }
+    }
+  ],
+  "policy": {
+    "identifier": "https://csmi.brokk.ai/conformance/runtime-values-0.2/policy",
+    "version": "0.2.0",
+    "inputsDigest": "940bddc64c2f9d7089f8440790755ab101d115e46ead54c0ca736a0e3504eefa",
+    "trustedReviewers": [
+      "https://csmi.brokk.ai/conformance/runtime-values-0.2/reviewer"
+    ],
+    "purpose": "https://csmi.brokk.ai/conformance/runtime-values-0.2/purpose/activation"
+  },
+  "outcome": "matched",
+  "selectedIds": [
+    "node-env-portable"
+  ],
+  "activationDigest": "8a415c2915b600811b89e6b807a32e7e2107369761a6d6f833721b545ad4218b"
+}

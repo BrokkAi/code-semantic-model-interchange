@@ -1,0 +1,46 @@
+{
+  "kind": "runtime-target",
+  "targetId": "portable-node-env-target",
+  "definition": {
+    "partition": "conformance://runtime-values-0.2/partition/portable-node-env",
+    "resources": [
+      {
+        "resource": "conformance://runtime-values-0.2/source/portable-node-env",
+        "resourceDigest": "62bf1c7f3de0eaf6a0f0e1ad80c8be00bf0f6c4a1574a6f968bb6b9d6710379f"
+      }
+    ],
+    "basis": "declared-target",
+    "context": {
+      "scheme": {
+        "identifier": "https://csmi.brokk.ai/runtime-context/node",
+        "version": "0.2.0"
+      },
+      "platform": "linux",
+      "architecture": "x64",
+      "realm": "main",
+      "moduleMode": "commonjs",
+      "launchMode": "script",
+      "initializationBoundary": "runtime-entry"
+    },
+    "assumptions": [
+      "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/synthetic-source-closure",
+      "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/host-runtime-input",
+      "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/import-time-mapping",
+      "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/verified-synthetic-artifact",
+      "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/conflict-a",
+      "https://csmi.brokk.ai/conformance/runtime-values-0.2/assumption/conflict-b"
+    ],
+    "evidence": {
+      "producer": "https://csmi.brokk.ai/conformance/runtime-values-0.2",
+      "method": "synthetic-declared-target",
+      "inputsDigest": "73972dfe2facf4090904f662214c44798110fc616b4f26017c0304acf255a7a0"
+    },
+    "coverage": {
+      "status": "complete"
+    },
+    "runtime": {
+      "purl": "pkg:generic/nodejs.org/node@22.11.0"
+    }
+  },
+  "targetDigest": "965071b19c0b92923e8aec836972760abcaa41c7ff5c57cf4e19653d450345f1"
+}
