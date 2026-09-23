@@ -1,0 +1,148 @@
+{
+  "documentType": "semantic-document",
+  "schema": "https://csmi.brokk.ai/schema/0.1/schema.json",
+  "semanticModelVersion": "0.1",
+  "serializationVersion": "0.1-json",
+  "provenanceRecords": [
+    {
+      "id": "manual-model",
+      "producer": {
+        "identifier": "https://example.org/processes/reviewed-models",
+        "version": "git:abc123"
+      },
+      "generationMethod": "manual-authoring"
+    }
+  ],
+  "defaultProvenance": "manual-model",
+  "semanticModels": [
+    {
+      "artifactSelectors": [
+        {
+          "purl": "pkg:npm/example-constant@2.0.0"
+        }
+      ],
+      "symbols": [
+        {
+          "id": "constant",
+          "scheme": "csmi.javascript-runtime",
+          "schemeVersion": "0.1.0",
+          "stability": "portable",
+          "descriptors": [
+            {
+              "role": "namespace",
+              "name": "."
+            },
+            {
+              "role": "callable",
+              "name": "constant"
+            }
+          ]
+        }
+      ],
+      "declarations": [
+        {
+          "symbol": "constant",
+          "category": "callable",
+          "callable": {
+            "kind": "function",
+            "parameters": [
+              {
+                "position": 0,
+                "binding": "positional-or-named",
+                "label": "value",
+                "required": true
+              }
+            ],
+            "results": [
+              {
+                "position": 0,
+                "type": {
+                  "kind": "unknown"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "procedureSummaries": [
+        {
+          "callable": "constant",
+          "transfers": []
+        }
+      ],
+      "completenessStatements": [
+        {
+          "family": "procedure-summaries",
+          "scope": {
+            "callable": "constant"
+          },
+          "status": "partial",
+          "limitations": [
+            {
+              "kind": "coverage-limited"
+            }
+          ]
+        },
+        {
+          "vocabulary": "csmi.transfer-partitions",
+          "version": "0.1.0",
+          "family": "transfer-partitions",
+          "scope": {
+            "callable": "constant",
+            "exit": "normal",
+            "destination": {
+              "phase": "output",
+              "role": "result",
+              "position": 0
+            },
+            "source": {
+              "kind": "all-inputs"
+            }
+          },
+          "status": "complete"
+        }
+      ],
+      "vocabularyUses": [
+        {
+          "identifier": "csmi.transfer-partitions",
+          "version": "0.1.0",
+          "schema": "https://csmi.brokk.ai/schema/profiles/transfer-partitions/0.1/schema.json",
+          "requirement": "required",
+          "affects": [
+            {
+              "kind": "fact-family",
+              "family": "transfer-partitions",
+              "scope": {
+                "callable": "constant",
+                "exit": "normal",
+                "destination": {
+                  "phase": "output",
+                  "role": "result",
+                  "position": 0
+                },
+                "source": {
+                  "kind": "all-inputs"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "identifier": "csmi.javascript-typescript",
+          "version": "0.1.0",
+          "schema": "https://csmi.brokk.ai/schema/profiles/javascript-typescript/0.1/schema.json",
+          "requirement": "required",
+          "affects": [
+            {
+              "kind": "core-slot",
+              "slot": "symbol-identity-scheme",
+              "target": {
+                "symbol": "constant"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

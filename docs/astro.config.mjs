@@ -72,6 +72,7 @@ export default defineConfig({
             { label: 'Runtime exposure and keyed reads', slug: 'profiles/runtime-values' },
             { label: 'Portable runtime contracts 0.2', slug: 'profiles/runtime-values-0-2' },
             { label: 'Structured summary locations', slug: 'profiles/structured-locations' },
+            { label: 'Transfer partition coverage', slug: 'profiles/transfer-partitions' },
             { label: 'C and C++ profile 0.1', slug: 'profiles/cpp' },
           ],
         },

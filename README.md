@@ -9,6 +9,8 @@ to the [v0.1 specification](https://csmi.brokk.ai/specification/v0-1/) and
 Standard profiles now cover several language ecosystems plus analyzer-neutral
 [identity-separating value transfers](profiles/value-transfer/0.1/profile.md)
 and [structured summary locations](profiles/structured-locations/0.1/profile.md).
+The [transfer partition coverage profile](profiles/transfer-partitions/0.1/profile.md)
+permits bounded normal-result completeness without closing every callable output.
 The [deferred-yield profile](profiles/deferred-yield/0.1/profile.md) separately
 models handles that expose values only on later resume operations.
 The [conditional type-refinement profile](profiles/conditional-type-refinement/0.1/profile.md)
@@ -583,6 +585,7 @@ python3 -m venv .venv
 .venv/bin/python scripts/validate-structured-locations.py
 .venv/bin/python scripts/validate-deferred-yield.py
 .venv/bin/python scripts/validate-conditional-type-refinement.py
+.venv/bin/python scripts/validate-transfer-partitions.py
 .venv/bin/python scripts/validate-cpp-profile.py
 .venv/bin/python scripts/validate-runtime-values.py
 .venv/bin/python scripts/validate-collection-flow.py
