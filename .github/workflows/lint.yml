@@ -54,6 +54,7 @@ jobs:
           python3 scripts/validate-structured-locations.py
           python3 scripts/validate-deferred-yield.py
           python3 scripts/validate-conditional-type-refinement.py
+          python3 scripts/validate-transfer-partitions.py
       - name: Install documentation dependencies
         run: npm ci
         working-directory: docs

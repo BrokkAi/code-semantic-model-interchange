@@ -17,6 +17,8 @@ from jsonschema.exceptions import SchemaError, ValidationError, best_match
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "spec" / "0.1" / "schema.json"
 PROFILE_SCHEMAS = {
+    "https://csmi.brokk.ai/schema/profiles/transfer-partitions/0.1/schema.json":
+        ROOT / "profiles" / "transfer-partitions" / "0.1" / "schema.json",
     "https://csmi.brokk.ai/schema/profiles/collection-flow/0.1/schema.json":
         ROOT / "profiles" / "collection-flow" / "0.1" / "schema.json",
     "https://csmi.brokk.ai/schema/profiles/javascript-typescript/0.1/schema.json":
@@ -37,6 +39,7 @@ PROFILE_SCHEMAS = {
         ROOT / "profiles" / "conditional-type-refinement" / "0.1" / "schema.json",
 }
 PROFILE_REQUIRED_USES = {
+    ("csmi.transfer-partitions", "0.1.0"),
     ("csmi.collection-flow", "0.1.0"),
     ("csmi.javascript-typescript", "0.1.0"),
     ("csmi.node-compatibility", "0.1.0"),
@@ -49,6 +52,8 @@ PROFILE_REQUIRED_USES = {
     ("csmi.conditional-type-refinement", "0.1.0"),
 }
 PROFILE_VOCABULARIES = {
+    ("csmi.transfer-partitions", "0.1.0"):
+        "https://csmi.brokk.ai/schema/profiles/transfer-partitions/0.1/schema.json",
     ("csmi.collection-flow", "0.1.0"):
         "https://csmi.brokk.ai/schema/profiles/collection-flow/0.1/schema.json",
     ("csmi.javascript-typescript", "0.1.0"):
@@ -82,6 +87,13 @@ def iter_profile_instances(value: object) -> Iterable[tuple[str, object, str]]:
     if not isinstance(value, dict):
         return
     for model_index, model in enumerate(value.get("semanticModels", [])):
+        for claim_index, claim in enumerate(model.get("completenessStatements", [])):
+            if (claim.get("vocabulary"), claim.get("version")) == (
+                "csmi.transfer-partitions", "0.1.0"
+            ):
+                yield PROFILE_VOCABULARIES[("csmi.transfer-partitions", "0.1.0")], claim.get("scope"), (
+                    f"$.semanticModels[{model_index}].completenessStatements[{claim_index}].scope"
+                )
         for constraint_index, constraint in enumerate(model.get("compatibilityConstraints", [])):
             schema_uri = PROFILE_VOCABULARIES.get(
                 (constraint.get("vocabulary"), constraint.get("version"))
